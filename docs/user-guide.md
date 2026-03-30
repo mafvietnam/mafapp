@@ -1,264 +1,318 @@
-# User Guide: MAF Running Coach
+# Hướng Dẫn Sử Dụng: MAF Running Coach
 
-Welcome! This guide explains how to use the MAF Running Coach app to calculate your personalized training plan.
+Chào mừng bạn đến với **MAF Running Coach** — ứng dụng giúp bạn tính toán nhịp tim MAF và lập kế hoạch tập luyện cá nhân hóa.
 
----
-
-## What is MAF Training?
-
-**MAF** (Maximum Aerobic Function) is a training method by Dr. Phil Maffetone that focuses on building aerobic fitness through consistent, easy-paced running at your optimal heart rate zone. The goal: run faster at the same heart rate (or same speed at a lower heart rate) over time.
-
-**Key principle:** Slow training now = faster racing later.
+**Truy cập:** https://app.maf.run
 
 ---
 
-## How to Use the App
+## MAF là gì?
 
-### Step 1: Enter Your Information
+**MAF** (Maximum Aerobic Function) là phương pháp tập luyện của Dr. Phil Maffetone, tập trung xây dựng nền tảng hiếu khí bằng cách chạy ở nhịp tim tối ưu. Mục tiêu: chạy nhanh hơn ở cùng nhịp tim (hoặc cùng tốc độ ở nhịp tim thấp hơn) theo thời gian.
 
-Fill out the form on the **PLAN** tab:
-
-1. **Age** — Your current age (1–120)
-2. **Height** — In centimeters (e.g., 175)
-3. **Weight** — In kilograms (e.g., 70)
-4. **Experience Level** — Select one:
-   - **Never run before** — No running experience
-   - **Run but inconsistent / High heart rate** — Tried running but stopped; your resting HR is naturally high
-   - **Regularly training < 2 years** — Training consistently but less than 2 years
-   - **Continuous > 2 years, good results** — Training consistently for 2+ years with solid fitness
-
-### Step 2: Check Your Health
-
-Tick any that apply:
-
-- **Recovering from illness/surgery** — Recently sick or had surgery (limits intensity)
-- **Taking medication or recovering from injury** — Medications or past injuries that affect training
-- **I have medical clearance** — Confirm your doctor okayed running
-
-**Note:** If injured, the app offers a "Probation Mode" to safely return to training over 14 days.
-
-### Step 3: Choose Your Commitment Level
-
-Three options appear as cards:
-
-**HEALTH (💚 3–4 hrs/week)**
-- Focus: Weight loss, consistency, general health
-- Best for: Busy schedules, beginners, weight management
-- Plan: 3 runs/week + 1 long-run
-
-**BASE (🔥 5–6 hrs/week) [RECOMMENDED]**
-- Focus: Build aerobic foundation
-- Best for: Most runners, serious fitness without racing
-- Plan: 4–5 runs/week + 1 long-run (90 min)
-
-**PERFORMANCE (⚡ 7–12 hrs/week)**
-- Focus: Race preparation, high volume
-- Best for: Race-focused runners with time to train
-- Plan: 6 runs/week + 1 long-run (120+ min)
-- ⚠️ Requires strict recovery (Work + Rest = Success)
-
-### Step 4: (Optional) Pace Comparison
-
-If you tracked your pace last month, enter it:
-
-- **Your verified MAF pace last month** — e.g., 10:00 (min/km)
-- **Your pace this month** — From the MAF Lab test
-
-The app compares them to detect progress or regression:
-- **Faster this month?** → Schedule auto-increases 10%
-- **Slower this month?** → Safety mode: reduce 30% to recover
-- **Same pace?** → Stable; keep current schedule
-
-### Step 5: (Optional) Long-Run History
-
-For experienced runners, enter:
-
-- **Duration of your last long-run** — e.g., 90 minutes
-- **Avg heart rate during it** — e.g., 145 bpm
-- **How you felt** — Good / Tired / Very Tired
-
-The app uses this to adjust your next long-run intelligently.
-
-### Step 6: Click Calculate
-
-Hit **[Tính toán]** to generate your personalized plan.
+**Nguyên tắc cốt lõi:** Chạy chậm hôm nay = Chạy nhanh ngày mai.
 
 ---
 
-## Understanding Your Results
+## Bắt đầu sử dụng
 
-### MAF Zone Card
+Khi mở app lần đầu, bạn sẽ thấy **màn hình chào mừng** với lời nhắn từ cộng đồng MAF Việt Nam. Đọc kỹ các lưu ý:
 
-Shows your **optimal training heart rate zone**:
+- App chỉ mang tính **tham khảo**, kết quả mỗi người là khác nhau
+- Hãy **lắng nghe cơ thể** và điều chỉnh linh hoạt
+- Khuyến khích kết nối với cộng đồng MAFers tại địa phương
+- App đang ở phase 1 — không lưu dữ liệu trên server
+
+Nhấn **"Tôi đã hiểu & Bắt đầu"** để vào app.
+
+---
+
+## Tab "Kế Hoạch Tập Luyện" (PLAN)
+
+Đây là tab chính, gồm 3 phần: **Thông tin cá nhân**, **Sức khỏe**, và **Mức độ cam kết**.
+
+### 1. Nhập Thông tin Cá nhân
+
+| Trường | Mô tả | Ví dụ |
+|--------|-------|-------|
+| **Tuổi** | Tuổi hiện tại | 35 |
+| **Cao (cm)** | Chiều cao tính bằng cm | 170 |
+| **Nặng (kg)** | Cân nặng tính bằng kg | 65 |
+| **Kinh nghiệm** | Chọn mức phù hợp (xem bảng dưới) | — |
+
+**Các mức kinh nghiệm:**
+
+| Lựa chọn | Ý nghĩa | Ảnh hưởng |
+|-----------|---------|-----------|
+| Chưa từng chạy | Chưa có kinh nghiệm chạy bộ | Nhịp tim MAF không thay đổi |
+| Chạy lâu nhưng ngắt quãng / Tim cao | Đã chạy nhưng không đều, hoặc nhịp tim nghỉ cao | MAF trừ 5 nhịp (an toàn hơn) |
+| Đang tập đều < 2 năm | Tập đều đặn nhưng chưa đủ 2 năm | Nhịp tim MAF không thay đổi |
+| Tập liên tục > 2 năm, thành tích tốt | Runner kỳ cựu, thể lực tốt | MAF cộng 5 nhịp (thử thách hơn) |
+
+### 2. Đánh giá Sức khỏe
+
+Tick vào các ô nếu áp dụng:
+
+- **"Đang hồi phục bệnh nặng"** → MAF trừ thêm 10 nhịp
+- **"Dùng thuốc / Chấn thương"** → MAF trừ thêm 5 nhịp
+- **"Xác nhận Y tế"** → Chỉ hiện khi bạn trên 60 tuổi, cần xác nhận bác sĩ đồng ý
+
+> **Lưu ý cho người mới:** Nếu bạn chọn "Chưa từng chạy", hệ thống sẽ hiện thông báo: *"Giai đoạn này chỉ cần quan tâm đến Thời gian và Nhịp tim. Chạy thật chậm!"*
+
+### 3. Chọn Mức độ Cam kết
+
+Bạn sẽ thấy **3 thẻ** để chọn:
+
+#### 💚 SỨC KHỎE & ĐỐT MỠ (3-4 giờ/tuần)
+- Phù hợp: Người bận, người mới, muốn giảm cân
+- Lịch tập: 3 buổi chạy/tuần + 1 Long Run (tối đa 60 phút)
+- Trần khối lượng: 240 phút/tuần
+
+#### 🔥 XÂY DỰNG NỀN TẢNG (5-6 giờ/tuần) — **KHUYÊN DÙNG**
+- Phù hợp: Đa số runner, muốn xây nền tảng hiếu khí vững
+- Lịch tập: 4-5 buổi/tuần + 1 Long Run (90 phút)
+- Trần khối lượng: 420 phút/tuần
+
+#### ⚡ THI ĐẤU & CẠNH TRANH (7-12 giờ/tuần)
+- Phù hợp: Runner muốn thi đấu, có thời gian tập nhiều
+- Lịch tập: 6 buổi/tuần + 1 Long Run (120 phút)
+- Trần khối lượng: 720 phút/tuần
+- ⚠️ Yêu cầu nghiêm ngặt về hồi phục
+
+**Khi nào gói bị khóa?**
+- BMI > 30: Gói Hiệu suất bị khóa để bảo vệ khớp gối
+- Đang dùng thuốc/chấn thương: Gói Hiệu suất bị khóa
+- Tuổi > 60 chưa xác nhận y tế: Gói Hiệu suất bị khóa
+- Người mới/ngắt quãng: Cần kinh nghiệm đều đặn mới mở gói Hiệu suất
+
+### 4. So sánh Pace (Tùy chọn — dành cho người đã tập)
+
+Nếu bạn đã có pace MAF từ tháng trước:
+
+- **Pace MAF Hiện tại**: Hiển thị nếu đã test trong Phòng MAF Test. Nhấn **"Test lại"** để test lại
+- **Pace MAF Tháng Trước**: Nhập pace cũ (VD: `6:30` hoặc `6.5`) để hệ thống so sánh
+
+Kết quả so sánh:
+- **Nhanh hơn tháng trước** → Hệ thống tăng 10% khối lượng (bạn đang tiến bộ!)
+- **Chậm hơn tháng trước** → Hệ thống giảm 30% khối lượng (cần hồi phục)
+- **Giữ nguyên** → Lịch tập ổn định
+
+### 5. Dữ liệu Long Run (Tùy chọn — dành cho người tập đều/nâng cao)
+
+Nếu bạn đã có kinh nghiệm, nhập thông tin Long Run gần nhất:
+
+| Trường | Mô tả | Ví dụ |
+|--------|-------|-------|
+| **Thời gian (phút)** | Thời gian chạy Long Run gần nhất | 90 |
+| **Nhịp tim TB (bpm)** | Nhịp tim trung bình trong bài Long Run | 145 |
+| **Cảm nhận** | Chọn: 😊 Tốt / 😰 Hơi mệt / 😫 Rất mệt | — |
+
+Hệ thống dùng dữ liệu này để điều chỉnh bài Long Run tiếp theo:
+- Tim thấp + Cảm thấy tốt → Tăng thời lượng Long Run
+- Tim cao + Rất mệt → Giảm thời lượng để bảo vệ cơ thể
+
+### 6. Nhấn "PHÂN TÍCH & LẬP KẾ HOẠCH"
+
+Hệ thống sẽ tính toán và hiển thị kết quả bên dưới.
+
+---
+
+## Đọc hiểu Kết quả
+
+### Nhịp Tim Mục Tiêu (MAF)
+
+Hiển thị nhịp tim MAF của bạn:
 
 ```
-YOUR MAF HEART RATE: 140 bpm
-Zone: 130–140 bpm (lower–upper bound)
+Nhịp Tim Mục Tiêu (MAF): 140 BPM
+Zone: 130 - 140 bpm
 ```
 
-**How to use it:**
-- Keep runs at or below this zone
-- Use a sports watch or phone app to monitor heart rate
-- If you exceed the zone, slow down (walk if needed)
-- This is aerobic training (you can talk, just not comfortably)
+**Cách sử dụng:**
+- Khi chạy, giữ nhịp tim **trong vùng Zone** (VD: 130-140)
+- Nếu nhịp tim vượt quá → **chạy chậm lại hoặc đi bộ**
+- Dùng đồng hồ thể thao hoặc dây đeo ngực để theo dõi nhịp tim
 
-**Your BMI:** Shows your body composition category (normal, overweight, obese, etc.)
+**BMI:** Hiển thị chỉ số BMI và phân loại (Bình thường, Thừa cân, Béo phì...).
 
----
+### Giải thích & Cảnh báo
 
-### Weekly Training Schedule
+- **Giải thích**: Giải thích cách tính nhịp tim MAF của bạn
+- **Cảnh báo (⚠️)**: Các lưu ý quan trọng dựa trên tình trạng sức khỏe
 
-A 7-day plan customized to your commitment + fitness level:
+### Tư duy Cốt lõi & Quy Tắc Vàng
 
-Example (BASE level):
-```
-Thứ 2: Nghỉ ngơi (rest)
-Thứ 3: Run 60 min MAF
-Thứ 4: Run 45 min MAF
-Thứ 5: Run 60 min MAF
-Thứ 6: Nghỉ ngơi (rest)
-Thứ 7: Long-run 90 min
-Chủ Nhật: Walk 45 min
-```
+Hiển thị mindset phù hợp với trình độ của bạn, kèm 3 quy tắc vàng:
 
-**Each session includes:**
-```
-Warm-up: 5 min easy (50% zone)
-Main: 60 min at MAF zone (100% zone)
-Cool-down: 5 min easy (50% zone)
-```
+1. **Chạy MAF**: Tuyệt đối không để tim vượt quá nhịp tim MAF
+2. **Hồi phục**: Chạy chậm, thoải mái, giữ tim dưới ngưỡng dưới của Zone
+3. **Luật 15/15**: Luôn dành 15 phút đầu/cuối để khởi động/thả lỏng
 
-**Activities:**
-- **Chạy (Run)** — Running at MAF heart rate
-- **Chạy dài (Long-run)** — Longer effort, same MAF zone
-- **Đi bộ (Walk)** — Walking (if BMI > 30, all runs become walks)
-- **Nghỉ (Rest)** — Complete rest or light activity
-- **Cross-train** — Gym, yoga, cycling (low impact)
+### Điều chỉnh Khối lượng Tập
 
----
+Nếu bạn nhập pace tháng trước, hệ thống hiển thị:
+- **TẬP TIẾN ĐỘ** (màu xanh): Bạn đang tiến bộ, khối lượng được tăng
+- **TẬP HỒI QUY** (màu đỏ): Cần giảm tải để hồi phục
+- **TẬP ỔN ĐỊNH**: Giữ nguyên khối lượng hiện tại
 
-### Safety Alerts & Notes
+### Lịch Trình Chi Tiết (7 ngày)
 
-Read these carefully. The app shows:
+Bảng hiển thị lịch tập từng ngày:
 
-- **⚠️ BMI Warning** — If overweight/obese, runs auto-switch to walking
-- **Recovery Mode** — If recovering from injury, plan adjusts temporarily
-- **Senior Notice** — If 60+, extra emphasis on listening to your body
-- **Pace Warning** — If your verified pace is very fast, extra joint care notes
+| Cột | Ý nghĩa |
+|-----|---------|
+| **Ngày** | Thứ 2 → Chủ Nhật |
+| **Nội dung bài tập** | Loại bài tập (Chạy MAF, Long Run, Nghỉ ngơi...) |
+| **Thời lượng** | Số phút tập |
 
----
+**Các loại bài tập:**
+- 🏃 **Chạy MAF** — Chạy ở nhịp tim MAF
+- 🏃 **Chạy dài (Long Run)** — Chạy dài ở nhịp tim MAF
+- 🚶 **Đi bộ nhanh** — Đi bộ (nếu BMI cao, tất cả bài chạy chuyển thành đi bộ)
+- 😌 **Nghỉ ngơi** — Nghỉ hoàn toàn hoặc hoạt động nhẹ
+- 🧘 **Yoga** — Bài tập linh hoạt, thư giãn
+- 🔄 **Chạy nhẹ hồi phục** — Chạy rất chậm để phục hồi
 
-## Using the MAF Lab
+Mỗi bài chạy đều có **hướng dẫn chi tiết** (nhấn vào để xem): Khởi động → Bài chính → Thả lỏng.
 
-Click the **LAB** tab to verify your MAF heart rate.
-
-### What is the MAF Lab?
-
-A test to find the exact pace where your heart rate hits your MAF zone. This verified pace becomes your target for all MAF runs.
-
-### How to Run the MAF Test (3 steps)
-
-#### Step 1: Warmup
-- Run/walk for 10 min at easy pace (HR rising)
-- Jog 1 km at easy pace
-- Then start the test
-
-#### Step 2: Test
-- Run 5 km (or 30 min) at steady effort
-- Monitor your heart rate every 1 km (or every 10 min)
-- You should be "conversational" (can talk in short phrases)
-
-Record:
-- Your final pace for that 1 km/10 min segment
-- Your average heart rate during the run
-
-#### Step 3: Results
-- Enter your pace + heart rate from the test
-- **If HR = your MAF zone:** Perfect! Use this pace.
-- **If HR > MAF zone:** You ran too fast. Pace down.
-- **If HR < MAF zone:** You ran too easy. Pace up, retest.
-
-After you get a verified pace, the app uses it to improve your plan.
+> *Lưu ý: Luôn lắng nghe cơ thể. Nếu cảm thấy mệt mỏi bất thường, hãy nghỉ ngơi thêm.*
 
 ---
 
-## Special Cases
+## Tab "Phòng MAF Test" (LAB)
 
-### Beginners (Never Run Before)
+Nhấn tab **"Phòng MAF Test"** ở đầu trang để vào phòng test.
 
-- Start with **HEALTH commitment** (3 runs/week)
-- No pressure to hit high mileage
-- Walk when needed; there's no shame
-- Long-run cap: 60 min
-- Mindset: "Slow down. If HR exceeds zone, walk immediately."
+### Phòng MAF Test là gì?
 
-### Seniors (60+)
+Đây là nơi bạn **xác minh pace MAF thực tế** — tốc độ chạy mà nhịp tim đạt đúng vùng MAF. Pace này sẽ được dùng để tối ưu hóa lịch tập.
 
-- MAF formula still works; no age limit
-- Long-run cap: 90 min (reduce injury risk)
-- Extra recovery day emphasis
-- Probation mode if injury (safer comeback)
-- Mindset: "Listen to your body. Rest when tired."
+### Bước 1: Quy Chuẩn
 
-### Overweight (BMI ≥ 30)
+Trước khi nhập dữ liệu, xác nhận 4 điều kiện:
 
-- All running becomes walking (auto-applied)
-- Lower joint impact = safer training
-- Weight loss + consistency = success story
-- Still aim for MAF heart rate (zone is the same)
-- Expected: 1–2 months of steady walking, then gradual pace increase
+- [x] Đã đeo thiết bị đo nhịp tim (Heart Rate Monitor / Chest Strap)
+- [x] Đã test trên **đường phẳng** hoặc **sân vận động**
+- [x] Đã cố gắng giữ nhịp tim **DƯỚI** nhịp tim MAF mục tiêu
+- [x] Đã hoàn thành **15 phút khởi động** trước khi bấm giờ
 
-### Injury Recovery (Probation Mode)
+Tick đủ 4 điều kiện → Nhấn **"BẮT ĐẦU GHI NHẬN →"**
 
-If injured and just cleared:
+### Bước 2: Nhập Dữ Liệu Thô
 
-1. Click **[Chế độ thử thách]** to enter probation
-2. Schedule reduces to 70% normal volume
-3. Extra -10 bpm on MAF zone (extra safety)
-4. Auto-unlocks after 14 days
-5. Gradually increase volume after unlock
+Nhập 3 thông tin từ bài test:
 
-Example: BASE plan 360 min/week → Probation 252 min/week
+| Trường | Mô tả | Ví dụ |
+|--------|-------|-------|
+| **Tổng Cự ly (Km)** | Quãng đường đã chạy | 5 |
+| **Tổng Thời gian** | Giờ : Phút : Giây | 00:30:00 |
+| **Nhịp tim trung bình (Avg HR)** | Lấy từ đồng hồ/app chạy bộ | 142 |
 
----
+Nhấn **"TÍNH TOÁN & THẨM ĐỊNH ⏱️"**
 
-## Tips for Success
+### Bước 3: Thẩm Định Kết quả
 
-1. **Be patient with pace.** Aerobic building takes months, not weeks.
-2. **Consistency > intensity.** 3 easy runs beat 1 hard run + 2 misses.
-3. **Trust the zone.** If heart rate climbs, walk. No ego.
-4. **Track progress over weeks.** Use the Lab quarterly to retest.
-5. **Log your feelings.** After long-runs, note if you felt good/tired → helps app adjust.
-6. **No zero days.** Even a 30-min walk counts if injured.
-7. **Eat and sleep.** Training is 50% effort, 50% recovery.
-8. **Ask questions.** Consult a coach or doctor if unsure.
+Hệ thống kiểm tra nhịp tim trung bình so với nhịp tim MAF mục tiêu:
+
+**Nếu nhịp tim hợp lệ (≤ MAF):**
+- Hiển thị: ✅ **"Dữ Liệu Hợp Lệ"**
+- Pace thực tế của bạn (VD: `6:00 /km`)
+- Thông báo: *"Tuyệt vời! Bạn đã tuân thủ đúng kỷ luật nhịp tim."*
+- Nhấn **"SỬ DỤNG PACE NÀY"** để lưu
+
+**Nếu nhịp tim cao hơn MAF:**
+- Hiển thị: ⚠️ **"Cảnh Báo Nhịp Tim Cao"**
+- Phân tích: *"Bài chạy này có nhịp tim trung bình cao hơn ngưỡng MAF. Bạn đã sử dụng hệ thống kỵ khí nhiều hơn dự kiến."*
+- Hệ thống tự động **cộng thêm 1 phút 30 giây** vào pace để điều chỉnh
+- Nhấn **"CHẤP NHẬN PACE ĐIỀU CHỈNH"** để lưu pace đã điều chỉnh
+
+Sau khi lưu pace, hệ thống tự động quay về tab **Kế Hoạch Tập Luyện** và dùng pace này để tối ưu lịch tập.
 
 ---
 
-## Frequently Asked Questions
+## Các trường hợp Đặc biệt
 
-**Q: Why is my MAF pace so slow?**
-A: That's normal. MAF is aerobic base-building; it feels easy. Most runners are surprised how slow it is. Patience is key.
+### 👶 Trẻ em (dưới 16 tuổi)
 
-**Q: Can I go faster?**
-A: Not in MAF zone. If you exceed your HR, either slow down (walk) or rest. Speed comes naturally over months.
+Nếu nhập tuổi dưới 16, hệ thống **không tạo lịch tập** mà hiển thị hướng dẫn riêng:
 
-**Q: Should I follow the plan exactly?**
-A: Use it as a guide. Adapt to your schedule, but respect rest days and long-run limits.
+- Khuyến khích trẻ **chơi tự nhiên**: Chạy nhảy tự do, thể thao, bơi lội, đạp xe
+- **Không cần đo nhịp tim**, không cần lịch trình cố định
+- Để trẻ tận hưởng niềm vui vận động tự nhiên
 
-**Q: What if I can't complete a session?**
-A: Cut it short or walk the rest. Consistency matters more than perfection.
+### 👴 Người trên 60 tuổi
 
-**Q: How do I know if probation mode worked?**
-A: Retest in the Lab after 14 days. If pace feels easier, you've recovered.
+- Công thức MAF vẫn áp dụng bình thường
+- Long Run giới hạn tối đa **90 phút** (an toàn hơn)
+- Cần tick **"Xác nhận Y tế"** để mở gói Hiệu suất
+- Nhấn mạnh: Lắng nghe cơ thể, nghỉ khi mệt
 
-**Q: Can I use this with a race plan?**
-A: Yes, but MAF training is base-building. Combine with a specific race plan 12–16 weeks before race day.
+### 🏋️ BMI ≥ 30 (Béo phì)
+
+- Tất cả bài **chạy tự động chuyển thành đi bộ** (bảo vệ khớp gối)
+- Gói Hiệu suất bị **khóa**
+- Vẫn tập ở nhịp tim MAF (zone giữ nguyên)
+- Kiên nhẫn đi bộ 1-2 tháng, cân nặng sẽ giảm dần
+
+### 🩹 Chế độ Thử thách (Hồi phục Chấn thương)
+
+Nếu bạn đang hồi phục sau chấn thương:
+
+1. Tick **"Đang hồi phục bệnh nặng"** hoặc **"Dùng thuốc / Chấn thương"**
+2. Hệ thống hiện **modal đánh giá** với 5 tiêu chí cần tick:
+   - Hết đau khi sinh hoạt hàng ngày
+   - Vận động nhẹ không tăng đau
+   - Cuối ngày không đau âm ỉ hay sưng
+   - Đã ngưng thuốc giảm đau > 7 ngày
+   - Chấp nhận tham gia Giai đoạn Thử thách 2 tuần
+3. Nhấn **"Xác nhận & Bắt đầu Thử thách"**
+
+**Trong 14 ngày thử thách:**
+- Khối lượng tập giảm **30%**
+- Nhịp tim trừ thêm **-10 bpm** (an toàn hơn)
+- Long Run bị giới hạn thời lượng
+- Thanh tiến trình hiển thị: *"Ngày X/14 — Y ngày còn lại"*
+- **Tự động mở khóa** sau 14 ngày
 
 ---
 
-**Questions?** Contact support@maf.run or visit https://app.maf.run
+## Mẹo Tập Luyện Hiệu Quả
 
-**Based on:** "The Big Book of Endurance Training and Racing" by Dr. Phil Maffetone
+1. **Kiên nhẫn với pace chậm.** Xây nền tảng hiếu khí cần hàng tháng, không phải hàng tuần
+2. **Nhất quán > Cường độ.** 3 buổi chạy nhẹ tốt hơn 1 buổi nặng + 2 buổi nghỉ
+3. **Tin tưởng vào Zone.** Nhịp tim tăng → chạy chậm lại hoặc đi bộ. Không cần xấu hổ
+4. **Test lại mỗi tháng.** Dùng Phòng MAF Test để kiểm tra tiến bộ
+5. **Ghi lại cảm nhận** sau Long Run → giúp hệ thống điều chỉnh thông minh hơn
+6. **Không ngày nào bằng 0.** Dù chấn thương, 30 phút đi bộ vẫn tốt
+7. **Ăn uống & Giấc ngủ.** Tập luyện = 50% nỗ lực + 50% hồi phục
+8. **Hỏi khi cần.** Tham vấn coach hoặc bác sĩ nếu không chắc chắn
 
-**Version:** 1.0.0 | **Last Updated:** March 30, 2026
+---
+
+## Câu Hỏi Thường Gặp
+
+**Hỏi: Tại sao pace MAF của tôi chậm thế?**
+Đáp: Hoàn toàn bình thường. MAF là xây nền tảng hiếu khí — cảm giác dễ dàng là đúng. Đa số runner đều bất ngờ với pace chậm ban đầu. Kiên nhẫn!
+
+**Hỏi: Tôi có thể chạy nhanh hơn không?**
+Đáp: Không trong vùng MAF. Nếu nhịp tim vượt zone → chạy chậm lại hoặc đi bộ. Tốc độ sẽ tự cải thiện sau vài tháng.
+
+**Hỏi: Có cần theo lịch tập chính xác không?**
+Đáp: Dùng làm hướng dẫn. Điều chỉnh theo lịch cá nhân, nhưng tôn trọng ngày nghỉ và giới hạn Long Run.
+
+**Hỏi: Nếu không hoàn thành buổi tập thì sao?**
+Đáp: Cắt ngắn hoặc đi bộ phần còn lại. Sự nhất quán quan trọng hơn hoàn hảo.
+
+**Hỏi: Làm sao biết Chế độ Thử thách đã xong?**
+Đáp: Thanh tiến trình hiển thị ngày còn lại. Sau 14 ngày, hệ thống tự động mở khóa. Test lại trong Phòng MAF Test để kiểm tra.
+
+**Hỏi: Dữ liệu có được lưu không?**
+Đáp: App lưu dữ liệu trên trình duyệt (localStorage). Nếu xóa cache trình duyệt, dữ liệu sẽ mất. Chưa có tính năng lưu trên server.
+
+---
+
+**Liên hệ:** support@maf.run | **Website:** https://app.maf.run
+
+**Dựa trên:** "The Big Book of Endurance Training and Racing" — Dr. Phil Maffetone
+
+**Phiên bản:** 1.0.0 | **Cập nhật:** 31/03/2026
