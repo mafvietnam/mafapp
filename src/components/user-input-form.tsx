@@ -119,34 +119,34 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
           </h2>
 
           <div className="space-y-3">
-            <label className="flex items-center space-x-3 cursor-pointer p-3 bg-gray-50 rounded-lg border border-gray-100 hover:bg-gray-100 transition">
+            <label className="flex items-center space-x-3 cursor-pointer p-3 min-h-[44px] bg-gray-50 rounded-lg border border-gray-100 hover:bg-gray-100 transition">
               <input
                 type="checkbox"
                 name="isRecovering"
                 checked={userProfile.isRecovering}
                 onChange={onCheckboxChange}
-                className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500"
+                className="w-6 h-6 min-w-[24px] text-purple-600 rounded focus:ring-purple-500"
               />
               <span className="text-base text-gray-800">Đang hồi phục bệnh nặng (-10 nhịp)</span>
             </label>
-            <label className="flex items-center space-x-3 cursor-pointer p-3 bg-gray-50 rounded-lg border border-gray-100 hover:bg-gray-100 transition">
+            <label className="flex items-center space-x-3 cursor-pointer p-3 min-h-[44px] bg-gray-50 rounded-lg border border-gray-100 hover:bg-gray-100 transition">
               <input
                 type="checkbox"
                 name="isMedicatedOrInjured"
                 checked={userProfile.isMedicatedOrInjured}
                 onChange={onCheckboxChange}
-                className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500"
+                className="w-6 h-6 min-w-[24px] text-purple-600 rounded focus:ring-purple-500"
               />
               <span className="text-base text-gray-800">Dùng thuốc / Chấn thương (-5 nhịp)</span>
             </label>
             {isSenior && (
-              <label className="flex items-center space-x-3 cursor-pointer p-3 bg-amber-50 rounded-lg border border-amber-200">
+              <label className="flex items-center space-x-3 cursor-pointer p-3 min-h-[44px] bg-amber-50 rounded-lg border border-amber-200">
                 <input
                   type="checkbox"
                   name="isMedicalClearanceConfirmed"
                   checked={userProfile.isMedicalClearanceConfirmed}
                   onChange={onCheckboxChange}
-                  className="w-5 h-5 text-amber-600 rounded focus:ring-amber-500"
+                  className="w-6 h-6 min-w-[24px] text-amber-600 rounded focus:ring-amber-500"
                 />
                 <span className="text-base text-amber-900 font-bold">
                   Xác nhận Y tế (trên 60 tuổi)
