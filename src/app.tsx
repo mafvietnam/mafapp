@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { useUserProfile } from './hooks/use-user-profile';
 import { useMafCalculator } from './hooks/use-maf-calculator';
 import { useProbationAutoUnlock } from './hooks/use-probation';
@@ -9,6 +10,7 @@ import ResultDisplay from './components/result-display';
 import { MafLab } from './components/maf-lab';
 import WelcomeModal from './components/welcome-modal';
 import RecoveryModal from './components/recovery-modal';
+import GuidePage from './pages/guide-page';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'PLAN' | 'LAB'>('PLAN');
@@ -47,7 +49,7 @@ const App: React.FC = () => {
     calculateMAF(userProfile, verifiedMafPace, ageNum, isChild, isNewbie, getBMI);
   };
 
-  return (
+  const mainApp = (
     <>
       <WelcomeModal />
       <RecoveryModal
@@ -113,6 +115,13 @@ const App: React.FC = () => {
         </footer>
       </div>
     </>
+  );
+
+  return (
+    <Routes>
+      <Route path="/" element={mainApp} />
+      <Route path="/guide" element={<GuidePage />} />
+    </Routes>
   );
 };
 
