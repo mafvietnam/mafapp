@@ -3,47 +3,115 @@
 ## Directory Structure
 
 ```
-src/
-├── app.tsx                              [119 lines] App orchestrator
-├── index.tsx                            Entry point (React 19)
-├── index.css                            Tailwind global styles
-├── types.ts                             TypeScript interfaces
-├── constants.ts                         App-wide constants
+src/ (~1,380 lines total)
+
+├── app.tsx (119 lines)
+│   Root component. Manages activeTab ('PLAN'|'LAB'), verifiedMafPace state.
+│   Orchestrates: UserInputForm, ResultDisplay, MafLab, modal components.
+│   Hooks: useUserProfile, useMafCalculator, useProbationAutoUnlock.
 │
-├── components/                          Functional React components
-│   ├── app-header.tsx                   Logo & title
-│   ├── app-footer.tsx                   Footer with attribution
-│   ├── tab-navigation.tsx               PLAN | LAB tabs
-│   ├── user-input-form.tsx              Form with all inputs
-│   ├── commitment-selector.tsx          Card selector (3 levels)
-│   ├── result-display.tsx               Container for all results
-│   ├── result-heart-rate-card.tsx       MAF zones + BMI display
-│   ├── result-schedule-table.tsx        7-day training schedule
-│   ├── result-alerts-section.tsx        Notes & warnings
-│   ├── result-mindset-card.tsx          Motivational message
-│   ├── volume-adjustment-card.tsx       Progress/regression indicator
-│   ├── probation-alert.tsx              Injury recovery guidance
-│   ├── maf-lab.tsx                      [143 lines] Verification lab
-│   ├── maf-lab-step-checklist.tsx       Warmup instructions
-│   ├── maf-lab-step-data-entry.tsx      Pace/HR input
-│   ├── maf-lab-step-results.tsx         Verified pace display
-│   ├── welcome-modal.tsx                First-visit greeting
-│   └── recovery-modal.tsx               Injury recovery modal
+├── types.ts (56 lines)
+│   Interfaces: UserProfile, MafResult, ScheduleItem
+│   Enums: ExperienceLevel (NONE, INCONSISTENT, REGULAR_NEW, ADVANCED)
+│          CommitmentLevel (HEALTH, BASE, PERFORMANCE)
 │
-├── hooks/                               Custom React hooks
-│   ├── use-user-profile.ts              User data state + localStorage
-│   ├── use-maf-calculator.ts            Calculation logic & result state
-│   └── use-probation.ts                 Injury recovery auto-unlock
+├── constants.ts (71 lines)
+│   EXPERIENCE_OPTIONS: scoring for each level
+│   COMMITMENT_CARDS: Heart/Flame/Zap icons + descriptions
+│   SCHEDULES: 3 weekly templates (7-day each)
 │
-└── utils/                               Pure functions & constants
-    ├── maf-logic.ts                     Barrel re-export
-    ├── maf-types.ts                     Shared constants (volume caps)
-    ├── maf-session-formatter.ts         Format session details (15/15)
-    ├── maf-schedule-generator.ts        Get base schedule from constants
-    ├── maf-safety-adjustments.ts        BMI/age adjustments
-    ├── maf-smart-long-run.ts            History-based calculations
-    ├── maf-volume-cap.ts                Enforce weekly max
-    └── *.test.ts                        Unit tests
+├── index.tsx (16 lines)
+│   React 19 entry point. Mounts App to #root.
+│
+├── index.css
+│   Tailwind imports + minimal global styles.
+│
+├── components/ (~600 lines)
+│   Functional React components (no class components):
+│
+│   ├── app-header.tsx — Logo + title
+│   ├── tab-navigation.tsx — PLAN | LAB tabs
+│   ├── user-input-form.tsx (120+ lines)
+│   │   Inputs: age, height, weight, experience, health checkboxes
+│   │   Sections: CommitmentSelector, PaceComparison, LongRunHistory
+│   │   Button: Calculate
+│   │
+│   ├── commitment-selector.tsx — 3 card selector (onClick → setCommitment)
+│   ├── result-display.tsx — Conditional render of result sub-components
+│   ├── result-heart-rate-card.tsx — MAF zones + BMI category
+│   ├── result-schedule-table.tsx — 7-day schedule table
+│   ├── result-alerts-section.tsx — Notes + warnings
+│   ├── result-mindset-card.tsx — Motivational message
+│   ├── volume-adjustment-card.tsx — Progress/regression message
+│   ├── probation-alert.tsx — Injury recovery guidance
+│   ├── maf-lab.tsx (143 lines) — 3-step MAF verification wizard
+│   ├── welcome-modal.tsx — First-visit intro
+│   └── recovery-modal.tsx — Injury info modal
+│
+├── hooks/ (~400 lines)
+│   Custom React hooks (state management):
+│
+│   ├── use-user-profile.ts (120+ lines)
+│   │   State: userProfile (localStorage persisted)
+│   │   Handlers: handleInputChange, handleBlur, handleCheckboxChange,
+│   │            handleCommitmentSelect, handleRecoveryConfirm
+│   │   Computed: ageNum, isSenior, isChild, isNewbie, getBMI()
+│   │
+│   ├── use-maf-calculator.ts (367 lines) — Calculation pipeline
+│   │   Steps: validate → base MAF → adjustments → schedule → BMI safety
+│   │          → pace comparison → smart long-run → volume caps → format
+│   │   Exports: calculateMAF(), calculateRawMaf(), getVolumeCapText()
+│   │
+│   └── use-probation.ts — Auto-unlock after 14 days
+│
+└── utils/ (~250 lines)
+    Pure functions (no state, no side effects):
+
+    ├── maf-logic.ts — Barrel export
+    ├── maf-types.ts — VOLUME_CAPS constant
+    ├── maf-schedule-generator.ts — getWeeklySchedule(commitment)
+    ├── maf-safety-adjustments.ts — BMI/age swaps
+    ├── maf-smart-long-run.ts — History-based long-run calculation
+    ├── maf-volume-cap.ts — Enforce weekly caps
+    ├── maf-session-formatter.ts — 15/15 warmup/main/cool format
+    └── *.test.ts — Unit tests (Vitest)
+```
+
+---
+
+## Component Hierarchy
+
+```
+App
+├─ activeTab: 'PLAN' | 'LAB'
+├─ verifiedMafPace: string | null
+├─ WelcomeModal
+├─ RecoveryModal
+├─ AppHeader
+├─ TabNavigation
+└─ main
+   ├─ PLAN Tab
+   │  ├─ UserInputForm
+   │  │  ├─ Age/Height/Weight inputs
+   │  │  ├─ ExperienceLevel selector
+   │  │  ├─ Health checkboxes (recovery, medicated, etc.)
+   │  │  ├─ CommitmentSelector (3 cards)
+   │  │  ├─ PaceComparison section
+   │  │  ├─ LongRunHistory inputs
+   │  │  └─ Calculate button
+   │  │
+   │  └─ ResultDisplay (conditional)
+   │     ├─ ResultHeartRateCard
+   │     ├─ VolumeAdjustmentCard (if progress/regression)
+   │     ├─ ResultScheduleTable
+   │     ├─ ResultAlertsSection
+   │     └─ ResultMindsetCard
+   │
+   └─ LAB Tab
+      └─ MafLab (3-step wizard)
+         ├─ Step 1: Warmup checklist
+         ├─ Step 2: Pace + HR entry
+         └─ Step 3: Verified results
 ```
 
 ---

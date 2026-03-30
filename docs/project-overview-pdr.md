@@ -2,114 +2,122 @@
 
 ## Product Overview
 
-**MAF Running Coach** is a client-side React application that helps runners determine their optimal MAF (Maximum Aerobic Function) heart rate zone and generates personalized training schedules based on Dr. Phil Maffetone's aerobic training methodology.
+**MAF Running Coach** is an offline-first React SPA that calculates personalized MAF (Maximum Aerobic Function) heart rate zones and generates adaptive training plans based on Dr. Phil Maffetone's aerobic training method. All calculations happen client-side—no backend required for core functionality.
 
 ### What It Does
-- Calculate MAF heart rate: `180 - age` with adjustments for health, experience, and recovery status
-- Generate weekly training schedules (HEALTH, BASE, PERFORMANCE tiers)
-- Provide smart long-run suggestions based on historical data
-- Adjust volume caps and recovery phases based on progression
-- Support probation mode for injury recovery
-- Operate completely offline (client-side calculation)
+- Calculate MAF heart rate: `180 - age` with adjustments for recovery, injury, experience, and probation status
+- Generate personalized weekly schedules for three commitment levels (HEALTH, BASE, PERFORMANCE)
+- Auto-adjust activities based on BMI (switch to walking if BMI ≥ 30)
+- Compare current vs. previous month pace to detect progress/regression
+- Smart long-run calculations based on heart rate history and recovery feedback
+- Probation mode: 70% volume reduction for injury recovery (auto-unlocks after 14 days)
+- MAF Lab: Interactive verification test to determine actual MAF pace
 
-### Live Deployment
-**App:** https://app.maf.run (Frontend React SPA)
-**Backend (optional):** https://api.maf.run (N8N automation, not required for core functionality)
+### Live App
+**Frontend:** https://app.maf.run (React SPA, full offline capability)
+**Backend (optional):** https://api.maf.run (N8N automation, not required)
 
 ---
 
 ## Technology Stack
 
-| Layer | Tech | Version |
-|-------|------|---------|
+| Component | Tech | Version |
+|-----------|------|---------|
 | Framework | React + TypeScript | 19.2.0 |
-| Build Tool | Vite | 6.2.0 |
+| Build | Vite | 6.2.0 |
 | Styling | Tailwind CSS | 3.4.15 |
-| Testing | Vitest | 3.0.0 |
-| Linting | ESLint 9 | 9.39.4 |
 | Icons | Lucide React | 0.554.0 |
-
-### Build & Dev
-```bash
-npm install              # Install dependencies
-npm run dev             # Start local dev server (http://localhost:5173)
-npm run build           # Production build → dist/
-npm run lint            # ESLint check
-npm run lint:fix        # Auto-fix linting issues
-npm run test            # Run Vitest suite
-npm run test:watch      # Watch mode for tests
-```
-
-### Infrastructure
-- **Container:** Docker multi-stage build (Node 20 Alpine → Nginx Alpine)
-- **Web Server:** Nginx 1.25 (serves SPA + CSP headers)
-- **Reverse Proxy:** Cloudflare Tunnel (token-based, no exposed ports)
-- **Database:** PostgreSQL 15 (for N8N workflows, not app core)
-- **Size:** ~50-60MB production image
+| Testing | Vitest | 3.0.0 |
+| Linting | ESLint 9 + typescript-eslint | 9.39.4 |
+| **Container** | Docker (multi-stage) | Node 20 Alpine → Nginx |
+| **Server** | Nginx 1.25 Alpine | SPA + health checks |
+| **Tunnel** | Cloudflare Tunnel | Token-based, no exposed ports |
+| **Optional Backend** | N8N + PostgreSQL 15 | Workflow automation |
 
 ---
 
-## Key Features
+## Quick Start
 
-### 1. MAF Calculator
-Computes personalized MAF heart rate from:
-- Age (base: 180 - age)
-- Recovery status (-10 bpm if recovering)
-- Medication/injury (-5 bpm if medicated or injured)
-- Experience level (-5 to +5 bpm adjustment)
-- Probation mode (-10 bpm extra safety during recovery)
+### Local Development
+```bash
+git clone https://github.com/mafvietnam/mafapp.git
+cd mafapp
+npm install
+npm run dev                 # http://localhost:5173
+```
 
-### 2. Training Plans
-Three commitment levels:
-- **HEALTH** (3-4 hrs/week): Weight management, consistency
-- **BASE** (5-6 hrs/week): MAF foundation building (recommended)
-- **PERFORMANCE** (7-12 hrs/week): Race preparation
+### Production Docker
+```bash
+cp .env.example .env       # Edit with secrets
+docker-compose up -d
+# https://app.maf.run (via Cloudflare Tunnel)
+```
 
-### 3. Smart Adjustments
-- **BMI-based:** Auto-switches to walking for BMI ≥ 30
-- **Pace comparison:** Detects progress/regression vs. last month
-- **Long-run logic:** Increases 10% if progressing, caps based on age/experience
-- **Volume cap:** Enforces max weekly minutes per commitment level
-- **Probation mode:** 70% volume reduction during injury recovery
-- **Senior support:** Special guidance for runners 60+
+---
 
-### 4. Lab Mode
-Integrated heart-rate verification lab to test actual MAF pace before planning.
+## Core Features
+
+**1. MAF Formula**
+- Base: `180 - age`
+- Adjustments: recovery (-10), medication/injury (-5), probation (-10), experience (±5)
+- Result: Optimal training heart rate zone (MAF ± 10 bpm)
+
+**2. Three Commitment Levels**
+- **HEALTH**: 3-4 hrs/week, weight management focus
+- **BASE**: 5-6 hrs/week, aerobic foundation (recommended)
+- **PERFORMANCE**: 7-12 hrs/week, race preparation
+
+**3. Safety-First Design**
+- Children <16: "play naturally" guide, no structured training
+- BMI ≥ 30: Auto-switch from running to walking
+- Seniors 60+: Reduced long-run caps, recovery emphasis
+- Recovery checkboxes: Medical clearance gating
+
+**4. Smart Volume Management**
+- Weekly caps: HEALTH 240min, BASE 360min, PERFORMANCE 720min
+- Pace comparison: ±10s threshold triggers 10% increase or 30% safety reduction
+- Long-run history: Auto-adjust based on HR, feeling, and age
+- Probation auto-unlock: 14-day countdown after injury
+
+---
+
+## Infrastructure
+
+```
+User → Cloudflare CDN
+         ↓
+    Cloudflare Tunnel
+         ↓
+    ├─ app.maf.run → Nginx + React (SPA)
+    └─ api.maf.run → N8N → PostgreSQL (optional)
+```
+
+- **Frontend**: React 19, Vite build, Nginx serving
+- **Network**: No exposed ports (Cloudflare Tunnel only)
+- **Size**: 50-60MB production Docker image
+- **Health checks**: Every 30s (Nginx + N8N)
+- **Logging**: JSON-file driver, 10MB max per file
 
 ---
 
 ## Non-Functional Requirements
 
-| Requirement | Standard |
+| Requirement | Target |
 |---|---|
-| **Performance** | First paint <500ms, TTI <1s |
-| **Offline** | 100% functional without API |
-| **Browser Support** | Modern browsers (ES2022) |
-| **Mobile-first** | Fully responsive design |
-| **Accessibility** | Semantic HTML, color contrast OK |
-| **Security** | No external API keys in code, CSP headers active |
+| **Offline** | 100% functional after initial load |
+| **Performance** | <500ms first paint, <1s TTI |
+| **Browser** | Modern ES2022+ (no IE11 support) |
+| **Mobile** | Fully responsive (mobile-first CSS) |
+| **Accessibility** | Semantic HTML, WCAG AA contrast |
+| **Security** | No secrets in code, CSP headers, Cloudflare TLS |
 
 ---
 
-## Success Metrics
+## Repository
 
-- Users complete MAF calculation without errors
-- Training plan adopted with <5% bounce rate
-- 95+ Lighthouse score maintained
-- 99.9% uptime (Cloudflare monitored)
+**GitHub:** https://github.com/mafvietnam/mafapp
+**License:** MIT
 
 ---
 
-## Future Roadmap
-
-- [ ] User authentication & profile persistence
-- [ ] Training history tracking (database)
-- [ ] Progress visualization charts
-- [ ] Mobile app (React Native)
-- [ ] Integration with fitness trackers
-- [ ] Multi-language support
-- [ ] Social sharing features
-
----
-
-**Last Updated:** March 30, 2026 | **Version:** 1.0.0
+**Version:** 1.0.0 | **Last Updated:** March 30, 2026

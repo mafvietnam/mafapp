@@ -1,247 +1,233 @@
 # System Architecture
 
-## Data Flow Diagram
+## User Input → Calculation → Display
 
 ```
-USER INPUT (UserInputForm)
+UserInputForm (React component)
+    ↓ userProfile state
+useUserProfile hook
+    └─ localStorage persistence
     ↓
-User Profile State (use-user-profile hook)
-    age, weight, height, experience, commitment, etc.
+[Calculate button]
     ↓
-[Calculate Button]
+useMafCalculator hook
+    ├─ 1. Parse & validate inputs
+    ├─ 2. Calculate base MAF (180 - age)
+    ├─ 3. Apply adjustments (recovery, injury, experience, probation)
+    ├─ 4. Get base schedule (HEALTH|BASE|PERFORMANCE)
+    ├─ 5. Apply BMI safety (walking if BMI ≥ 30)
+    ├─ 6. Compare pace vs. previous month
+    ├─ 7. Smart long-run adjustment (history-based)
+    ├─ 8. Enforce volume caps
+    ├─ 9. Apply 15/15 session formatting
+    └─ 10. Return MafResult object
     ↓
-MAF Calculation (use-maf-calculator hook)
-    ├─ Parse inputs & validate
-    ├─ Calculate base MAF (180 - age)
-    ├─ Apply adjustments (recovery, injury, experience)
-    ├─ Generate schedule (BASE structure from constants)
-    ├─ Check safety (BMI → walking vs running)
-    ├─ Compare pace (vs. previous month)
-    ├─ Smart long-run (history-based)
-    ├─ Enforce volume cap (max weekly minutes)
-    ├─ Apply probation mode (if recovering)
-    └─ Format session details (15/15 rule)
-    ↓
-MAF Result State (MafResult interface)
-    ├─ mafHeartRate, zones
-    ├─ schedule: ScheduleItem[]
-    ├─ notes: string[]
-    └─ messages (pace comparison, long-run adjustment)
-    ↓
-Result Display (ResultDisplay component)
-    ├─ ResultHeartRateCard
-    ├─ ResultScheduleTable
-    ├─ ResultAlertsSection
-    ├─ VolumeAdjustmentCard
-    └─ ResultMindsetCard
+ResultDisplay component
+    ├─ ResultHeartRateCard (MAF zone + BMI)
+    ├─ VolumeAdjustmentCard (progress/regression message)
+    ├─ ResultScheduleTable (weekly plan)
+    └─ ResultAlertsSection (notes + warnings)
 ```
 
 ---
 
-## Component Hierarchy
+## Component Tree
 
 ```
-App
-├── WelcomeModal (first visit)
-├── RecoveryModal (injury guidance)
-├── AppHeader (logo, title)
-├── TabNavigation (PLAN | LAB tabs)
-└── main
-    ├─── PLAN tab:
-    │    ├── UserInputForm (collects runner data)
-    │    │   ├── Age/Height/Weight inputs
-    │    │   ├── Health assessment checkboxes
-    │    │   ├── Experience level selector
-    │    │   ├── CommitmentSelector (cards)
-    │    │   ├── PaceComparison (previous vs current)
-    │    │   ├── LongRunHistory (optional)
-    │    │   └── [Calculate] button
+App (App.tsx)
+├─ activeTab: 'PLAN' | 'LAB'
+├─ verifiedMafPace: string | null
+├─ WelcomeModal
+├─ RecoveryModal
+├─ AppHeader
+├─ TabNavigation
+└─ main
+    ├─── PLAN tab ──────────────────
+    │    ├─ UserInputForm
+    │    │  ├─ Age/Height/Weight inputs
+    │    │  ├─ Experience selector
+    │    │  ├─ Health checkboxes
+    │    │  ├─ CommitmentSelector (3 cards)
+    │    │  ├─ PaceComparison section
+    │    │  ├─ LongRunHistory (optional)
+    │    │  └─ Calculate button
     │    │
-    │    └── ResultDisplay (if result exists)
-    │        ├── ResultHeartRateCard (zones + BMI)
-    │        ├── VolumeAdjustmentCard (progress/regression)
-    │        ├── ResultScheduleTable (7-day plan)
-    │        ├── ResultAlertsSection (notes & warnings)
-    │        └── ResultMindsetCard (motivational message)
+    │    └─ ResultDisplay (if result exists)
+    │       ├─ ResultHeartRateCard
+    │       ├─ VolumeAdjustmentCard
+    │       ├─ ResultScheduleTable
+    │       ├─ ResultAlertsSection
+    │       └─ ResultMindsetCard
     │
-    └─── LAB tab:
-         └── MafLab
-             ├── MafLabStepChecklist (warmup instructions)
-             ├── MafLabStepDataEntry (collect pace/HR)
-             └── MafLabStepResults (show verified pace)
+    └─── LAB tab ──────────────────
+         └─ MafLab
+            ├─ Step 1: Warmup checklist
+            ├─ Step 2: Data entry (pace + HR)
+            └─ Step 3: Results summary
 ```
 
 ---
 
 ## State Management
 
-### Global State (in App.tsx)
-```typescript
-const [activeTab, setActiveTab] = useState<'PLAN' | 'LAB'>('PLAN');
-const [verifiedMafPace, setVerifiedMafPace] = useState<string | null>(null);
-```
+**App-level:**
+- `activeTab` — 'PLAN' or 'LAB'
+- `verifiedMafPace` — Pace from lab, used to override auto-selection
 
-### UserProfile Hook
-```typescript
-const {
-  userProfile,         // Full profile object
-  setUserProfile,      // Update entire profile
-  handleInputChange,   // Handle form inputs
-  handleCheckboxChange,
-  handleCommitmentSelect,
-  ageNum, isSenior, isChild, isNewbie,
-  getBMI,
-} = useUserProfile();
-```
+**useUserProfile hook:**
+- Manages: age, height, weight, experience, commitment, health flags
+- Stores in localStorage
+- Returns: userProfile, handlers, computed flags (ageNum, isSenior, isChild, isNewbie, getBMI)
 
-Stores in localStorage:
-- Age, weight, height, BMI category
-- Experience level, commitment
-- Recovery/medication status
-- Previous month pace (for comparison)
-- Last long-run history (duration, HR, feeling)
-- Probation status + start date
+**useMafCalculator hook:**
+- Manages: result (MafResult object)
+- Calculates MAF when triggered
+- Returns: result, calculateMAF function, helper utilities
 
-### MAF Calculator Hook
-```typescript
-const {
-  result,              // Calculated schedule + zones
-  calculateMAF,        // Trigger calculation
-  calculateRawMaf,     // Get base MAF only
-  getVolumeCapText,
-} = useMafCalculator();
-```
+**useProbationAutoUnlock hook:**
+- Watches probation status
+- Auto-clears after 14 days
 
 ---
 
-## Calculation Pipeline
+## MAF Calculation Steps
 
-### 1. Base MAF Formula
+### 1. Formula
 ```
 MAF = 180 - age
-      ↓
-if recovering: MAF -= 10
-if medicated/injured: MAF -= 5
-if probation: MAF -= 10 (extra safety)
-experience adjustment: ±5
+if recovering:       MAF -= 10
+if medicated/injury: MAF -= 5
+if probation:        MAF -= 10
+experience:          ±5
+Zone = MAF ± 10 bpm
 ```
 
-### 2. Training Schedule Generator
-```
-Select base schedule (HEALTH|BASE|PERFORMANCE)
-  ├─ 3 commitment levels from constants
-  └─ Fixed weekly structure (Mon-Sun)
+### 2. Schedule Selection
+Choose base from constants based on commitment level:
+- HEALTH: 3 runs/week, 45-60 min, 1 long-run
+- BASE: 4-5 runs/week, 45-90 min, 1 long-run
+- PERFORMANCE: 6 runs/week, 45-120 min, 1 long-run
 
-Apply safety adjustments:
-  ├─ BMI >= 30 → Replace "Run" with "Walk" everywhere
-  ├─ BMI >= 25 → Add "Jogging/" option
-  └─ Age 60+ → Swap Wed intensity for cross-train
-```
+### 3. BMI Safety Adjustments
+- BMI ≥ 30: Replace all "Chạy" → "Đi bộ" (walking mode)
+- BMI 25-29: Add "Jogging/" option, suggest walking
+- Obese runners: Low-impact only
 
-### 3. Pace Comparison Logic
+### 4. Pace Comparison Logic
+If BOTH current + previous month pace exist:
 ```
-If user has BOTH current + previous month pace:
-  delta = currentPace - previousPace
-  ├─ delta < -10s: PROGRESS → Long-run +10%
-  ├─ delta > +10s: REGRESSION → All activities -30%
-  └─ else: STABLE → Keep schedule
-```
-
-### 4. Smart Long-Run
-```
-If runner has experience + history:
-  Check: lastLongRunDuration, lastLongRunHeartRate, lastLongRunFeeling
-  ├─ HR > MAF + 5: Felt tired → Decrease 10%
-  ├─ HR < MAF - 5: Good day → Can maintain or +5%
-  └─ Age 60+: Cap long-run at 90min
-  └─ Newbie: Cap long-run at 60min
+delta = currentPace - previousPace
+if delta < -10s:  Progress    → Long-run +10%
+if delta > +10s:  Regression  → All activities -30%
+else:             Stable      → Keep as-is
 ```
 
-### 5. Volume Cap Enforcement
-```
-Calculate total weekly minutes
-IF exceeds commitment cap:
-  Reduce activities (preserve rest days)
-  └─ HEALTH: max 240min
-  └─ BASE: max 360min
-  └─ PERFORMANCE: max 720min
-```
+### 5. Smart Long-Run (History-based)
+Check: lastLongRunDuration, lastLongRunHeartRate, lastLongRunFeeling
+- HR > MAF + 5bpm: Tired → Reduce 10%
+- HR < MAF - 5bpm: Good → Can maintain or +5%
+- Age 60+: Cap at 90 min
+- Newbie: Cap at 60 min
 
-### 6. Probation Mode (Injury Recovery)
-```
-If probation status active:
-  Every activity duration *= 0.7 (70% volume)
-  Auto-unlock after 14 days (use-probation hook)
-```
+### 6. Volume Caps (Weekly Max)
+- HEALTH: 240 min
+- BASE: 360 min
+- PERFORMANCE: 720 min
 
-### 7. Session Details (15/15 Rule)
+Reduce durations evenly if exceeded.
+
+### 7. Probation Mode
+If injury recovery active:
+- All durations × 0.7 (70% volume)
+- Auto-unlock after 14 days
+- Separate -10 bpm MAF penalty
+
+### 8. Session Formatting (15/15 Rule)
+Each run/walk broken into:
 ```
-For each RUN/LONG_RUN/WALK:
-  Generate: "Warm 5min | Main 60min | Cool 5min"
-  └─ Based on type + duration + MAF zone
+Warmup 5min (50% MAF zone)
+Main X min (100% MAF zone)
+Cool 5min (50% MAF zone)
 ```
 
 ---
 
 ## Key Utilities
 
-| Module | Responsibility |
-|--------|---|
-| `maf-schedule-generator` | Get base schedule from constants |
-| `maf-safety-adjustments` | BMI/age-based activity swaps |
-| `maf-session-formatter` | Format "Warm\|Main\|Cool" details |
-| `maf-smart-long-run` | History-based long-run calculation |
-| `maf-volume-cap` | Enforce max weekly minutes per level |
-| `maf-types` | Shared types (VOLUME_CAPS, etc.) |
+| File | Purpose |
+|------|---------|
+| `maf-schedule-generator.ts` | getWeeklySchedule(level) → base ScheduleItem[] |
+| `maf-safety-adjustments.ts` | Swap activities based on BMI/age |
+| `maf-session-formatter.ts` | Add warmup/main/cool breakdown |
+| `maf-smart-long-run.ts` | History-based long-run adjustment |
+| `maf-volume-cap.ts` | Enforce weekly minute caps |
+| `maf-types.ts` | VOLUME_CAPS constant |
 
 ---
 
-## No Backend Required
+## Data Structures
 
-**Client-side only.** All calculations happen in JavaScript:
-- ✅ MAF formula
-- ✅ Schedule generation
-- ✅ Pace comparison
-- ✅ History tracking (localStorage)
+```typescript
+interface UserProfile {
+  age, height, weight: string
+  experience: ExperienceLevel
+  isRecovering, isMedicatedOrInjured: boolean
+  commitment: CommitmentLevel
+  previousMonthPace?: string
+  isProbation?: boolean
+  probationStartDate?: string
+  lastLongRunDuration, lastLongRunHeartRate?: number
+  lastLongRunFeeling?: 'GOOD' | 'TIRED' | 'VERY_TIRED'
+}
 
-**Optional Backend (N8N):**
-- User authentication (future)
-- Data persistence (cloud backup)
-- Advanced analytics
-
----
-
-## Offline Capability
-
-App works 100% offline after initial load:
-- ServiceWorker (if enabled) caches assets
-- All data stored in localStorage
-- No API calls required for core functionality
-
----
-
-## Performance Characteristics
-
-| Metric | Target |
-|--------|--------|
-| Initial load | <500ms first paint |
-| Calculation | <100ms (MAF math) |
-| Re-renders | <50ms (React batching) |
-| Bundle size | <200KB gzipped |
-| Mobile TTI | <1s on 4G |
+interface MafResult {
+  mafHeartRate: number
+  lowerZone, upperZone: number
+  schedule: ScheduleItem[]
+  notes: string[]
+  explanation?: string
+  volumeAdjustmentMessage?: string
+  longRunAdjustmentMessage?: string
+  scheduleTitle: string
+  mindset: string
+  bmi: number
+  bmiCategory: string
+}
+```
 
 ---
 
-## Error Boundaries & Safety
+## Offline Architecture
 
-| Edge Case | Handling |
-|---|---|
-| Invalid age/BMI | Alert user, prevent calculation |
-| Age < 16 | Special children's plan (play naturally) |
-| BMI >= 30 | Force walking mode, warn about joints |
-| No MAF pace | Auto-select pace based on BMI |
-| Recovered from injury | Probation mode with auto-unlock |
+100% client-side after load:
+- React SPA bundles all logic
+- localStorage: user profile + history
+- No API calls for calculations
+- Optional: Service Worker for asset caching
 
 ---
 
-**Last Updated:** March 30, 2026 | **Version:** 1.0.0
+## Performance Targets
+
+- Initial load: <500ms first paint
+- MAF calculation: <100ms
+- Re-render: <50ms (React batching)
+- Bundle: <200KB gzipped
+- Mobile TTI: <1s (4G)
+
+---
+
+## Edge Case Handling
+
+| Scenario | Action |
+|----------|--------|
+| Age < 16 | "Play naturally" guide (no structured plan) |
+| Age > 120 | Clamped to 120, alert shown |
+| BMI = 0 | Alert: "Check height/weight" |
+| BMI ≥ 30 | Force walking mode + joint warning |
+| No verified pace | Auto-select based on BMI |
+| Injured (probation) | -10 bpm, 70% volume, 14-day unlock |
+
+---
+
+**Version:** 1.0.0 | **Last Updated:** March 30, 2026

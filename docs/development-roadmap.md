@@ -58,184 +58,49 @@
 
 ## Future Roadmap (Planned)
 
-### Phase 8: User Authentication (Planned Q2 2026)
-**Goal:** Persist user profiles across sessions
-
-**Features:**
-- Email/password registration
-- OAuth (Google, Apple)
-- Profile dashboard
-- Settings management
-
-**Effort:** 2-3 weeks
-
-### Phase 9: Training History (Planned Q2 2026)
-**Goal:** Track completed workouts and progression
-
-**Features:**
-- Log completed runs (date, duration, pace, HR)
-- Historical pace trends
-- Workout completion calendar
-- Personal records (PRs)
-
-**Effort:** 2 weeks
-
-### Phase 10: Progress Visualization (Planned Q3 2026)
-**Goal:** Charts and analytics for progress tracking
-
-**Features:**
-- Line charts: pace improvement over time
-- Pie charts: volume distribution by workout type
-- Heart rate zones histogram
-- Progress badges/milestones
-
-**Library:** Chart.js or Recharts
-
-**Effort:** 2 weeks
-
-### Phase 11: Mobile App (Planned Q3 2026)
-**Goal:** Native iOS/Android app with offline tracking
-
-**Tech:** React Native or Flutter
-
-**Features:**
-- Live heart rate integration (smartwatch/strap)
-- Workout timer with audio cues
-- GPS tracking and mapping
-- Push notifications for scheduled runs
-
-**Effort:** 6-8 weeks
-
-### Phase 12: Fitness Device Integration (Planned Q4 2026)
-**Goal:** Sync with Garmin, Apple Watch, Fitbit
-
-**Features:**
-- Import workouts from device
-- Auto-calculate metrics from device data
-- Sync schedules to device calendar
-- Real-time HR zone alerts
-
-**Platforms:** Garmin Connect API, Apple HealthKit, Fitbit API
-
-**Effort:** 3-4 weeks
-
-### Phase 13: Multi-language Support (Planned Q4 2026)
-**Goal:** Support 3+ languages (EN, VI, FR)
-
-**Libraries:** i18next or react-intl
-
-**Effort:** 1-2 weeks
-
-### Phase 14: Social Features (Planned 2027)
-**Goal:** Community engagement
-
-**Features:**
-- Share progress publicly
-- Follow other runners
-- Leaderboards by age/location
-- Challenge friends (group challenges)
-
-**Effort:** 4-6 weeks
-
-### Phase 15: Advanced Analytics (Planned 2027)
-**Goal:** AI-powered insights
-
-**Features:**
-- Personalized training recommendations
-- Injury risk prediction (ML model)
-- Optimal recovery detection
-- Pace progression forecasting
-
-**Tech:** TensorFlow.js or cloud ML API
-
-**Effort:** 6-8 weeks
+| Phase | Goal | Effort | ETA |
+|-------|------|--------|-----|
+| 8 | User authentication (email/OAuth) | 2-3w | Q2 2026 |
+| 9 | Training history logging & persistence | 2w | Q2 2026 |
+| 10 | Progress charts & visualization | 2w | Q3 2026 |
+| 11 | Mobile app (React Native/Flutter) | 6-8w | Q3 2026 |
+| 12 | Fitness device integration (Garmin, Apple Watch) | 3-4w | Q4 2026 |
+| 13 | Multi-language support (EN, VI, FR) | 1-2w | Q4 2026 |
+| 14+ | Social features, AI insights | TBD | 2027+ |
 
 ---
 
 ## Known Limitations
 
-| Limitation | Workaround | Priority |
-|---|---|---|
-| No user accounts (data reset on browser clear) | Use localStorage wisely | High |
-| No offline cache beyond localStorage | SPA works offline after load | Medium |
-| Lab mode requires manual HR input | Integration with wearables (Phase 12) | High |
-| No cross-device sync | Cloud backup planned (Phase 8) | Medium |
-| Vietnamese UI only in some components | Multi-language (Phase 13) | Low |
+- No user accounts (localStorage only → data reset on browser clear)
+- Manual heart rate input in Lab (future: wearable integration)
+- Vietnamese UI (future: multi-language support)
 
 ---
 
-## Dependencies to Monitor
+## Current Dependencies
 
-| Dependency | Current | Latest | Risk |
-|---|---|---|---|
-| React | 19.2.0 | 19.2.x | Low (stable) |
-| Vite | 6.2.0 | 6.x | Low (minor updates) |
-| TypeScript | 5.8.2 | 5.9.x | Low (compatible) |
-| Tailwind | 3.4.15 | 4.x | Medium (major breaking change in 4.x) |
-| Vitest | 3.0.0 | 3.x | Low (stable) |
-
----
-
-## Timeline Estimate
-
-| Phase | Dates | Effort | Status |
-|---|---|---|---|
-| 1-7 (Current) | Nov 2025 - Mar 2026 | 20 weeks | ✅ Done |
-| 8 (Auth) | Apr - May 2026 | 2-3w | 📅 Planned |
-| 9 (History) | Jun 2026 | 2w | 📅 Planned |
-| 10 (Charts) | Jul - Aug 2026 | 2w | 📅 Planned |
-| 11 (Mobile) | Sep - Oct 2026 | 6-8w | 📅 Planned |
-| 12 (Devices) | Nov 2026 | 3-4w | 📅 Planned |
-| 13 (i18n) | Dec 2026 | 1-2w | 📅 Planned |
-| 14+ (Social/AI) | 2027 | TBD | 🔮 Long-term |
+| Package | Version | Stability |
+|---------|---------|-----------|
+| React | 19.2.0 | ✅ Stable |
+| TypeScript | 5.8.2 | ✅ Stable |
+| Vite | 6.2.0 | ✅ Stable |
+| Tailwind | 3.4.15 | ⚠️ Monitor for v4 |
+| Vitest | 3.0.0 | ✅ Stable |
 
 ---
 
-## Success Metrics
+## Success Metrics (v1.0)
 
-### Current (v1.0)
-- ✅ Users complete MAF calculation successfully
-- ✅ 95+ Lighthouse score
+- ✅ Users complete MAF calculation without errors
+- ✅ 95+ Lighthouse score maintained
 - ✅ <500ms first paint
 - ✅ 99.9% uptime (Cloudflare monitored)
 
-### Phase 8-9 (v1.1-1.2)
-- [ ] 10K+ registered users
-- [ ] 70%+ user retention (30 days)
-- [ ] <2% app error rate
-- [ ] Average session duration: 5+ minutes
-
-### Phase 10+ (v2.0)
-- [ ] 100K+ registered users
-- [ ] Featured in fitness app stores
-- [ ] Integration with 3+ wearable platforms
-- [ ] Mobile app download: 50K+
-
----
-
-## Technology Debt
-
-| Issue | Priority | Effort |
-|---|---|---|
-| Refactor ResultDisplay component (too many props) | Medium | 1w |
-| Add E2E tests (Cypress/Playwright) | Medium | 1w |
-| Migrate to Vite 7 when released | Low | 2d |
-| Upgrade TypeScript to 5.9 when stable | Low | 2d |
-| Move styling to CSS Modules (optional) | Low | 2w |
-
----
-
-## Community & Feedback
-
-**Issue Tracking:** GitHub Issues (to be enabled)
-
-**Feature Requests:**
-- GitHub Discussions (planned Q2 2026)
-- User survey (Q2 2026)
-
-**Contribution Guidelines:**
-- Fork → Feature branch → Pull Request
-- Follow `CONTRIBUTING.md` (to be created)
+**v1.1+ targets:**
+- 10K+ registered users
+- 70%+ 30-day retention
+- <2% error rate
 
 ---
 

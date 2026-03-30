@@ -281,23 +281,6 @@ import { Heart, Zap, Activity } from 'lucide-react';
 
 ---
 
-## Dark Mode (Optional Future)
-
-Currently not implemented. If adding:
-
-```typescript
-<div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white">
-  Content
-</div>
-```
-
-Enable in `tailwind.config.js`:
-```javascript
-darkMode: 'class', // toggle via <html class="dark">
-```
-
----
-
 ## Performance
 
 ### CSS Size
@@ -319,23 +302,6 @@ Avoid animating:
 
 ---
 
-## Testing Design
-
-### Visual Regression
-
-Manual testing on:
-- iPhone 12 (375px)
-- iPad (768px)
-- Desktop (1440px)
-
-### Lighthouse Audit
-
-Target scores:
-- Performance: 90+
-- Accessibility: 95+
-- Best Practices: 95+
-- SEO: 90+
-
 ---
 
-**Last Updated:** March 30, 2026 | **Version:** 1.0.0
+**Version:** 1.0.0 | **Last Updated:** March 30, 2026

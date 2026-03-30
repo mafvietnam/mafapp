@@ -4,35 +4,42 @@
 
 ```
 src/
-├── app.tsx              # Root component (119 lines) — orchestrator only
-├── types.ts             # Shared TypeScript interfaces
-├── constants.ts         # App-wide constants (schedules, commitment levels)
-├── index.css            # Tailwind globals
-├── components/          # React components (functional)
+├── app.tsx                      # Root component — tab orchestration
+├── types.ts                     # All TypeScript interfaces + enums
+├── constants.ts                 # Schedules, commitment cards, experience options
+├── index.css                    # Tailwind + global styles
+├── index.tsx                    # React 19 entry point
+│
+├── components/                  # React UI components (functional)
 │   ├── app-header.tsx
 │   ├── tab-navigation.tsx
 │   ├── user-input-form.tsx
+│   ├── commitment-selector.tsx
 │   ├── result-display.tsx
-│   ├── maf-lab.tsx      # Verification lab (143 lines)
-│   └── *-modal.tsx, *-card.tsx
-├── hooks/               # Custom state hooks
-│   ├── use-user-profile.ts
-│   ├── use-maf-calculator.ts
-│   └── use-probation.ts
-├── utils/               # Pure calculation & formatting functions
-│   ├── maf-logic.ts     # Barrel re-export
-│   ├── maf-types.ts
-│   ├── maf-session-formatter.ts
-│   ├── maf-schedule-generator.ts
-│   ├── maf-safety-adjustments.ts
-│   ├── maf-smart-long-run.ts
-│   └── maf-volume-cap.ts
-└── index.tsx            # React 19 entry point
+│   ├── result-heart-rate-card.tsx
+│   ├── result-schedule-table.tsx
+│   ├── maf-lab.tsx              # Lab wizard (MAF test)
+│   ├── welcome-modal.tsx
+│   ├── recovery-modal.tsx
+│   └── *-card.tsx, *-section.tsx
+│
+├── hooks/                       # Custom React hooks (state management)
+│   ├── use-user-profile.ts      # Profile state + localStorage
+│   ├── use-maf-calculator.ts    # MAF calculation pipeline
+│   └── use-probation.ts         # Auto-unlock probation after 14 days
+│
+└── utils/                       # Pure functions (no side effects)
+    ├── maf-logic.ts             # Barrel export
+    ├── maf-schedule-generator.ts # Get base schedule
+    ├── maf-safety-adjustments.ts # BMI/age activity swaps
+    ├── maf-smart-long-run.ts    # History-based adjustments
+    ├── maf-volume-cap.ts        # Weekly minute enforcement
+    ├── maf-session-formatter.ts # 15/15 warmup/main/cool format
+    └── maf-types.ts             # Constants (VOLUME_CAPS, etc.)
 ```
 
-**File Naming:** `kebab-case` with descriptive names (e.g., `use-maf-calculator.ts`, `result-schedule-table.tsx`)
-
-**File Size:** Keep <200 lines per file. Larger modules split into sub-modules.
+**Naming:** `kebab-case` files with self-documenting names
+**File Size:** Keep <200 lines. Split large modules into focused utilities.
 
 ---
 
