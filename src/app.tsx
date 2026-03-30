@@ -2,11 +2,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { UserProfile, ExperienceLevel, CommitmentLevel, MafResult, ScheduleItem } from './types';
 import { EXPERIENCE_OPTIONS } from './constants';
-import { CommitmentSelector } from './components/CommitmentSelector';
-import { MafLab } from './components/MafLab';
-import WelcomeModal from './components/WelcomeModal';
-import RecoveryModal from './components/RecoveryModal';
-import { getWeeklySchedule, adjustScheduleForSafety, adjustForProbation, formatSessionDetails, calculateSmartLongRun, enforceWeeklyVolumeCap, VOLUME_CAPS, formatWeeklyVolumeSummary } from './utils/mafLogic';
+import { CommitmentSelector } from './components/commitment-selector';
+import { MafLab } from './components/maf-lab';
+import WelcomeModal from './components/welcome-modal';
+import RecoveryModal from './components/recovery-modal';
+import { getWeeklySchedule, adjustScheduleForSafety, adjustForProbation, formatSessionDetails, calculateSmartLongRun, enforceWeeklyVolumeCap, VOLUME_CAPS, formatWeeklyVolumeSummary } from './utils/maf-logic';
 import { AlertTriangle, Calendar, Activity as ActivityIcon, ShieldCheck, Scale, Ruler, Smile, TrendingUp, AlertCircle, BarChart3, Lock, Zap, Timer, CheckCircle2, TrendingDown, Info, ClipboardList, Beaker, LayoutDashboard, Leaf, Lightbulb } from 'lucide-react';
 
 const App: React.FC = () => {
