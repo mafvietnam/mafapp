@@ -6,6 +6,7 @@ priority: P1
 effort: 12h
 branch: dev
 tags: [refactor, structure, testing, linting, docs]
+blocks: [260331-0121-maf-platform-sp2-sp7]
 created: 2026-03-30
 ---
 
