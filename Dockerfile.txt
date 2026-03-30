@@ -1,0 +1,32 @@
+# GIAI ĐOẠN 1: BUILDER
+FROM node:20-alpine AS build
+WORKDIR /app
+# Tận dụng cache để build nhanh
+COPY package.json package-lock.json* ./
+RUN npm ci || npm install
+# Build source
+COPY . .
+RUN npm run build
+
+# GIAI ĐOẠN 2: RUNNER (PRODUCTION)
+FROM nginx:alpine3.18
+
+# Cài wget (nhẹ hơn curl) để healthcheck
+# (Alpine mặc định có wget nhưng bản busybox đôi khi thiếu tính năng, cài thêm cho chắc)
+RUN apk add --no-cache wget
+
+# Copy cấu hình Nginx bảo mật
+COPY build/nginx.txt /etc/nginx/conf.d/default.conf
+
+# Copy Code
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=build /app/dist .
+
+# Healthcheck (Tự khởi động lại nếu Nginx bị treo)
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD wget -q --spider http://localhost/ || exit 1
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,39 @@
+version: '3.8'
+
+# ============================================
+# MAF RUNNING COACH - DEVELOPMENT MODE
+# ============================================
+# File này dành cho môi trường development
+# Sử dụng: docker-compose -f docker-compose.dev.yml up
+
+services:
+  # -------------------------------------------------------
+  # MAF APP - DEVELOPMENT MODE (Hot Reload)
+  # -------------------------------------------------------
+  maf-app-dev:
+    container_name: maf-app-dev
+    image: node:20-alpine
+    working_dir: /app
+    restart: unless-stopped
+    ports:
+      - "5173:5173"  # Vite dev server port
+    volumes:
+      - .:/app
+      - /app/node_modules  # Prevent overwriting node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true  # Enable hot reload trong Docker
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - maf_dev_network
+    labels:
+      - "com.maf.environment=development"
+      - "com.maf.service=frontend-dev"
+
+# -------------------------------------------------------
+# NETWORK FOR DEVELOPMENT
+# -------------------------------------------------------
+networks:
+  maf_dev_network:
+    name: maf_dev_network
+    driver: bridge

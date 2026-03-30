@@ -1,0 +1,63 @@
+# ============================================
+# CLOUDFLARE TUNNEL CONFIGURATION
+# ============================================
+# Tunnel ID: e20b0b88-6187-4869-9063-eba523eaea2b
+# Domain: maf.run
+# ============================================
+
+# Tunnel Identifier
+tunnel: e20b0b88-6187-4869-9063-eba523eaea2b
+
+# Credentials file (auto-managed by cloudflared with token)
+credentials-file: /etc/cloudflared/creds.json
+
+# Ingress Rules (Order matters - first match wins)
+ingress:
+  # -------------------------------------------------------
+  # RULE 1: MAF Running Coach Frontend
+  # -------------------------------------------------------
+  - hostname: app.maf.run
+    service: http://maf-app:80
+    originRequest:
+      connectTimeout: 30s
+      noTLSVerify: false
+      noHappyEyeballs: false
+      keepAliveConnections: 100
+      keepAliveTimeout: 90s
+      httpHostHeader: app.maf.run
+      originServerName: app.maf.run
+
+  # -------------------------------------------------------
+  # RULE 2: N8N Automation Backend
+  # -------------------------------------------------------
+  - hostname: api.maf.run
+    service: http://n8n:5678
+    originRequest:
+      connectTimeout: 30s
+      noTLSVerify: false
+      noHappyEyeballs: false
+      keepAliveConnections: 100
+      keepAliveTimeout: 90s
+      httpHostHeader: api.maf.run
+      originServerName: api.maf.run
+
+  # -------------------------------------------------------
+  # RULE 3: Catch-all (Must be last)
+  # -------------------------------------------------------
+  # Any request that doesn't match above rules returns 404
+  - service: http_status:404
+
+# ============================================
+# CONFIGURATION NOTES
+# ============================================
+# 1. app.maf.run → MAF App (Frontend on port 80)
+# 2. api.maf.run → N8N Backend (on port 5678)
+# 3. All traffic is proxied through Cloudflare
+# 4. No ports exposed on host machine (secure)
+# 5. SSL/TLS handled by Cloudflare automatically
+#
+# To verify tunnel is working:
+# - Check: cloudflared tunnel info <tunnel-id>
+# - Logs: docker logs maf-cloudflare-tunnel
+# - Metrics: http://localhost:2000/metrics (in container)
+# ============================================

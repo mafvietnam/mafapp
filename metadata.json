@@ -1,0 +1,5 @@
+{
+  "name": "MAF Running Coach - V3",
+  "description": "A specialized running coach application based on Dr. Phil Maffetone's 180 Formula to calculate optimal aerobic heart rate and generate training plans.",
+  "requestFramePermissions": []
+}
