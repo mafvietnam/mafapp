@@ -19,6 +19,7 @@ dist-ssr
 
 # Build output
 build
+coverage
 
 # Editor directories and files
 .vscode/*
