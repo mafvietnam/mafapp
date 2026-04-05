@@ -15,11 +15,14 @@ AI-generated training plans reviewed by human coaches. Race preparation for seri
 **File ownership:** `api/src/coaching/`, `api/src/race/`
 
 - **CoachingModule:**
-  - AI plan generator: Claude API integration
+  - AI plan generator: Claude API integration (**BYOK model** — Bring Your Own Key)
+  - Budget: $100-300/year cap. Token limits per user/plan generation.
+  - Consider self-hosted LLM (Ollama/vLLM) if costs exceed budget.
   - Input: user MAF data, Strava history, race goal (distance, target time, date)
   - Output: periodized plan (base → speed → race-specific → taper)
   - Plan versioning: AI draft → coach review → final version
   - Coach role: extends trainer with coaching certification badge
+<!-- Updated: Validation Session 3 - BYOK model confirmed, $100-300/yr budget cap -->
 - **RaceModule:**
   - Race calendar: user sets target races
   - Readiness score: composite of MAF trend + volume consistency + nutrition
