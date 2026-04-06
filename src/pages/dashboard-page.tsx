@@ -7,6 +7,7 @@ import MafAssistantCard from '../components/dashboard/maf-assistant-card';
 import EcosystemSection from '../components/dashboard/ecosystem-section';
 import DesktopStatsRow from '../components/dashboard/desktop-stats-row';
 import ChartPlaceholder from '../components/dashboard/chart-placeholder';
+import MafFormulaWidget from '../components/dashboard/maf-formula-widget';
 import ActivitySection from '../components/dashboard/activity-section';
 
 export default function DashboardPage() {
@@ -92,6 +93,7 @@ export default function DashboardPage() {
             {/* Right column 4/12 */}
             <div className="col-span-4 flex flex-col gap-8">
               <MafAssistantCard />
+              <MafFormulaWidget />
               <EcosystemSection />
             </div>
           </div>

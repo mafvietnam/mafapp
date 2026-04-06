@@ -4,9 +4,9 @@ interface DesktopStatsRowProps {
   mafHr: number;
 }
 
-/** Three stat cards for desktop layout — MAF HR, Avg Pace, Weekly Distance */
 export default function DesktopStatsRow({ mafHr }: DesktopStatsRowProps) {
-  const lowerZone = mafHr > 0 ? mafHr - 10 : 0;
+  const lowerZone = mafHr > 0 ? mafHr - 10 : 135;
+  const upperZone = mafHr > 0 ? mafHr : 145;
 
   return (
     <div className="hidden lg:grid grid-cols-3 gap-6">
@@ -16,9 +16,7 @@ export default function DesktopStatsRow({ mafHr }: DesktopStatsRowProps) {
             Vùng Nhịp Tim MAF
           </p>
           <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-black text-white">
-              {mafHr > 0 ? `${lowerZone}-${mafHr}` : '--'}
-            </span>
+            <span className="text-3xl font-black text-white">{lowerZone}-{upperZone}</span>
             <span className="text-sm text-slate-400 font-semibold">bpm</span>
           </div>
         </div>
@@ -33,7 +31,7 @@ export default function DesktopStatsRow({ mafHr }: DesktopStatsRowProps) {
             Pace MAF Trung Bình
           </p>
           <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-black text-white">--:--</span>
+            <span className="text-3xl font-black text-white">7:15</span>
             <span className="text-sm text-slate-400 font-semibold">/km</span>
           </div>
         </div>
@@ -48,7 +46,7 @@ export default function DesktopStatsRow({ mafHr }: DesktopStatsRowProps) {
             Tổng khoảng cách tuần
           </p>
           <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-black text-white">--</span>
+            <span className="text-3xl font-black text-white">42.5</span>
             <span className="text-sm text-slate-400 font-semibold">km</span>
           </div>
         </div>
