@@ -17,14 +17,11 @@ export const MafLab: React.FC<MafLabProps> = ({ onComplete, targetMafHr }) => {
     warmup: false,
   });
 
-  // Raw data inputs
   const [distance, setDistance] = useState('');
   const [hours, setHours] = useState('');
   const [minutes, setMinutes] = useState('');
   const [seconds, setSeconds] = useState('');
   const [avgHr, setAvgHr] = useState('');
-
-  // Calculated results
   const [calculatedPace, setCalculatedPace] = useState('');
   const [finalPace, setFinalPace] = useState('');
   const [isMafCompliant, setIsMafCompliant] = useState(true);
@@ -42,18 +39,9 @@ export const MafLab: React.FC<MafLabProps> = ({ onComplete, targetMafHr }) => {
     const m = parseInt(minutes) || 0;
     const s = parseInt(seconds) || 0;
 
-    if (!dist || dist <= 0) {
-      alert('Vui lòng nhập Tổng cự ly hợp lệ.');
-      return;
-    }
-    if (h === 0 && m === 0 && s === 0) {
-      alert('Vui lòng nhập Tổng thời gian hoàn thành.');
-      return;
-    }
-    if (!hr || hr <= 0) {
-      alert('Vui lòng nhập Nhịp tim trung bình.');
-      return;
-    }
+    if (!dist || dist <= 0) { alert('Vui lòng nhập Tổng cự ly hợp lệ.'); return; }
+    if (h === 0 && m === 0 && s === 0) { alert('Vui lòng nhập Tổng thời gian hoàn thành.'); return; }
+    if (!hr || hr <= 0) { alert('Vui lòng nhập Nhịp tim trung bình.'); return; }
 
     const totalMinutes = h * 60 + m + s / 60;
     const paceDecimal = totalMinutes / dist;
@@ -63,12 +51,9 @@ export const MafLab: React.FC<MafLabProps> = ({ onComplete, targetMafHr }) => {
 
     setCalculatedPace(paceString);
 
-    // Allow +2 bpm buffer as acceptable margin of error
     const threshold = (targetMafHr || 180) + 2;
-
     if (hr > threshold) {
       setIsMafCompliant(false);
-      // Penalty: add 90 seconds to pace to estimate true aerobic pace
       const penalizedPaceDecimal = paceDecimal + 1.5;
       const pMin = Math.floor(penalizedPaceDecimal);
       const pSec = Math.round((penalizedPaceDecimal - pMin) * 60);
@@ -77,22 +62,24 @@ export const MafLab: React.FC<MafLabProps> = ({ onComplete, targetMafHr }) => {
       setIsMafCompliant(true);
       setFinalPace(paceString);
     }
-
     setStep(3);
   };
 
   return (
     <div className="max-w-4xl mx-auto space-y-10 animate-fade-in pb-12">
-      {/* Stepper Header */}
+      {/* Stepper Header — dark theme */}
       <div className="flex items-center justify-between relative mb-10 px-4">
-        <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1.5 bg-gray-200 -z-10 rounded-full" />
+        <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-full h-1 bg-white/10 -z-10 rounded-full" />
         {[1, 2, 3].map((s) => (
-          <div key={s} className="flex flex-col items-center bg-gray-50 px-4">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl border-4 transition-colors duration-300 shadow-sm
-              ${step >= s ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-400 border-gray-300'}`}>
+          <div key={s} className="flex flex-col items-center bg-maf-dark px-4">
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl border-4 transition-colors duration-300
+              ${step >= s
+                ? 'bg-gradient-to-tr from-maf-red to-maf-violet text-white border-maf-violet/50 shadow-[0_0_15px_rgba(145,48,248,0.3)]'
+                : 'bg-white/5 text-white/30 border-white/10'
+              }`}>
               {s}
             </div>
-            <span className={`text-sm font-bold mt-3 uppercase tracking-wider ${step >= s ? 'text-blue-700' : 'text-gray-500'}`}>
+            <span className={`text-sm font-bold mt-3 uppercase tracking-wider ${step >= s ? 'text-maf-violet' : 'text-white/30'}`}>
               {s === 1 ? 'Quy Chuẩn' : s === 2 ? 'Nhập Liệu' : 'Thẩm Định'}
             </span>
           </div>
@@ -100,43 +87,13 @@ export const MafLab: React.FC<MafLabProps> = ({ onComplete, targetMafHr }) => {
       </div>
 
       {step === 1 && (
-        <MafLabStepChecklist
-          checklist={checklist}
-          onCheck={handleCheck}
-          allChecked={allChecked}
-          onProceed={() => setStep(2)}
-          targetMafHr={targetMafHr}
-        />
+        <MafLabStepChecklist checklist={checklist} onCheck={handleCheck} allChecked={allChecked} onProceed={() => setStep(2)} targetMafHr={targetMafHr} />
       )}
-
       {step === 2 && (
-        <MafLabStepDataEntry
-          distance={distance}
-          hours={hours}
-          minutes={minutes}
-          seconds={seconds}
-          avgHr={avgHr}
-          setDistance={setDistance}
-          setHours={setHours}
-          setMinutes={setMinutes}
-          setSeconds={setSeconds}
-          setAvgHr={setAvgHr}
-          onProcess={handleProcessData}
-          onBack={() => setStep(1)}
-          targetMafHr={targetMafHr}
-        />
+        <MafLabStepDataEntry distance={distance} hours={hours} minutes={minutes} seconds={seconds} avgHr={avgHr} setDistance={setDistance} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} setAvgHr={setAvgHr} onProcess={handleProcessData} onBack={() => setStep(1)} targetMafHr={targetMafHr} />
       )}
-
       {step === 3 && (
-        <MafLabStepResults
-          calculatedPace={calculatedPace}
-          finalPace={finalPace}
-          isMafCompliant={isMafCompliant}
-          avgHr={avgHr}
-          targetMafHr={targetMafHr}
-          onComplete={onComplete}
-          onBack={() => setStep(2)}
-        />
+        <MafLabStepResults calculatedPace={calculatedPace} finalPace={finalPace} isMafCompliant={isMafCompliant} avgHr={avgHr} targetMafHr={targetMafHr} onComplete={onComplete} onBack={() => setStep(2)} />
       )}
     </div>
   );

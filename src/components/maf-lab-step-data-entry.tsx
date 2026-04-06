@@ -17,6 +17,8 @@ interface MafLabStepDataEntryProps {
   targetMafHr: number | null;
 }
 
+const inputBase = 'w-full p-4 text-xl bg-[#1F2937] border border-white/10 rounded-xl focus:border-maf-violet outline-none text-white font-medium placeholder-white/30';
+
 export const MafLabStepDataEntry: React.FC<MafLabStepDataEntryProps> = ({
   distance, hours, minutes, seconds, avgHr,
   setDistance, setHours, setMinutes, setSeconds, setAvgHr,
@@ -27,63 +29,56 @@ export const MafLabStepDataEntry: React.FC<MafLabStepDataEntryProps> = ({
     { value: minutes, setter: setMinutes, placeholder: '30', label: 'Phút' },
     { value: seconds, setter: setSeconds, placeholder: '00', label: 'Giây' },
   ];
-  const inputBase = 'w-full p-4 text-xl border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-medium';
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border-t-4 border-blue-500 overflow-hidden">
-      <div className="bg-blue-50 p-8 border-b border-blue-100 flex items-center justify-between">
+    <div className="desktop-card overflow-hidden border-t-2 border-maf-violet">
+      <div className="p-8 border-b border-white/10 flex items-center justify-between">
         <div className="flex items-center">
-          <Activity className="w-10 h-10 text-blue-600 mr-4" />
-          <h3 className="text-2xl font-bold text-gray-900 uppercase">Nhập Dữ Liệu Thô</h3>
+          <Activity className="w-10 h-10 text-maf-violet mr-4" />
+          <h3 className="text-2xl font-bold text-white uppercase">Nhập Dữ Liệu Thô</h3>
         </div>
-        <div className="text-base font-bold text-blue-900 bg-blue-100 px-4 py-2 rounded-full shadow-sm">
+        <div className="text-sm font-bold text-maf-violet bg-maf-violet/10 px-4 py-2 rounded-full border border-maf-violet/30">
           MAF Target: {targetMafHr ? `${targetMafHr} BPM` : 'N/A'}
         </div>
       </div>
 
       <div className="p-10 space-y-8">
-        {/* Distance */}
         <div>
-          <label className="block text-lg font-bold text-gray-800 uppercase mb-3">1. Tổng Cự ly đã chạy (Km)</label>
+          <label className="block text-sm font-bold text-slate-500 uppercase mb-3">1. Tổng Cự ly đã chạy (Km)</label>
           <div className="relative">
-            <input type="number" value={distance} onChange={(e) => setDistance(e.target.value)} placeholder="VD: 5"
-              className={`${inputBase} text-gray-900`} />
-            <div className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">KM</div>
+            <input type="number" value={distance} onChange={(e) => setDistance(e.target.value)} placeholder="VD: 5" className={inputBase} />
+            <div className="absolute right-5 top-1/2 -translate-y-1/2 text-white/40 font-bold text-lg">KM</div>
           </div>
         </div>
 
-        {/* Time */}
         <div>
-          <label className="block text-lg font-bold text-gray-800 uppercase mb-3">2. Tổng Thời gian hoàn thành</label>
-          <div className="flex space-x-6">
+          <label className="block text-sm font-bold text-slate-500 uppercase mb-3">2. Tổng Thời gian hoàn thành</label>
+          <div className="flex space-x-4">
             {timeFields.map(({ value, setter, placeholder, label }) => (
               <div key={label} className="flex-1">
-                <input type="number" placeholder={placeholder} value={value} onChange={(e) => setter(e.target.value)}
-                  className={`${inputBase} text-center text-gray-900`} />
-                <span className="block text-center text-base font-medium text-gray-500 mt-2">{label}</span>
+                <input type="number" placeholder={placeholder} value={value} onChange={(e) => setter(e.target.value)} className={`${inputBase} text-center`} />
+                <span className="block text-center text-sm font-medium text-white/40 mt-2">{label}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Heart Rate */}
         <div>
-          <label className="block text-lg font-bold text-gray-800 uppercase mb-3">3. Nhịp tim trung bình (Avg HR)</label>
+          <label className="block text-sm font-bold text-slate-500 uppercase mb-3">3. Nhịp tim trung bình (Avg HR)</label>
           <div className="relative">
-            <input type="number" value={avgHr} onChange={(e) => setAvgHr(e.target.value)} placeholder="VD: 142"
-              className={`${inputBase} text-red-600 font-bold`} />
-            <HeartPulse className="absolute right-5 top-1/2 -translate-y-1/2 text-red-400 w-8 h-8" />
+            <input type="number" value={avgHr} onChange={(e) => setAvgHr(e.target.value)} placeholder="VD: 142" className={`${inputBase} text-maf-red font-bold`} />
+            <HeartPulse className="absolute right-5 top-1/2 -translate-y-1/2 text-maf-red/50 w-8 h-8" />
           </div>
-          <p className="text-base text-gray-500 mt-2 font-medium italic">*Lấy số liệu từ đồng hồ hoặc app chạy bộ của bạn.</p>
+          <p className="text-sm text-white/40 mt-2 italic">*Lấy số liệu từ đồng hồ hoặc app chạy bộ của bạn.</p>
         </div>
       </div>
 
-      <div className="p-8 bg-gray-50 border-t border-gray-200 flex justify-between items-center">
-        <button onClick={onBack} className="px-8 py-3 rounded-full font-bold text-lg text-gray-600 hover:bg-gray-200 transition-colors">
+      <div className="p-8 border-t border-white/10 flex justify-between items-center">
+        <button onClick={onBack} className="px-8 py-3 rounded-full font-bold text-base text-white/60 hover:bg-white/10 transition-colors">
           Quay lại
         </button>
-        <button onClick={onProcess} className="px-10 py-4 rounded-full font-bold text-xl bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all transform hover:-translate-y-1">
-          TÍNH TOÁN &amp; THẨM ĐỊNH <Gauge className="inline-block ml-2 w-6 h-6" />
+        <button onClick={onProcess} className="px-10 py-4 rounded-full font-bold text-lg bg-gradient-to-r from-maf-red to-maf-violet text-white shadow-[0_4px_15px_rgba(244,42,104,0.3)] hover:-translate-y-1 transition-all">
+          TÍNH TOÁN &amp; THẨM ĐỊNH <Gauge className="inline-block ml-2 w-5 h-5" />
         </button>
       </div>
     </div>
