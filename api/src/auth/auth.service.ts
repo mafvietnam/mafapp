@@ -5,6 +5,7 @@ import * as crypto from 'crypto';
 import { RedisService } from '../shared/redis.service.js';
 import { UserService } from '../user/user.service.js';
 import type { TokenPayload, WpUserInfo } from './auth.types.js';
+import type { GoogleProfile } from './google.strategy.js';
 
 @Injectable()
 export class AuthService {
@@ -46,6 +47,16 @@ export class AuthService {
     const accessToken = await this.generateAccessToken(user.id, user.email);
     const refreshToken = await this.generateRefreshToken(user.id);
 
+    return { accessToken, refreshToken };
+  }
+
+  /** Login via Google OAuth — find or create user, return tokens */
+  async loginWithGoogle(
+    profile: GoogleProfile,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const user = await this.userService.findOrCreateFromGoogle(profile);
+    const accessToken = await this.generateAccessToken(user.id, user.email);
+    const refreshToken = await this.generateRefreshToken(user.id);
     return { accessToken, refreshToken };
   }
 

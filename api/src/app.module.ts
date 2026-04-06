@@ -19,6 +19,8 @@ import { ProfileModule } from './profile/profile.module.js';
         JWT_PRIVATE_KEY: Joi.string().required(),
         JWT_PUBLIC_KEY: Joi.string().required(),
         WP_OAUTH_URL: Joi.string().default('https://maf.run'),
+        GOOGLE_CLIENT_ID: Joi.string().default(''),
+        GOOGLE_CLIENT_SECRET: Joi.string().default(''),
         CORS_ORIGIN: Joi.string().default('https://app.maf.run'),
         PORT: Joi.number().default(3001),
       }),
