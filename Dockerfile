@@ -13,7 +13,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install dependencies with optimizations
-RUN npm ci --omit=dev --ignore-scripts && \
+RUN npm ci --omit=dev --ignore-scripts --legacy-peer-deps && \
     npm cache clean --force
 
 # ============================================
@@ -27,7 +27,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install ALL dependencies (including dev) for build
-RUN npm ci --ignore-scripts && \
+RUN npm ci --ignore-scripts --legacy-peer-deps && \
     npm cache clean --force
 
 # Copy only necessary source files (respect .dockerignore)
