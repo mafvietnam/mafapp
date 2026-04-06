@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth-context';
 import { useUserProfile } from './hooks/use-user-profile';
 import { useMafCalculator } from './hooks/use-maf-calculator';
@@ -125,14 +125,20 @@ const App: React.FC = () => {
         {/* Login page (public) */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* All other routes require authentication */}
+        {/* All routes require authentication */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<CalculatorApp />} />
-          <Route path="/guide" element={<GuidePage />} />
+          {/* Root redirects to dashboard */}
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+          {/* Dashboard layout (dark theme) */}
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
+
+          {/* Calculator page (light theme, standalone) */}
+          <Route path="/plan" element={<CalculatorApp />} />
+          <Route path="/guide" element={<GuidePage />} />
         </Route>
       </Routes>
     </AuthProvider>

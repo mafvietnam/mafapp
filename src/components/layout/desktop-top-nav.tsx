@@ -47,10 +47,14 @@ export default function DesktopTopNav() {
               </Link>
             ))}
             <Link
-              to="/"
-              className="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 font-medium text-sm transition-colors"
+              to="/plan"
+              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                location.pathname === '/plan'
+                  ? 'bg-white/10 text-white font-semibold'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+              }`}
             >
-              MAF Calculator
+              Giáo án
             </Link>
           </div>
         </div>

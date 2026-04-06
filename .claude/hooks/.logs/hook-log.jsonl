@@ -758,3 +758,30 @@
 {"ts":"2026-04-06T14:19:43.893Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
 {"ts":"2026-04-06T14:20:11.789Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":7,"status":"ok","exit":0,"error":""}
 {"ts":"2026-04-06T14:20:11.795Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Data/Projects/app.maf.run\""}
+{"ts":"2026-04-06T14:20:14.205Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-06T14:20:25.836Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:20:25.840Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:21:13.422Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-06T14:21:58.706Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":94,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:21:59.378Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":764,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:22:13.228Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:22:13.233Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":7,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:22:14.567Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-06T14:22:23.259Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":7,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:22:23.264Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":8,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:22:25.337Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-06T14:26:19.754Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":91,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:26:20.294Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":631,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:26:55.779Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:26:55.784Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":10,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:26:55.788Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Data/Projects/app.maf.run/src/app.tsx\""}
+{"ts":"2026-04-06T14:26:56.003Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"reminder-injected","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:26:56.004Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-06T14:26:56.006Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-06T14:27:04.113Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":6,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:27:04.120Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Data/Projects/app.maf.run/src/components/layout/desktop-top-nav.tsx\""}
+{"ts":"2026-04-06T14:27:04.342Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-06T14:27:04.346Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":5,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:27:04.348Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-06T14:27:12.684Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-06T14:27:12.688Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Data/Projects/app.maf.run\""}
