@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './contexts/auth-context';
 import { useUserProfile } from './hooks/use-user-profile';
 import { useMafCalculator } from './hooks/use-maf-calculator';
 import { useProbationAutoUnlock } from './hooks/use-probation';
@@ -12,8 +13,13 @@ import { MafLab } from './components/maf-lab';
 import WelcomeModal from './components/welcome-modal';
 import RecoveryModal from './components/recovery-modal';
 import GuidePage from './pages/guide-page';
+import LoginPage from './pages/login-page';
+import ProfilePage from './pages/profile-page';
+import DashboardPage from './pages/dashboard-page';
+import ProtectedRoute from './components/layout/protected-route';
+import AppLayout from './components/layout/app-layout';
 
-const App: React.FC = () => {
+const CalculatorApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'PLAN' | 'LAB'>('PLAN');
   const [verifiedMafPace, setVerifiedMafPace] = useState<string | null>(null);
 
@@ -37,7 +43,6 @@ const App: React.FC = () => {
   const { result, resultRef, calculateRawMaf, calculateMAF, getVolumeCapText } =
     useMafCalculator();
 
-  // Auto-unlock probation after 14 days
   useProbationAutoUnlock(userProfile, setUserProfile);
 
   const handleLabComplete = (pace: string) => {
@@ -50,7 +55,7 @@ const App: React.FC = () => {
     calculateMAF(userProfile, verifiedMafPace, ageNum, isChild, isNewbie, getBMI);
   };
 
-  const mainApp = (
+  return (
     <>
       <WelcomeModal />
       <RecoveryModal
@@ -61,7 +66,6 @@ const App: React.FC = () => {
 
       <div className="min-h-screen pb-20 bg-gray-50 font-sans">
         <AppHeader />
-
         <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
         <main className="max-w-7xl mx-auto px-4 mt-8">
@@ -112,12 +116,26 @@ const App: React.FC = () => {
       </div>
     </>
   );
+};
 
+const App: React.FC = () => {
   return (
-    <Routes>
-      <Route path="/" element={mainApp} />
-      <Route path="/guide" element={<GuidePage />} />
-    </Routes>
+    <AuthProvider>
+      <Routes>
+        {/* Public routes */}
+        <Route path="/" element={<CalculatorApp />} />
+        <Route path="/guide" element={<GuidePage />} />
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* Protected routes (dark theme via AppLayout) */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
+        </Route>
+      </Routes>
+    </AuthProvider>
   );
 };
 

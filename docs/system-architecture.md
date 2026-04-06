@@ -1,12 +1,29 @@
 # System Architecture
 
-## User Input → Calculation → Display
+## System Overview
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                      MAF RUNNING COACH                   │
+├─────────────────────────────────────────────────────────┤
+│  Frontend (React 19 SPA)      Backend (NestJS API)       │
+│  ├─ /app.maf.run             ├─ /api.maf.run             │
+│  ├─ React 19, Vite, Tailwind │ ├─ PostgreSQL 15          │
+│  └─ Cloudflare Tunnel        │ ├─ Redis 7 (sessions)     │
+│                              └─ JWT RS256 auth           │
+│  Data: localStorage           Data: server-side profiles │
+│        (legacy, deprecated)        + history             │
+└─────────────────────────────────────────────────────────┘
+```
+
+## Frontend: MAF Calculation Flow
 
 ```
 UserInputForm (React component)
     ↓ userProfile state
 useUserProfile hook
-    └─ localStorage persistence
+    ├─ localStorage persistence (for offline MAF calculation)
+    └─ Server-side profile via API (when authenticated)
     ↓
 [Calculate button]
     ↓
@@ -31,47 +48,51 @@ ResultDisplay component
 
 ---
 
-## Component Tree
+## Frontend: Component Tree & Routes
 
 ```
-App (App.tsx, 128 LOC)
-├─ activeTab: 'PLAN' | 'LAB'
-├─ verifiedMafPace: string | null
-├─ WelcomeModal (first-visit, localStorage-gated)
-├─ RecoveryModal (injury info)
-├─ AppHeader
-├─ TabNavigation (PLAN | LAB tabs)
-│
-└─ main
-    ├─── PLAN Tab ──────────────────────────
-    │    ├─ UserInputForm (orchestrator, 104 lines)
-    │    │  ├─ FormPersonalInfo (Age/Height/Weight, 81L)
-    │    │  ├─ FormHealthChecklist (Recovery, medicated, etc., 79L)
-    │    │  ├─ CommitmentSelector (3 cards: HEALTH/BASE/PERFORMANCE)
-    │    │  ├─ FormPaceAndLongRun (Pace comparison, long-run history, 168L)
-    │    │  └─ Calculate button
-    │    │
-    │    └─ ResultDisplay (conditional render)
-    │       ├─ ResultHeartRateCard (MAF zone + BMI)
-    │       ├─ VolumeAdjustmentCard (progress/regression)
-    │       ├─ ResultScheduleTable (7-day plan)
-    │       ├─ ResultAlertsSection (notes + warnings)
-    │       ├─ ResultChildrenDisplay (if age <16)
-    │       └─ ResultMindsetCard (motivational)
-    │
-    ├─── LAB Tab ──────────────────────────
-    │    └─ MafLab (143 LOC wizard)
-    │       ├─ Step 1: MafLabStepChecklist (warmup instructions)
-    │       ├─ Step 2: MafLabStepDataEntry (pace + HR input)
-    │       └─ Step 3: MafLabStepResults (verified pace display)
-    │
-    └─── Guide Route (/guide) ──────────────
-         └─ GuidePage (121 LOC)
-            ├─ GuideGettingStarted (welcome)
-            ├─ GuidePlanTab (schedule explanation)
-            ├─ GuideLab (lab instructions)
-            ├─ GuideResults (interpret results)
-            └─ GuideSpecialCases (children, seniors, injured)
+App (App.tsx)
+├─ Auth Context (checks JWT cookie)
+├─ Protected Routes (AuthGuard)
+│   ├─ /login → LoginPage
+│   │  └─ WP SSO OAuth2 PKCE flow
+│   │
+│   ├─ /dashboard → DashboardPage (authenticated)
+│   │  └─ User's MAF zone, recent results, training history
+│   │
+│   ├─ /profile → ProfilePage (authenticated)
+│   │  └─ User profile management, server-side sync
+│   │
+│   ├─ /app → AppPageWrapper (with nav)
+│   │  ├─ PLAN Tab ──────────────────────────
+│   │  │  ├─ UserInputForm (orchestrator)
+│   │  │  │  ├─ FormPersonalInfo (Age/Height/Weight)
+│   │  │  │  ├─ FormHealthChecklist (Recovery, medicated, etc.)
+│   │  │  │  ├─ CommitmentSelector (3 cards: HEALTH/BASE/PERFORMANCE)
+│   │  │  │  ├─ FormPaceAndLongRun (Pace comparison, long-run history)
+│   │  │  │  └─ Calculate button
+│   │  │  │
+│   │  │  └─ ResultDisplay (conditional render)
+│   │  │     ├─ ResultHeartRateCard (MAF zone + BMI)
+│   │  │     ├─ VolumeAdjustmentCard (progress/regression)
+│   │  │     ├─ ResultScheduleTable (7-day plan)
+│   │  │     ├─ ResultAlertsSection (notes + warnings)
+│   │  │     ├─ ResultChildrenDisplay (if age <16)
+│   │  │     └─ ResultMindsetCard (motivational)
+│   │  │
+│   │  └─ LAB Tab ──────────────────────────
+│   │     └─ MafLab (3-step wizard)
+│   │        ├─ Step 1: MafLabStepChecklist (warmup instructions)
+│   │        ├─ Step 2: MafLabStepDataEntry (pace + HR input)
+│   │        └─ Step 3: MafLabStepResults (verified pace display)
+│   │
+│   └─ /guide → GuidePage (public)
+│      └─ 5 Vietnamese guide sections
+│         ├─ GuideGettingStarted
+│         ├─ GuidePlanTab
+│         ├─ GuideLab
+│         ├─ GuideResults
+│         └─ GuideSpecialCases
 ```
 
 ---
@@ -209,10 +230,28 @@ interface MafResult {
 
 ## Data Persistence
 
-- **localStorage:** userProfile (age, height, weight, experience, commitment, health flags, probation status)
-- **Verified pace:** Stored in component state during session (not persisted to localStorage)
-- **No backend calls:** All calculations 100% client-side
-- **Optional service worker:** Asset caching not implemented (Nginx handles via cache headers)
+### Frontend (localStorage)
+- **Legacy:** userProfile (age, height, weight, experience, commitment, health flags, probation status)
+- **Session state:** Verified pace, temporary calculation results
+- **MAF calculation:** 100% client-side (works offline)
+
+### Backend (NestJS API)
+- **PostgreSQL 15:**
+  - User profiles (from WordPress SSO)
+  - Training history (results, schedules)
+  - User settings & preferences
+  
+- **Redis 7:**
+  - JWT token storage (RS256 signed)
+  - OAuth2 PKCE state + verifier (5min TTL)
+  - Session management
+  - Caching for frequently accessed profiles
+
+### Authentication
+- **WordPress OAuth2:** PKCE flow (most secure for SPAs)
+- **JWT (RS256):** Asymmetric signing, RS256 private/public keys
+- **Cookies:** HTTP-only, Secure, SameSite=Strict
+- **CORS:** Restricted to app.maf.run
 
 ---
 
@@ -242,4 +281,94 @@ interface MafResult {
 
 ---
 
-**Version:** 1.0.0 | **Last Updated:** April 6, 2026 (Phase 8 complete)
+## Backend: NestJS API Architecture
+
+```
+api/ (NestJS 10)
+├─ src/
+│  ├─ app.module.ts (root)
+│  │
+│  ├─ auth/ (OAuth2 + JWT)
+│  │  ├─ auth.controller.ts (POST /auth/initiate, GET /auth/callback)
+│  │  ├─ auth.service.ts (PKCE, token generation, user creation)
+│  │  ├─ auth.types.ts (TokenPayload, WpUserInfo interfaces)
+│  │  ├─ jwt.strategy.ts (JWT RS256 validation)
+│  │  ├─ auth.guard.ts (JwtAuthGuard)
+│  │  └─ auth.module.ts
+│  │
+│  ├─ user/ (User management)
+│  │  ├─ user.controller.ts (GET /users/:id, etc.)
+│  │  ├─ user.service.ts (CRUD operations)
+│  │  └─ user.module.ts
+│  │
+│  ├─ profile/ (Training profiles)
+│  │  ├─ profile.controller.ts (POST /profile, PATCH /profile/:id)
+│  │  ├─ profile.service.ts (profile persistence, history)
+│  │  ├─ profile.dto.ts (CreateProfileDto, UpdateProfileDto)
+│  │  └─ profile.module.ts
+│  │
+│  ├─ health/ (Liveness checks)
+│  │  ├─ health.controller.ts (GET /health)
+│  │  └─ health.module.ts
+│  │
+│  ├─ shared/
+│  │  ├─ prisma.service.ts (PostgreSQL ORM)
+│  │  ├─ redis.service.ts (session + cache management)
+│  │  └─ shared.module.ts
+│  │
+│  └─ main.ts (entry point, bootstrap NestJS)
+│
+├─ prisma/
+│  ├─ schema.prisma (User, UserProfile models)
+│  └─ migrations/
+│
+└─ Dockerfile (Node Alpine, pm2)
+```
+
+### API Endpoints
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| POST | `/auth/initiate` | ❌ | Start OAuth2 PKCE → redirect to WordPress |
+| GET | `/auth/callback` | ❌ | OAuth2 callback, create JWT, set cookie |
+| GET | `/health` | ❌ | Health check (Docker healthcheck) |
+| GET | `/profile` | ✅ | Get current user's profile |
+| POST | `/profile` | ✅ | Create profile for authenticated user |
+| PATCH | `/profile/:id` | ✅ | Update profile (age, commitment, history) |
+| GET | `/users/:id` | ✅ | Fetch user details |
+
+### Database Schema (Prisma)
+
+```prisma
+model User {
+  id              String      @id @default(cuid())
+  wpUserId        String      @unique
+  email           String      @unique
+  displayName     String?
+  wpAvatarUrl     String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  profiles        UserProfile[]
+}
+
+model UserProfile {
+  id                    String      @id @default(cuid())
+  userId                String
+  user                  User        @relation(fields: [userId], references: [id])
+  age                   Int
+  height                Float       // cm
+  weight                Float       // kg
+  experience            String      // NONE|INCONSISTENT|REGULAR_NEW|ADVANCED
+  commitment            String      // HEALTH|BASE|PERFORMANCE
+  isRecovering          Boolean     @default(false)
+  isMedicatedOrInjured  Boolean     @default(false)
+  previousMonthPace     String?
+  probationStartDate    DateTime?
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}
+```
+
+---
+
+**Version:** 1.1.0 | **Last Updated:** April 6, 2026 (Phase 9 - WordPress SSO + API complete)

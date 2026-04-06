@@ -1,0 +1,85 @@
+import { Bell } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/auth-context';
+
+const NAV_LINKS = [
+  { to: '/dashboard', label: 'Bảng điều khiển' },
+  { to: '/profile', label: 'Hồ sơ' },
+];
+
+export default function DesktopTopNav() {
+  const { user, logout } = useAuth();
+  const location = useLocation();
+
+  return (
+    <nav
+      className="sticky top-0 z-50 w-full h-[72px] hidden lg:block"
+      style={{
+        background: 'rgba(11, 17, 33, 0.7)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+      }}
+    >
+      <div className="max-w-[1440px] mx-auto px-8 h-full flex items-center justify-between">
+        {/* Logo + menu */}
+        <div className="flex items-center gap-12">
+          <Link to="/dashboard" className="flex flex-col justify-center">
+            <h1 className="text-[22px] font-black italic tracking-tighter leading-none bg-gradient-to-r from-maf-red to-maf-violet bg-clip-text text-transparent">
+              MAF RUNNING
+            </h1>
+            <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-white/60 ml-0.5 mt-0.5">
+              run slow race fast
+            </p>
+          </Link>
+
+          <div className="flex items-center gap-1">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+                  location.pathname === link.to
+                    ? 'bg-white/10 text-white font-semibold'
+                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <Link
+              to="/"
+              className="px-4 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 font-medium text-sm transition-colors"
+            >
+              MAF Calculator
+            </Link>
+          </div>
+        </div>
+
+        {/* Right actions */}
+        <div className="flex items-center gap-6">
+          <div className="relative">
+            <Bell className="w-5 h-5 text-slate-300 cursor-pointer hover:text-white transition-colors" />
+          </div>
+          <div className="flex items-center gap-3 pl-6 border-l border-white/10">
+            <div className="text-right">
+              <p className="text-sm font-bold text-white">{user?.name}</p>
+              <button
+                onClick={logout}
+                className="text-[11px] text-slate-400 hover:text-maf-red transition-colors"
+              >
+                Đăng xuất
+              </button>
+            </div>
+            {user?.avatar && (
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-10 h-10 rounded-full bg-slate-800 border border-white/20"
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}

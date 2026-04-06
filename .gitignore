@@ -21,6 +21,11 @@ dist-ssr
 build
 coverage
 
+# API generated files
+api/generated
+api/dist
+api/node_modules
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

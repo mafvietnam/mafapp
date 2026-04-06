@@ -2,20 +2,27 @@
 
 ## Overview
 
-- **Total Files:** 44 source files (excl. tests) + 5 test files
-- **Total LOC:** ~4,000 lines (src + tests)
-- **Entry Points:** `src/index.tsx` (React), `src/app.tsx` (root component), `src/pages/guide-page.tsx` (guide route)
-- **Build:** Vite + TypeScript, ESLint 9, Vitest 3.0.0
+**Full-Stack Architecture:**
+- **Frontend:** React 19 SPA (Vite, TypeScript, Tailwind) — `/src` directory
+- **Backend:** NestJS 10 API (PostgreSQL, Redis, JWT RS256) — `/api` directory
+- **Total Files:** 60+ source files (frontend + backend) + tests
+- **Total LOC:** ~6,500 lines (frontend + backend combined)
+- **Frontend Entry:** `src/index.tsx` (React), `src/app.tsx` (root component)
+- **Backend Entry:** `api/src/main.ts` (NestJS bootstrap)
+- **Build:** Vite (frontend) + NestJS (backend), Docker multi-stage
 
 ## Directory Structure
 
-```
-src/ (~3,800 lines, excluding tests)
+### Frontend (`src/` ~3,800 lines)
 
+├── index.tsx (16 lines)
+│   React 19 entry point. Mounts App to #root.
+│
 ├── app.tsx (119 lines)
 │   Root component. Manages activeTab ('PLAN'|'LAB'), verifiedMafPace state.
 │   Orchestrates: UserInputForm, ResultDisplay, MafLab, modal components.
 │   Hooks: useUserProfile, useMafCalculator, useProbationAutoUnlock.
+│   NOTE: Protected by AuthGuard, redirects to /login if not authenticated.
 │
 ├── types.ts (56 lines)
 │   Interfaces: UserProfile, MafResult, ScheduleItem
@@ -27,21 +34,23 @@ src/ (~3,800 lines, excluding tests)
 │   COMMITMENT_CARDS: Heart/Flame/Zap icons + descriptions
 │   SCHEDULES: 3 weekly templates (7-day each)
 │
-├── index.tsx (16 lines)
-│   React 19 entry point. Mounts App to #root.
-│
 ├── index.css
 │   Tailwind imports + minimal global styles.
 │
-├── components/ (~1,100 lines, 27 files)
+├── components/ (~1,100 lines, 30+ files)
 │   Functional React components (no class components):
 │   
+│   Auth:
+│   ├── auth/login-button.tsx — WP OAuth2 PKCE flow trigger
+│   ├── auth/logout-button.tsx — Clear JWT cookie, redirect /login
+│   
 │   Layout & Navigation:
-│   ├── app-header.tsx — Logo + title bar
+│   ├── app-header.tsx — Logo + title bar, auth status
 │   ├── app-footer.tsx — Bottom footer
 │   ├── tab-navigation.tsx — PLAN | LAB tabs
+│   ├── dashboard/ — Dashboard cards (maf-zone-card, etc.)
+│   ├── ui/dashboard-card.tsx — Reusable card component
 │
-│   
 │   User Input & Selectors:
 │   ├── user-input-form.tsx — Orchestrator (104L), imports sub-forms
 │   ├── form-personal-info.tsx — Age, height, weight inputs (81L)
@@ -93,11 +102,16 @@ src/ (~3,800 lines, excluding tests)
 │   └── use-probation.ts (38 lines)
 │       Auto-unlock injury probation after 14 days
 │
+├── contexts/
+│   ├── auth-context.tsx — Global auth state (user, token, loading)
+│   └── user-context.tsx — User profile state (synced with backend)
+│
 ├── pages/
+│   ├── login-page.tsx — WordPress SSO login screen
+│   ├── dashboard-page.tsx — Authenticated user dashboard (dark theme)
+│   ├── profile-page.tsx — User profile management, server sync
 │   └── guide-page.tsx (121 lines) — /guide route with 5 guide sections
 │
-├── index.tsx (19 lines) — React 19 entry point, mounts App to #root
-├── app.tsx (128 lines) — Root component, tab orchestration, modal gating
 ├── types.ts (55 lines) — TypeScript interfaces & enums
 ├── constants.ts (70 lines) — Schedules, commitment cards, experience options
 │
@@ -303,8 +317,57 @@ ResultDisplay renders:
 
 ---
 
-## Technology Dependencies
+### Backend (`api/` ~2,700 lines)
 
+```
+api/
+├── src/
+│   ├── main.ts (NestJS bootstrap)
+│   ├── app.module.ts (root module, imports all feature modules)
+│   │
+│   ├── auth/ (OAuth2 + JWT RS256)
+│   │   ├── auth.controller.ts — POST /auth/initiate, GET /auth/callback
+│   │   ├── auth.service.ts — PKCE flow, token generation, WP user fetch
+│   │   ├── auth.types.ts — TokenPayload, WpUserInfo interfaces
+│   │   ├── jwt.strategy.ts — JWT RS256 validation strategy
+│   │   ├── auth.guard.ts — JwtAuthGuard for protected routes
+│   │   └── auth.module.ts
+│   │
+│   ├── user/ (User management)
+│   │   ├── user.controller.ts — GET /users/:id, POST /users
+│   │   ├── user.service.ts — CRUD operations
+│   │   └── user.module.ts
+│   │
+│   ├── profile/ (Training profiles)
+│   │   ├── profile.controller.ts — GET/POST/PATCH /profile
+│   │   ├── profile.service.ts — Profile persistence, history
+│   │   ├── profile.dto.ts — CreateProfileDto, UpdateProfileDto
+│   │   └── profile.module.ts
+│   │
+│   ├── health/ (Docker healthcheck)
+│   │   ├── health.controller.ts — GET /health
+│   │   └── health.module.ts
+│   │
+│   └── shared/
+│       ├── prisma.service.ts — PostgreSQL ORM (User, UserProfile models)
+│       ├── redis.service.ts — Session + cache (PKCE state, JWT, profiles)
+│       └── shared.module.ts
+│
+├── prisma/
+│   ├── schema.prisma (User, UserProfile models + migrations)
+│   └── migrations/
+│
+├── package.json (NestJS 10, @nestjs/jwt, prisma, redis)
+├── Dockerfile (Node Alpine, pm2 process manager)
+├── .env.example (DATABASE_URL, REDIS_URL, JWT keys, OAuth2 secrets)
+└── tsconfig.json (ES2022, strict mode)
+```
+
+---
+
+## Technology Stack
+
+### Frontend Dependencies
 ```json
 {
   "react": "19.2.0",           // UI framework
@@ -318,8 +381,27 @@ ResultDisplay renders:
 }
 ```
 
-No external state management (Redux, Zustand) — hooks only.
-No API client (axios, fetch wrapper) — client-side only.
+No external state management (Redux, Zustand) — hooks + Context API.
+No API client (axios) — fetch + HTTPS cookies only.
+
+### Backend Dependencies
+```json
+{
+  "@nestjs/common": "10.x",     // Core framework
+  "@nestjs/jwt": "12.x",        // JWT signing/verification
+  "@nestjs/passport": "10.x",   // Auth strategies
+  "passport-jwt": "4.x",        // JWT strategy
+  "prisma": "5.x",              // ORM for PostgreSQL
+  "redis": "4.x",               // Session storage
+  "@nestjs/config": "3.x",      // Environment config
+  "typescript": "5.8.2"
+}
+```
+
+**Infrastructure:**
+- PostgreSQL 15 Alpine — User + Profile storage
+- Redis 7 Alpine — Session + PKCE state cache
+- Node Alpine — PM2 process manager for NestJS
 
 ---
 
@@ -378,4 +460,34 @@ npm run build → dist/ (optimized, chunked, source maps removed)
 
 ---
 
-**Last Updated:** April 6, 2026 (Phase 8 complete) | **Version:** 1.0.0
+---
+
+## Authentication Flow: WordPress SSO + JWT
+
+```
+User clicks "Login with WordPress"
+  ↓
+Frontend calls POST /api/auth/initiate
+  ↓ API generates PKCE code verifier + challenge
+Backend stores in Redis (5min TTL)
+  ↓ Returns WordPress OAuth2 authorize URL
+Frontend redirects to WordPress SSO
+  ↓
+User authenticates @ maf.run (WordPress)
+  ↓ WordPress redirects back with auth code + state
+Frontend redirects to GET /api/auth/callback?code=X&state=Y
+  ↓
+Backend verifies state, exchanges code for access token (PKCE)
+  ↓ Fetches user info from WordPress API
+Backend creates/updates User in PostgreSQL
+  ↓ Generates JWT RS256 signed token
+Backend sets HTTP-only cookie (JWT)
+  ↓ Redirects to frontend /dashboard
+Frontend reads cookie, hydrates AuthContext
+  ↓
+User is authenticated for next 24h (JWT exp)
+```
+
+---
+
+**Last Updated:** April 6, 2026 (Phase 9 - WordPress SSO + API complete) | **Version:** 1.1.0

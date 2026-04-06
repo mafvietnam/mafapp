@@ -4,7 +4,7 @@ version: '3.8'
 # MAF RUNNING COACH - PRODUCTION DEPLOYMENT
 # ============================================
 # Domain: app.maf.run (Frontend)
-# Domain: api.maf.run (N8N Backend)
+# Domain: api.maf.run (NestJS API)
 # Tunnel: Cloudflare (e20b0b88-6187-4869-9063-eba523eaea2b)
 # Server: Ubuntu 24.04 LTS, 16GB RAM
 # ============================================
@@ -20,212 +20,233 @@ services:
       dockerfile: Dockerfile
     image: maf-app:latest
     restart: unless-stopped
-    
-    # NO EXPOSED PORTS - Traffic goes through Cloudflare Tunnel
+
     expose:
       - "80"
-    
+
     networks:
       maf_network:
         ipv4_address: 172.28.0.10
-    
-    # Health Check
+
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:80/health"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
-    
+
     environment:
       - NODE_ENV=production
       - TZ=${TZ:-Asia/Ho_Chi_Minh}
-    
-    # Logging Configuration
+
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-        labels: "service=maf-app,environment=production"
-    
+
     labels:
-      - "com.maf.description=MAF Running Coach Frontend Application"
       - "com.maf.service=frontend"
       - "com.maf.domain=app.maf.run"
-      - "com.maf.environment=production"
 
   # -------------------------------------------------------
-  # SERVICE 2: POSTGRESQL DATABASE (for N8N)
+  # SERVICE 2: POSTGRESQL DATABASE
   # -------------------------------------------------------
   postgres:
     image: postgres:15-alpine
     container_name: maf-postgres
     restart: unless-stopped
-    
-    # NO EXPOSED PORTS - Internal network only
+
     expose:
       - "5432"
-    
+
     networks:
       maf_network:
         ipv4_address: 172.28.0.11
-    
+
     environment:
       - POSTGRES_DB=${POSTGRES_DB:-n8n}
       - POSTGRES_USER=${POSTGRES_USER:-n8n}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
       - PGDATA=/var/lib/postgresql/data/pgdata
       - TZ=${TZ:-Asia/Ho_Chi_Minh}
-    
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    
-    # Health Check
+      - ./api/init-db.sql:/docker-entrypoint-initdb.d/init-maf.sql:ro
+
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-n8n} -d ${POSTGRES_DB:-n8n}"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 10s
-    
-    # Logging Configuration
+
+    mem_limit: 1g
+
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-        labels: "service=postgres,environment=production"
-    
+
     labels:
-      - "com.maf.description=PostgreSQL Database for N8N"
       - "com.maf.service=database"
-      - "com.maf.environment=production"
 
   # -------------------------------------------------------
-  # SERVICE 3: N8N AUTOMATION BACKEND
+  # SERVICE 3: MAF API (NestJS)
   # -------------------------------------------------------
-  n8n:
-    image: docker.n8n.io/n8nio/n8n:latest
-    container_name: maf-n8n
+  maf-api:
+    container_name: maf-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: maf-api:latest
     restart: unless-stopped
-    
-    # NO EXPOSED PORTS - Traffic goes through Cloudflare Tunnel
+
     expose:
-      - "5678"
-    
+      - "3001"
+
     networks:
       maf_network:
-        ipv4_address: 172.28.0.12
-    
+        ipv4_address: 172.28.0.14
+
     environment:
-      # Database Configuration (PostgreSQL)
-      - DB_TYPE=postgresdb
-      - DB_POSTGRESDB_HOST=postgres
-      - DB_POSTGRESDB_PORT=5432
-      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB:-n8n}
-      - DB_POSTGRESDB_USER=${POSTGRES_USER:-n8n}
-      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
-      
-      # N8N Configuration
-      - N8N_HOST=${N8N_HOST:-api.maf.run}
-      - N8N_PORT=5678
-      - N8N_PROTOCOL=${N8N_PROTOCOL:-https}
-      - WEBHOOK_URL=${WEBHOOK_URL:-https://api.maf.run/}
-      - N8N_EDITOR_BASE_URL=https://${N8N_HOST:-api.maf.run}
-      
-      # Security
-      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:?N8N_ENCRYPTION_KEY is required}
-      
-      # Timezone
-      - GENERIC_TIMEZONE=${TZ:-Asia/Ho_Chi_Minh}
-      - TZ=${TZ:-Asia/Ho_Chi_Minh}
-      
-      # Performance & Cleanup
-      - EXECUTIONS_DATA_PRUNE=true
-      - EXECUTIONS_DATA_MAX_AGE=336
-      - EXECUTIONS_DATA_SAVE_ON_ERROR=all
-      - EXECUTIONS_DATA_SAVE_ON_SUCCESS=all
-      - EXECUTIONS_DATA_SAVE_MANUAL_EXECUTIONS=true
-      
-      # Metrics
-      - N8N_METRICS=true
-      - N8N_METRICS_INCLUDE_DEFAULT_METRICS=true
-      
-      # Disable tunnel (using Cloudflare)
-      - N8N_TUNNEL_SUBDOMAIN=
-      
-      # Node Environment
       - NODE_ENV=production
-    
-    volumes:
-      - n8n_data:/home/node/.n8n
-    
+      - PORT=3001
+      - DATABASE_URL=postgresql://${MAF_DB_USER:-maf_user}:${MAF_DB_PASSWORD:-changeme}@postgres:5432/maf
+      - REDIS_URL=redis://redis:6379
+      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY:?JWT_PRIVATE_KEY is required}
+      - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY:?JWT_PUBLIC_KEY is required}
+      - WP_OAUTH_CLIENT_ID=${WP_OAUTH_CLIENT_ID:?WP_OAUTH_CLIENT_ID is required}
+      - WP_OAUTH_REDIRECT_URI=${WP_OAUTH_REDIRECT_URI:-https://api.maf.run/auth/callback}
+      - WP_OAUTH_URL=${WP_OAUTH_URL:-https://maf.run}
+      - CORS_ORIGIN=${CORS_ORIGIN:-https://app.maf.run}
+      - TZ=${TZ:-Asia/Ho_Chi_Minh}
+
     depends_on:
       postgres:
         condition: service_healthy
-    
-    # Health Check
+      redis:
+        condition: service_healthy
+
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:5678/healthz"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3001/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 30s
-    
-    # Logging Configuration
+      start_period: 15s
+
+    mem_limit: 1g
+
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-        labels: "service=n8n,environment=production"
-    
+
     labels:
-      - "com.maf.description=N8N Workflow Automation Backend"
-      - "com.maf.service=backend"
+      - "com.maf.service=api"
       - "com.maf.domain=api.maf.run"
-      - "com.maf.environment=production"
 
   # -------------------------------------------------------
-  # SERVICE 4: CLOUDFLARE TUNNEL (Token-based, Simple & Reliable)
+  # SERVICE 4: REDIS (Sessions + Cache)
+  # -------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: maf-redis
+    restart: unless-stopped
+
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru
+
+    expose:
+      - "6379"
+
+    networks:
+      maf_network:
+        ipv4_address: 172.28.0.15
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+    mem_limit: 512m
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    labels:
+      - "com.maf.service=cache"
+
+  # -------------------------------------------------------
+  # SERVICE 5: N8N (COMMENTED OUT — removal deferred to Phase 6)
+  # -------------------------------------------------------
+  # n8n:
+  #   image: docker.n8n.io/n8nio/n8n:latest
+  #   container_name: maf-n8n
+  #   restart: unless-stopped
+  #   expose:
+  #     - "5678"
+  #   networks:
+  #     maf_network:
+  #       ipv4_address: 172.28.0.12
+  #   environment:
+  #     - DB_TYPE=postgresdb
+  #     - DB_POSTGRESDB_HOST=postgres
+  #     - DB_POSTGRESDB_PORT=5432
+  #     - DB_POSTGRESDB_DATABASE=${POSTGRES_DB:-n8n}
+  #     - DB_POSTGRESDB_USER=${POSTGRES_USER:-n8n}
+  #     - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+  #     - N8N_HOST=${N8N_HOST:-api.maf.run}
+  #     - N8N_PORT=5678
+  #     - N8N_PROTOCOL=https
+  #     - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+  #     - NODE_ENV=production
+  #   volumes:
+  #     - n8n_data:/home/node/.n8n
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+
+  # -------------------------------------------------------
+  # SERVICE 6: CLOUDFLARE TUNNEL
   # -------------------------------------------------------
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: maf-cloudflare-tunnel
     restart: unless-stopped
-    
+
     networks:
       maf_network:
         ipv4_address: 172.28.0.13
-    
-    # Simple token-based command (routes configured in Cloudflare Dashboard)
+
     command: tunnel --no-autoupdate run --token ${TUNNEL_TOKEN}
-    
+
     depends_on:
       maf-app:
         condition: service_healthy
-      n8n:
+      maf-api:
         condition: service_healthy
-    
+
     environment:
       - TUNNEL_TOKEN=${TUNNEL_TOKEN:?TUNNEL_TOKEN is required}
       - TZ=${TZ:-Asia/Ho_Chi_Minh}
-    
-    # Logging Configuration
+
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-        labels: "service=cloudflared,environment=production"
-    
+
     labels:
-      - "com.maf.description=Cloudflare Tunnel Gateway (Token-based)"
       - "com.maf.service=tunnel"
       - "com.maf.tunnel-id=e20b0b88-6187-4869-9063-eba523eaea2b"
-      - "com.maf.environment=production"
-      - "com.maf.routes=Configured in Cloudflare Dashboard"
 
 # -------------------------------------------------------
 # NETWORK CONFIGURATION
@@ -239,9 +260,6 @@ networks:
       config:
         - subnet: 172.28.0.0/16
           gateway: 172.28.0.1
-    labels:
-      - "com.maf.network=internal"
-      - "com.maf.environment=production"
 
 # -------------------------------------------------------
 # PERSISTENT VOLUMES
@@ -250,28 +268,3 @@ volumes:
   postgres_data:
     name: maf_postgres_data
     driver: local
-    labels:
-      - "com.maf.volume=postgres-data"
-      - "com.maf.backup=daily"
-      - "com.maf.environment=production"
-  
-  n8n_data:
-    name: maf_n8n_data
-    driver: local
-    labels:
-      - "com.maf.volume=n8n-data"
-      - "com.maf.backup=daily"
-      - "com.maf.environment=production"
-
-# -------------------------------------------------------
-# RESOURCE SUMMARY
-# -------------------------------------------------------
-# Total Allocated Resources (of 16GB available):
-# - MAF App:    512MB RAM, 0.5 CPU
-# - PostgreSQL: 1GB RAM,    1.0 CPU
-# - N8N:        2GB RAM,    1.5 CPU
-# - Cloudflare: 256MB RAM,  0.25 CPU
-# Total:        ~3.8GB RAM, 3.25 CPU (24% RAM, Safe for production)
-#
-# Available for OS + other services: ~12GB RAM, remaining CPU cores
-# -------------------------------------------------------

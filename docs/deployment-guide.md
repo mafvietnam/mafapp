@@ -6,40 +6,74 @@
 - Node.js 18+, npm 9+
 - Docker & Docker Compose (for containerized dev/prod)
 
-### Local Development
+### Frontend Development
 
 ```bash
 git clone https://github.com/mafvietnam/mafapp.git
 cd mafapp
 
-# Install dependencies
+# Install frontend dependencies
 npm install
 
-# Start dev server with hot reload
+# Start frontend dev server (port 5173)
 npm run dev
 # Open http://localhost:5173
 
-# Lint + type check + test (pre-commit)
+# Lint + type check + test
 npm run lint
 npm run test
 npm run test:coverage
 ```
 
+### Backend Development
+
+```bash
+cd api
+
+# Install API dependencies
+npm install
+
+# Setup database
+npx prisma migrate dev  # Create/apply migrations
+
+# Start API dev server (port 3001)
+npm run dev
+
+# Or use Docker for full stack:
+cd ..
+docker-compose -f docker-compose.dev.yml up
+# Frontend: http://localhost:5173
+# API: http://localhost:3001
+# PostgreSQL: localhost:5432
+# Redis: localhost:6379
+```
+
 ### Build for Production
 
 ```bash
+# Frontend
 npm run build       # Creates dist/
 npm run preview     # Test production build locally
+
+# API (built by Docker)
+cd api
+npm run build       # Creates dist/
 ```
 
 ---
 
-## Docker Image
+## Docker Images
 
-**Multi-Stage Build:** `Dockerfile` (3 stages)
+### Frontend (`Dockerfile`)
+**Multi-Stage Build:** 3 stages
 1. **deps:** Install Node 20 Alpine, npm dependencies
 2. **builder:** Build React app with Vite, remove source maps
 3. **production:** Nginx 1.25 Alpine, serve SPA, ~50-60MB final size
+
+### Backend API (`api/Dockerfile`)
+**Multi-Stage Build:** 2 stages
+1. **builder:** Install Node dependencies, build NestJS with TypeScript
+2. **production:** Node 20 Alpine, pm2 process manager, ~200MB final size
 
 **Build Options:**
 ```bash
@@ -63,49 +97,98 @@ nano .env
 ### Required Environment Variables
 
 ```bash
-# Database
-POSTGRES_DB=n8n
-POSTGRES_USER=n8n
+# PostgreSQL
+POSTGRES_DB=maf
+POSTGRES_USER=maf_user
 POSTGRES_PASSWORD=<strong_password_16+_chars>
 
-# N8N Backend
-N8N_ENCRYPTION_KEY=<32_char_key>
-N8N_HOST=api.maf.run
-N8N_PROTOCOL=https
+# NestJS API
+MAF_DB_USER=maf_user
+MAF_DB_PASSWORD=<same_as_POSTGRES_PASSWORD>
+JWT_PRIVATE_KEY=<base64_encoded_private_key>
+JWT_PUBLIC_KEY=<base64_encoded_public_key>
+
+# WordPress OAuth2 (get from WordPress app settings)
+WP_OAUTH_CLIENT_ID=<from_wordpress>
+WP_OAUTH_REDIRECT_URI=https://api.maf.run/auth/callback
+WP_OAUTH_URL=https://maf.run
+
+# Frontend CORS
+CORS_ORIGIN=https://app.maf.run
+
+# Redis
+REDIS_URL=redis://redis:6379
 
 # Cloudflare Tunnel
 TUNNEL_TOKEN=<token_from_dashboard>
 
 # System
-TZ=Asia/Ho_Chi_Minh
 NODE_ENV=production
+TZ=Asia/Ho_Chi_Minh
 ```
 
 ### Generate Secure Keys
 
 ```bash
-# 32-char encryption key
-openssl rand -base64 24 | head -c 32
-
-# 16-char password
+# PostgreSQL password (16+ chars)
 openssl rand -base64 16
+
+# JWT RS256 keys (asymmetric, more secure than symmetric)
+openssl genrsa -out private.pem 2048
+openssl rsa -in private.pem -pubout -out public.pem
+
+# Base64 encode for .env
+base64 -w 0 private.pem > jwt_private.txt
+base64 -w 0 public.pem > jwt_public.txt
+
+# Copy contents to JWT_PRIVATE_KEY and JWT_PUBLIC_KEY in .env
+cat jwt_private.txt
+cat jwt_public.txt
 ```
 
 ### Deploy
 
 ```bash
+# Production deployment
 docker-compose up -d
 
-# Verify health
+# Verify all services
 docker-compose ps
-# All services should show "healthy" or "running"
+# Expected output:
+# maf-app      nginx:latest           "healthy"
+# maf-api      nestjs:latest          "healthy"
+# postgres     postgres:15-alpine     "healthy"
+# redis        redis:7-alpine         "healthy"
+
+# View logs
+docker-compose logs -f maf-api    # API logs
+docker-compose logs -f postgres   # Database logs
+docker-compose logs -f redis      # Cache logs
+
+# Stop services
+docker-compose down
+
+# Backup database
+docker exec maf-postgres pg_dump -U maf_user maf > backup.sql
+
+# Restore database
+docker exec -i maf-postgres psql -U maf_user maf < backup.sql
 ```
 
 ---
 
 ## Docker Architecture
 
-### Multi-Stage Build
+### Services Overview
+
+| Service | Port | Technology | Purpose |
+|---------|------|-----------|---------|
+| maf-app | 80 | Nginx Alpine | Frontend SPA |
+| maf-api | 3001 | NestJS + Node Alpine | REST API backend |
+| postgres | 5432 | PostgreSQL 15 Alpine | User data storage |
+| redis | 6379 | Redis 7 Alpine | Sessions + cache |
+
+### Frontend Multi-Stage Build
 
 **Stage 1 (deps):** Install production dependencies only
 **Stage 2 (builder):** Build React app with all dev deps, remove source maps

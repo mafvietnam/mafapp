@@ -1,8 +1,8 @@
 # Development Roadmap
 
-## Current Version: 1.0.0 (Released)
+## Current Version: 1.1.0 (WordPress SSO + Backend API)
 
-**Status:** Production Ready | **Live:** https://app.maf.run
+**Status:** Production Ready | **Frontend:** https://app.maf.run | **API:** https://api.maf.run
 
 ---
 
@@ -60,7 +60,17 @@
 - Rewrite user guide to match actual app GUI (commit: 27ec3a7)
 - Mobile UX fixes: modal scroll lock, checkbox touch targets, favicon (commit: dc13385)
 
-### Phase 9: Sprint Planning ✅ DRAFTED
+### Phase 9: WordPress SSO + Server-Side Storage ✅ COMPLETED
+- NestJS 10 API with PostgreSQL + Redis (commit: TBD)
+- WordPress OAuth2 PKCE authentication (secure for SPAs)
+- JWT RS256 token-based auth with HTTP-only cookies
+- User profiles server-side (replaces localStorage)
+- Dashboard page (authenticated, dark theme)
+- Login page with WP SSO button
+- Profile management page
+- Docker services: maf-api, postgres, redis
+
+### Phase 10: Sprint Planning ✅ DRAFTED
 - SP2-SP7 sprint roadmap created (commit: 86be72c)
 - Research reports generated (commit: 5d069b0)
 - Parallel execution strategy defined
@@ -72,21 +82,20 @@
 
 | Phase | Goal | Effort | ETA |
 |-------|------|--------|-----|
-| 8 | User authentication (email/OAuth) | 2-3w | Q2 2026 |
-| 9 | Training history logging & persistence | 2w | Q2 2026 |
-| 10 | Progress charts & visualization | 2w | Q3 2026 |
-| 11 | Mobile app (React Native/Flutter) | 6-8w | Q3 2026 |
-| 12 | Fitness device integration (Garmin, Apple Watch) | 3-4w | Q4 2026 |
-| 13 | Multi-language support (EN, VI, FR) | 1-2w | Q4 2026 |
-| 14+ | Social features, AI insights | TBD | 2027+ |
+| 10 | Training history logging & persistence | 2w | Q2 2026 |
+| 11 | Progress charts & visualization | 2w | Q3 2026 |
+| 12 | Mobile app (React Native/Flutter) | 6-8w | Q3 2026 |
+| 13 | Fitness device integration (Garmin, Apple Watch) | 3-4w | Q4 2026 |
+| 14 | Multi-language support (EN, VI, FR) | 1-2w | Q4 2026 |
+| 15+ | Social features, AI insights | TBD | 2027+ |
 
 ---
 
 ## Known Limitations
 
-- No user accounts (localStorage only → data reset on browser clear)
 - Manual heart rate input in Lab (future: wearable integration)
 - Vietnamese UI (future: multi-language support)
+- N8N automation server commented out (Phase 10 task)
 
 ---
 
@@ -116,4 +125,4 @@
 
 ---
 
-**Last Updated:** April 6, 2026 | **Version:** 1.0.0
+**Last Updated:** April 6, 2026 | **Version:** 1.1.0

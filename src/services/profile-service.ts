@@ -1,0 +1,58 @@
+import { api } from './api-client';
+import type { UserProfile } from '../types';
+
+export interface ServerProfile {
+  id: string;
+  userId: string;
+  age: number;
+  height: number;
+  weight: number;
+  experience: string;
+  commitment: string;
+  isRecovering: boolean;
+  isMedicatedOrInjured: boolean;
+  isMedicalClearanceConfirmed: boolean;
+  previousMonthPace: string | null;
+  isProbation: boolean;
+  probationStartDate: string | null;
+  lastLongRunDuration: number | null;
+  lastLongRunHeartRate: number | null;
+  lastLongRunFeeling: string | null;
+}
+
+/** Fetch user profile from server */
+export async function getProfile(): Promise<ServerProfile | null> {
+  try {
+    const res = await api.get('/users/me/profile');
+    if (res.status === 404) return null;
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+/** Save user profile to server */
+export async function updateProfile(profile: UserProfile): Promise<boolean> {
+  try {
+    const res = await api.put('/users/me/profile', {
+      age: parseInt(String(profile.age)) || 0,
+      height: parseFloat(String(profile.height)) || 0,
+      weight: parseFloat(String(profile.weight)) || 0,
+      experience: profile.experience,
+      commitment: profile.commitment,
+      isRecovering: profile.isRecovering,
+      isMedicatedOrInjured: profile.isMedicatedOrInjured,
+      isMedicalClearanceConfirmed: profile.isMedicalClearanceConfirmed,
+      previousMonthPace: profile.previousMonthPace || undefined,
+      isProbation: profile.isProbation,
+      probationStartDate: profile.probationStartDate || undefined,
+      lastLongRunDuration: profile.lastLongRunDuration,
+      lastLongRunHeartRate: profile.lastLongRunHeartRate,
+      lastLongRunFeeling: profile.lastLongRunFeeling,
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
