@@ -38,16 +38,13 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
   onLongRunHeartRateChange,
   onLongRunFeelingChange,
 }) => (
-  <section className="bg-white rounded-2xl shadow-lg p-8 md:p-10 animate-fade-in border border-gray-100">
+  <section className="desktop-card p-8 md:p-10 animate-fade-in">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-      {/* LEFT: Personal Info */}
       <FormPersonalInfo
         userProfile={userProfile}
         onInputChange={onInputChange}
         onBlur={onBlur}
       />
-
-      {/* RIGHT: Health + Pace */}
       <div className="space-y-8">
         <FormHealthChecklist
           userProfile={userProfile}
@@ -55,7 +52,6 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
           onCheckboxChange={onCheckboxChange}
           onShowRecoveryModal={onShowRecoveryModal}
         />
-
         <FormPaceAndLongRun
           userProfile={userProfile}
           isNewbie={isNewbie}
@@ -69,10 +65,9 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
       </div>
     </div>
 
-    {/* Commitment Selector - Full Width */}
-    <div className="w-full pt-8 mt-8 border-t border-gray-200">
-      <h2 className="text-xl font-bold text-gray-900 flex items-center mb-6">
-        <span className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mr-3 text-base">
+    <div className="w-full pt-8 mt-8 border-t border-white/10">
+      <h2 className="text-xl font-bold text-white flex items-center mb-6">
+        <span className="w-8 h-8 rounded-full bg-maf-violet/20 text-maf-violet flex items-center justify-center mr-3 text-base font-bold">
           3
         </span>
         Mức độ Cam kết
@@ -93,7 +88,7 @@ const UserInputForm: React.FC<UserInputFormProps> = ({
     <div className="flex justify-center mt-8">
       <button
         onClick={onCalculate}
-        className="w-full md:w-auto px-12 py-4 bg-gradient-to-r from-purple-700 to-pink-600 text-white font-bold text-xl rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
+        className="w-full md:w-auto px-12 py-4 bg-gradient-to-r from-maf-red to-maf-violet text-white font-bold text-xl rounded-full shadow-[0_4px_15px_rgba(244,42,104,0.3)] hover:shadow-[0_6px_20px_rgba(244,42,104,0.5)] hover:-translate-y-0.5 transition-all"
       >
         PHÂN TÍCH & LẬP KẾ HOẠCH
       </button>

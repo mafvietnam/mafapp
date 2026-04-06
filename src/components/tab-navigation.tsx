@@ -8,13 +8,13 @@ interface TabNavigationProps {
 
 const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabChange }) => (
   <div className="max-w-7xl mx-auto px-4 mt-6">
-    <div className="bg-white rounded-xl shadow-md p-1 flex">
+    <div className="desktop-card p-1 flex">
       <button
         onClick={() => onTabChange('PLAN')}
         className={`flex-1 py-4 text-center font-bold text-base uppercase tracking-wider flex items-center justify-center space-x-2 rounded-lg transition-all ${
           activeTab === 'PLAN'
-            ? 'bg-purple-50 text-purple-700 shadow-sm'
-            : 'text-gray-500 hover:bg-gray-50'
+            ? 'bg-maf-violet/20 text-maf-violet'
+            : 'text-slate-500 hover:bg-white/5'
         }`}
       >
         <LayoutDashboard className="w-5 h-5" />
@@ -24,8 +24,8 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabChange })
         onClick={() => onTabChange('LAB')}
         className={`flex-1 py-4 text-center font-bold text-base uppercase tracking-wider flex items-center justify-center space-x-2 rounded-lg transition-all ${
           activeTab === 'LAB'
-            ? 'bg-blue-50 text-blue-700 shadow-sm'
-            : 'text-gray-500 hover:bg-gray-50'
+            ? 'bg-cyan-500/20 text-cyan-400'
+            : 'text-slate-500 hover:bg-white/5'
         }`}
       >
         <Beaker className="w-5 h-5" />

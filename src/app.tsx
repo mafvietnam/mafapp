@@ -4,8 +4,6 @@ import { AuthProvider } from './contexts/auth-context';
 import { useUserProfile } from './hooks/use-user-profile';
 import { useMafCalculator } from './hooks/use-maf-calculator';
 import { useProbationAutoUnlock } from './hooks/use-probation';
-import AppHeader from './components/app-header';
-import AppFooter from './components/app-footer';
 import TabNavigation from './components/tab-navigation';
 import UserInputForm from './components/user-input-form';
 import ResultDisplay from './components/result-display';
@@ -64,8 +62,7 @@ const CalculatorApp: React.FC = () => {
         onConfirm={handleRecoveryConfirm}
       />
 
-      <div className="min-h-screen pb-20 bg-gray-50 font-sans">
-        <AppHeader />
+      <div className="min-h-screen pb-20 font-sans">
         <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
         <main className="max-w-7xl mx-auto px-4 mt-8">
@@ -112,7 +109,6 @@ const CalculatorApp: React.FC = () => {
           )}
         </main>
 
-        <AppFooter />
       </div>
     </>
   );
@@ -130,15 +126,13 @@ const App: React.FC = () => {
           {/* Root redirects to dashboard */}
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
-          {/* Dashboard layout (dark theme) */}
+          {/* All pages inside dark theme layout */}
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/plan" element={<CalculatorApp />} />
+            <Route path="/guide" element={<GuidePage />} />
           </Route>
-
-          {/* Calculator page (light theme, standalone) */}
-          <Route path="/plan" element={<CalculatorApp />} />
-          <Route path="/guide" element={<GuidePage />} />
         </Route>
       </Routes>
     </AuthProvider>
