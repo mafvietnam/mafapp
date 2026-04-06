@@ -1,11 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { getMe, getLoginUrl, logout as logoutApi, type AuthUser } from '../services/auth-service';
+import {
+  getMe,
+  login as loginApi,
+  logout as logoutApi,
+  type AuthUser,
+} from '../services/auth-service';
 
 interface AuthContextValue {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: () => void;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
@@ -21,14 +26,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const login = useCallback(() => {
-    window.location.href = getLoginUrl();
+  const login = useCallback(async (username: string, password: string) => {
+    const ok = await loginApi(username, password);
+    if (ok) {
+      const me = await getMe();
+      setUser(me);
+    }
+    return ok;
   }, []);
 
   const logout = useCallback(async () => {
     await logoutApi();
     setUser(null);
-    window.location.href = '/';
   }, []);
 
   return (

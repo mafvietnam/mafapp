@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MAF Run - Mobile UI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        
+        /* Hiệu ứng kính mờ nâng cao: Tăng độ mờ (blur) để nổi bật trên ảnh thật */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05); /* Tăng độ sáng viền một chút */
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<!-- Body tối màu cơ bản -->
+<body class="bg-slate-950 flex justify-center h-screen overflow-hidden antialiased">
+    
+    <!-- 
+      Sử dụng ảnh banner trực tiếp từ web làm hình nền.
+    -->
+    <div class="w-full max-w-[400px] h-full relative flex flex-col shadow-2xl overflow-hidden font-sans bg-slate-900 bg-[url('https://maf.run/wp-content/uploads/2026/03/banner.webp')] bg-cover bg-center">
+        
+        <!-- OVERLAY: Lớp phủ Gradient làm tối dần bức ảnh từ trên xuống dưới để dễ đọc chữ -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0B1121]/40 via-[#0B1121]/80 to-[#0B1121] z-0"></div>
+
+        <!-- Header: Xin chào & Profile (Thêm relative z-10 để nổi lên trên lớp overlay) -->
+        <header class="pt-12 pb-4 px-6 flex justify-between items-start shrink-0 z-10 relative">
+            <div>
+                <!-- Chữ MAF RUNNING với font nghiêng, đậm và dải màu y hệt Hình 1 -->
+                <h1 class="text-[28px] font-black italic tracking-tighter leading-tight mb-1 bg-gradient-to-r from-[#F42A68] to-[#9130F8] bg-clip-text text-transparent">
+                    MAF RUNNING
+                </h1>
+                <p class="text-[11px] font-bold tracking-[0.15em] uppercase text-white drop-shadow-md ml-0.5">run slow race fast</p>
+            </div>
+            <div class="w-11 h-11 rounded-full bg-slate-800/80 overflow-hidden border border-white/20 shadow-lg cursor-pointer active:scale-95 transition-transform backdrop-blur-md shrink-0 ml-2">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=transparent" alt="Avatar" class="w-full h-full object-cover">
+            </div>
+        </header>
+
+        <!-- Nội dung chính -->
+        <main class="flex-1 overflow-y-auto no-scrollbar pb-32 px-6 pt-2 space-y-5 z-10 relative">
+            
+            <!-- Thẻ Mục tiêu MAF -->
+            <div class="glass-card rounded-[20px] p-3 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#F42A68] to-[#9130F8] flex items-center justify-center shrink-0 shadow-[0_2px_10px_rgba(244,42,104,0.4)]">
+                        <i data-lucide="activity" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-white/80 text-[10px] font-bold uppercase tracking-wider mb-0 drop-shadow-sm">Vùng Nhịp Tim MAF Của Bạn</h2>
+                        <div class="flex items-baseline gap-1">
+                            <span class="text-2xl font-black text-white tracking-tight drop-shadow-md">135-145</span>
+                            <span class="text-white/80 font-bold text-[10px] drop-shadow-sm">BPM</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="inline-flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-md border border-white/10">
+                        <i data-lucide="calculator" class="w-3 h-3 text-[#9130F8]"></i>
+                        <span class="text-[10px] text-white/90 font-medium">180 - 35</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TRỢ LÝ MAF -->
+            <div class="glass-card rounded-[20px] p-4 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform">
+                <div class="relative z-10 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-white font-bold text-[15px] mb-2 flex items-center gap-1.5 drop-shadow-sm">
+                            <i data-lucide="bot" class="w-4 h-4 text-[#F42A68]"></i> Trợ lý MAF
+                        </h3>
+                        <ul class="space-y-1.5">
+                            <li class="text-[10px] font-medium text-slate-200 flex items-center gap-2 drop-shadow-sm">
+                                <i data-lucide="calendar-check" class="w-3 h-3 text-[#F42A68]"></i>
+                                Lên lịch tập theo chuẩn MAF
+                            </li>
+                            <li class="text-[10px] font-medium text-slate-200 flex items-center gap-2 drop-shadow-sm">
+                                <i data-lucide="sparkles" class="w-3 h-3 text-[#9130F8]"></i> 
+                                Gợi ý giáo án cá nhân hóa
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <button class="bg-white/10 hover:bg-white/20 border border-white/20 text-white rounded-full pl-3 pr-2.5 py-2 text-[11px] font-bold flex items-center gap-1 transition-all backdrop-blur-sm">
+                        Lên Lịch Tập <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Khám phá Hệ sinh thái -->
+            <div>
+                <div class="flex justify-between items-end mb-3 px-1">
+                    <h3 class="text-base font-bold text-white drop-shadow-md">Khám phá Hệ sinh thái</h3>
+                    <button class="text-[12px] text-white/80 font-medium hover:text-white transition-colors drop-shadow-sm">Xem tất cả</button>
+                </div>
+                
+                <div class="flex justify-between items-center w-full pb-2">
+                    <!-- Icon 1: Tìm HLV (Xanh Cyan) -->
+                    <div class="group flex items-center glass-card rounded-full p-1.5 cursor-pointer hover:bg-white/10 transition-all duration-500 ease-out shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 shrink-0 group-hover:scale-105 group-hover:bg-cyan-500/30 transition-all duration-300">
+                            <i data-lucide="users" class="w-5 h-5 text-cyan-400 drop-shadow-sm"></i>
+                        </div>
+                        <div class="max-w-0 opacity-0 overflow-hidden whitespace-nowrap transition-all duration-500 ease-out group-hover:max-w-[140px] group-hover:opacity-100">
+                            <div class="pl-2.5 pr-4">
+                                <p class="text-white font-bold text-[13px] mb-0.5">Tìm HLV Elite</p>
+                                <p class="text-[9px] text-white/70">Giáo án cá nhân</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Icon 2: Thử thách (Màu Cam) -->
+                    <div class="group flex items-center glass-card rounded-full p-1.5 cursor-pointer hover:bg-white/10 transition-all duration-500 ease-out shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-orange-500/20 flex items-center justify-center border border-orange-500/30 shrink-0 group-hover:scale-105 group-hover:bg-orange-500/30 transition-all duration-300">
+                            <i data-lucide="award" class="w-5 h-5 text-orange-400 drop-shadow-sm"></i>
+                        </div>
+                        <div class="max-w-0 opacity-0 overflow-hidden whitespace-nowrap transition-all duration-500 ease-out group-hover:max-w-[140px] group-hover:opacity-100">
+                            <div class="pl-2.5 pr-4">
+                                <p class="text-white font-bold text-[13px] mb-0.5">Thử thách</p>
+                                <p class="text-[9px] text-white/70">Thi đấu theo Tỉnh</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Icon 3: Dinh dưỡng (Xanh lá Emerald) -->
+                    <div class="group flex items-center glass-card rounded-full p-1.5 cursor-pointer hover:bg-white/10 transition-all duration-500 ease-out shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 shrink-0 group-hover:scale-105 group-hover:bg-emerald-500/30 transition-all duration-300">
+                            <i data-lucide="shopping-bag" class="w-5 h-5 text-emerald-400 drop-shadow-sm"></i>
+                        </div>
+                        <div class="max-w-0 opacity-0 overflow-hidden whitespace-nowrap transition-all duration-500 ease-out group-hover:max-w-[140px] group-hover:opacity-100">
+                            <div class="pl-2.5 pr-4">
+                                <p class="text-white font-bold text-[13px] mb-0.5">Dinh dưỡng</p>
+                                <p class="text-[9px] text-white/70">Sản phẩm MAF</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Icon 4: Đặt áo (Màu Tím Violet) -->
+                    <div class="group flex items-center glass-card rounded-full p-1.5 cursor-pointer hover:bg-white/10 transition-all duration-500 ease-out shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-violet-500/20 flex items-center justify-center border border-violet-500/30 shrink-0 group-hover:scale-105 group-hover:bg-violet-500/30 transition-all duration-300">
+                            <i data-lucide="shirt" class="w-5 h-5 text-violet-400 drop-shadow-sm"></i>
+                        </div>
+                        <div class="max-w-0 opacity-0 overflow-hidden whitespace-nowrap transition-all duration-500 ease-out group-hover:max-w-[140px] group-hover:opacity-100">
+                            <div class="pl-2.5 pr-4">
+                                <p class="text-white font-bold text-[13px] mb-0.5">Đặt áo CLB</p>
+                                <p class="text-[9px] text-white/70">Trang phục team</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Bài Test MAF Gần Nhất -->
+            <div>
+                <div class="flex justify-between items-end mb-3 px-1">
+                    <h3 class="text-base font-bold text-white drop-shadow-md">Bài Test MAF Gần Nhất</h3>
+                    <button class="text-[12px] text-[#F42A68] font-bold hover:text-white transition-colors">Xem biểu đồ</button>
+                </div>
+                
+                <div class="glass-card rounded-[20px] p-4">
+                    <div class="flex justify-between items-center mb-4 text-[12px] font-medium text-white/70">
+                        <span class="flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-md border border-white/10">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5 text-[#9130F8]"></i> 12 Thg 10
+                        </span>
+                        <span class="flex items-center gap-1.5 bg-black/40 px-2 py-1 rounded-md border border-white/10">
+                            <i data-lucide="map-pin" class="w-3.5 h-3.5 text-[#F42A68]"></i> 5.0 km
+                        </span>
+                    </div>
+                    
+                    <div class="flex gap-3">
+                        <div class="flex-1 bg-black/30 p-3 rounded-xl border border-white/10 flex flex-col items-center justify-center">
+                            <p class="text-[10px] uppercase tracking-wider text-white/60 font-bold mb-1 drop-shadow-sm">Avg Pace</p>
+                            <div class="flex items-baseline gap-1">
+                                <p class="text-2xl font-black text-white tracking-tight drop-shadow-md">7:15</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex-1 bg-black/30 p-3 rounded-xl border border-white/10 flex flex-col items-center justify-center relative">
+                            <p class="text-[10px] uppercase tracking-wider text-white/60 font-bold mb-1 drop-shadow-sm">Heart Rate</p>
+                            <p class="text-2xl font-black text-white tracking-tight drop-shadow-md">142</p>
+                            <div class="absolute top-2.5 right-2.5 w-2 h-2 bg-[#00FF88] rounded-full ring-2 ring-[#00FF88]/30 shadow-[0_0_8px_rgba(0,255,136,0.8)]"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lịch Sử -->
+            <div>
+                <h3 class="text-base font-bold text-white mb-3 px-1 drop-shadow-md">Lịch Sử Hoạt Động</h3>
+                <div class="space-y-2.5">
+                    
+                    <!-- Item 1 -->
+                    <div class="flex items-center justify-between p-3 glass-card rounded-[16px] active:bg-white/10 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-black/40 text-white flex items-center justify-center shrink-0 border border-white/10 relative">
+                                <i data-lucide="footprints" class="w-4 h-4 text-[#9130F8]"></i>
+                                <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-[#FC4C02] rounded-full flex items-center justify-center border border-slate-900">
+                                    <i data-lucide="refresh-cw" class="w-2 h-2 text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-[14px] drop-shadow-sm">Morning Run</p>
+                                <p class="text-[11px] font-medium text-white/60 mt-0.5">Hôm qua • 45 phút</p>
+                                <p class="text-[9px] font-semibold text-[#FC4C02] mt-0.5 flex items-center gap-1 drop-shadow-sm">
+                                    Đồng bộ từ Strava
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <p class="font-bold text-white text-base tracking-tight drop-shadow-md">7:20</p>
+                            <p class="text-[10px] font-bold text-[#9130F8] mt-0.5 drop-shadow-sm">140 bpm</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="flex items-center justify-between p-3 glass-card rounded-[16px] active:bg-white/10 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-[#F42A68]/30 text-white flex items-center justify-center shrink-0 border border-[#F42A68]/40 shadow-[0_0_10px_rgba(244,42,104,0.3)]">
+                                <i data-lucide="flame" class="w-4 h-4 text-[#F42A68]"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-white text-[14px] drop-shadow-sm">Chạy tự do cuối tuần</p>
+                                <p class="text-[11px] font-medium text-white/60 mt-0.5">10 Thg 10 • 60 phút</p>
+                            </div>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <p class="font-bold text-white text-base tracking-tight drop-shadow-md">6:50</p>
+                            <p class="text-[10px] font-bold text-[#F42A68] mt-0.5 flex items-center justify-end gap-1 drop-shadow-sm">
+                                <i data-lucide="alert-circle" class="w-2.5 h-2.5"></i> 152 bpm
+                            </p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Bottom Tab Bar -->
+        <nav class="absolute bottom-0 w-full glass-card border-x-0 border-b-0 border-t border-white/20 pb-safe z-50 rounded-t-[32px] !shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+            <div class="flex justify-between items-center h-[72px] px-6 relative">
+                
+                <button class="flex flex-col items-center gap-1.5 w-12 text-white active:scale-95 transition-transform">
+                    <i data-lucide="layout-dashboard" class="w-6 h-6 fill-white/20"></i>
+                    <span class="text-[10px] font-bold drop-shadow-md">Trang chủ</span>
+                </button>
+
+                <button class="flex flex-col items-center gap-1.5 w-12 text-white/50 hover:text-white active:scale-95 transition-all">
+                    <i data-lucide="bar-chart-2" class="w-6 h-6"></i>
+                    <span class="text-[10px] font-medium">Lịch sử</span>
+                </button>
+
+                <!-- Nút trung tâm -->
+                <div class="relative -top-6">
+                    <button class="w-[60px] h-[60px] bg-gradient-to-tr from-[#F42A68] to-[#9130F8] text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(244,42,104,0.4)] hover:-translate-y-1 transition-all active:scale-95 border-[4px] border-[#0B1121] group">
+                        <i data-lucide="plus" class="w-8 h-8 group-hover:rotate-90 transition-transform duration-300 font-bold"></i>
+                    </button>
+                </div>
+
+                <button class="flex flex-col items-center gap-1.5 w-12 text-white/50 hover:text-white active:scale-95 transition-all">
+                    <i data-lucide="users" class="w-6 h-6"></i>
+                    <span class="text-[10px] font-medium">Cộng đồng</span>
+                </button>
+
+                <button class="flex flex-col items-center gap-1.5 w-12 text-white/50 hover:text-white active:scale-95 transition-all">
+                    <i data-lucide="user" class="w-6 h-6"></i>
+                    <span class="text-[10px] font-medium">Hồ sơ</span>
+                </button>
+                
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

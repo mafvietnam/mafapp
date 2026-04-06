@@ -1,0 +1,92 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - img "MAF Running Header" [ref=e6]
+    - generic [ref=e9]:
+      - generic [ref=e10]:
+        - heading "MAF Running Coach" [level=1] [ref=e11]
+        - paragraph [ref=e12]: Xây dựng nền tảng hiếu khí vững chắc - Run Slow to Race Fast
+      - button "Hướng dẫn" [ref=e13] [cursor=pointer]:
+        - img [ref=e14]
+        - generic [ref=e16]: Hướng dẫn
+  - generic [ref=e18]:
+    - button "Kế Hoạch Tập Luyện" [ref=e19] [cursor=pointer]:
+      - img [ref=e20]
+      - generic [ref=e25]: Kế Hoạch Tập Luyện
+    - button "Phòng MAF Test" [ref=e26] [cursor=pointer]:
+      - img [ref=e27]
+      - generic [ref=e29]: Phòng MAF Test
+  - main [ref=e30]:
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - generic [ref=e34]:
+          - heading "1 Thông tin Cá nhân" [level=2] [ref=e35]:
+            - generic [ref=e36]: "1"
+            - text: Thông tin Cá nhân
+          - generic [ref=e37]:
+            - generic [ref=e38]:
+              - generic [ref=e39]: Tuổi
+              - spinbutton [ref=e40]
+            - generic [ref=e41]:
+              - generic [ref=e42]: Cao (cm)
+              - spinbutton [ref=e43]
+            - generic [ref=e44]:
+              - generic [ref=e45]: Nặng (kg)
+              - spinbutton [ref=e46]
+          - generic [ref=e47]:
+            - generic [ref=e48]: Kinh nghiệm
+            - combobox [ref=e49]:
+              - option "Chưa từng chạy" [selected]
+              - option "Chạy lâu nhưng ngắt quãng / Tim cao"
+              - option "Đang tập đều < 2 năm"
+              - option "Tập liên tục > 2 năm, thành tích tốt"
+        - generic [ref=e50]:
+          - heading "2 Sức khỏe" [level=2] [ref=e51]:
+            - generic [ref=e52]: "2"
+            - text: Sức khỏe
+          - generic [ref=e53]:
+            - generic [ref=e54] [cursor=pointer]:
+              - checkbox "Đang hồi phục bệnh nặng (-10 nhịp)" [ref=e55]
+              - generic [ref=e56]: Đang hồi phục bệnh nặng (-10 nhịp)
+            - generic [ref=e57] [cursor=pointer]:
+              - checkbox "Dùng thuốc / Chấn thương (-5 nhịp)" [ref=e58]
+              - generic [ref=e59]: Dùng thuốc / Chấn thương (-5 nhịp)
+          - generic [ref=e60]:
+            - img [ref=e61]
+            - paragraph [ref=e64]:
+              - text: Giai đoạn này chỉ cần quan tâm đến
+              - strong [ref=e65]: Thời gian
+              - text: và
+              - strong [ref=e66]: Nhịp tim
+              - text: . Chạy thật chậm!
+      - generic [ref=e67]:
+        - heading "3 Mức độ Cam kết" [level=2] [ref=e68]:
+          - generic [ref=e69]: "3"
+          - text: Mức độ Cam kết
+        - generic [ref=e70]:
+          - generic [ref=e71] [cursor=pointer]:
+            - generic [ref=e72]:
+              - img [ref=e74]
+              - heading "SỨC KHỎE & ĐỐT MỠ" [level=3] [ref=e76]
+              - paragraph [ref=e77]: 3-4 giờ/tuần
+              - paragraph [ref=e78]: Tập trung xây dựng Sức khỏe (Health) trước khi nghĩ đến Thể lực (Fitness). Đốt mỡ hiệu quả và duy trì sự nhất quán (Chương 1).
+            - radio [ref=e79]
+          - generic [ref=e80] [cursor=pointer]:
+            - generic [ref=e81]: KHUYÊN DÙNG
+            - generic [ref=e82]:
+              - img [ref=e84]
+              - heading "XÂY DỰNG NỀN TẢNG" [level=3] [ref=e86]
+              - paragraph [ref=e87]: 5-6 giờ/tuần
+              - paragraph [ref=e88]: Phát triển tối đa chức năng hiếu khí (Maximum Aerobic Function). Xây dựng bộ máy năng lượng khổng lồ không gây chấn thương (Chương 3).
+            - radio [checked] [ref=e89]
+          - generic [ref=e90]:
+            - generic [ref=e92]: Cần kinh nghiệm tập luyện đều đặn để tham gia gói Hiệu suất cao.
+            - generic [ref=e93]:
+              - img [ref=e95]
+              - heading "THI ĐẤU & CẠNH TRANH" [level=3] [ref=e97]
+              - paragraph [ref=e98]: 7-12 giờ/tuần
+              - paragraph [ref=e99]: "Chuyển hóa nền tảng thành thành tích (Chương 10). Cảnh báo: Phải tuân thủ tuyệt đối quy tắc \"Training = Work + Rest\" (Chương 7)."
+            - radio [disabled] [ref=e100]
+      - button "PHÂN TÍCH & LẬP KẾ HOẠCH" [ref=e102] [cursor=pointer]
+  - contentinfo [ref=e103]:
+    - paragraph [ref=e104]: MAF Running Coach
+    - paragraph [ref=e105]: Based on "The Big Book of Endurance Training and Racing" by Dr. Phil Maffetone.

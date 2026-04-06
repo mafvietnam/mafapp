@@ -18,8 +18,6 @@ import { ProfileModule } from './profile/profile.module.js';
         REDIS_URL: Joi.string().default('redis://localhost:6379'),
         JWT_PRIVATE_KEY: Joi.string().required(),
         JWT_PUBLIC_KEY: Joi.string().required(),
-        WP_OAUTH_CLIENT_ID: Joi.string().required(),
-        WP_OAUTH_REDIRECT_URI: Joi.string().default('https://api.maf.run/auth/callback'),
         WP_OAUTH_URL: Joi.string().default('https://maf.run'),
         CORS_ORIGIN: Joi.string().default('https://app.maf.run'),
         PORT: Joi.number().default(3001),

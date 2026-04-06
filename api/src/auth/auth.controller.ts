@@ -1,8 +1,7 @@
 import {
   Controller,
-  Get,
   Post,
-  Query,
+  Body,
   Res,
   Req,
   UnauthorizedException,
@@ -29,32 +28,26 @@ function cookieOptions(maxAgeMs: number, path = '/') {
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  /** Initiate WordPress OAuth PKCE flow */
-  @Get('login')
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
-  async login(@Res() res: Response) {
-    const url = await this.authService.initiateLogin();
-    res.redirect(url);
-  }
-
-  /** OAuth callback — exchange code, set cookies, redirect to frontend */
-  @Get('callback')
-  async callback(
-    @Query('code') code: string,
-    @Query('state') state: string,
+  /** Login with WordPress credentials */
+  @Post('login')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  async login(
+    @Body() body: { username: string; password: string },
     @Res() res: Response,
   ) {
-    if (!code || !state) throw new UnauthorizedException('Missing code or state');
+    if (!body.username || !body.password) {
+      throw new UnauthorizedException('Missing username or password');
+    }
 
-    const { accessToken, refreshToken, redirectUrl } =
-      await this.authService.handleCallback(code, state);
+    const { accessToken, refreshToken } = await this.authService.login(
+      body.username,
+      body.password,
+    );
 
-    // Set access token cookie (15min)
     res.cookie('maf_access', accessToken, cookieOptions(15 * 60 * 1000));
-    // Set refresh token cookie (7 days, restricted path)
     res.cookie('maf_refresh', refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000, '/auth/refresh'));
 
-    res.redirect(redirectUrl);
+    res.json({ ok: true });
   }
 
   /** Refresh access token using refresh cookie */

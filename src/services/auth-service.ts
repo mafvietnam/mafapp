@@ -1,12 +1,20 @@
 import { api } from './api-client';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api';
-
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
   avatar: string | null;
+}
+
+/** Login with WordPress credentials */
+export async function login(username: string, password: string): Promise<boolean> {
+  try {
+    const res = await api.post('/auth/login', { username, password });
+    return res.ok;
+  } catch {
+    return false;
+  }
 }
 
 /** Fetch current authenticated user */
@@ -18,11 +26,6 @@ export async function getMe(): Promise<AuthUser | null> {
   } catch {
     return null;
   }
-}
-
-/** Get login URL (redirects to backend which initiates WP OAuth) */
-export function getLoginUrl(): string {
-  return `${API_BASE}/auth/login`;
 }
 
 /** Logout — clear cookies server-side */

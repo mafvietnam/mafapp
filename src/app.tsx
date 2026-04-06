@@ -122,13 +122,13 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<CalculatorApp />} />
-        <Route path="/guide" element={<GuidePage />} />
+        {/* Login page (public) */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Protected routes (dark theme via AppLayout) */}
+        {/* All other routes require authentication */}
         <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<CalculatorApp />} />
+          <Route path="/guide" element={<GuidePage />} />
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
