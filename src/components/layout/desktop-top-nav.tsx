@@ -4,6 +4,9 @@ import { useAuth } from '../../contexts/auth-context';
 
 const NAV_LINKS = [
   { to: '/dashboard', label: 'Bảng điều khiển' },
+  { to: '#', label: 'Nhật ký chạy' },
+  { to: '/plan', label: 'Giáo án' },
+  { to: '#', label: 'Cộng đồng' },
   { to: '/profile', label: 'Hồ sơ' },
 ];
 
@@ -21,7 +24,6 @@ export default function DesktopTopNav() {
       }}
     >
       <div className="max-w-[1440px] mx-auto px-8 h-full flex items-center justify-between">
-        {/* Logo + menu */}
         <div className="flex items-center gap-12">
           <Link to="/dashboard" className="flex flex-col justify-center">
             <h1 className="text-[22px] font-black italic tracking-tighter leading-none bg-gradient-to-r from-maf-red to-maf-violet bg-clip-text text-transparent">
@@ -35,7 +37,7 @@ export default function DesktopTopNav() {
           <div className="flex items-center gap-1">
             {NAV_LINKS.map((link) => (
               <Link
-                key={link.to}
+                key={link.label}
                 to={link.to}
                 className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
                   location.pathname === link.to
@@ -46,23 +48,13 @@ export default function DesktopTopNav() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/plan"
-              className={`px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
-                location.pathname === '/plan'
-                  ? 'bg-white/10 text-white font-semibold'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              Giáo án
-            </Link>
           </div>
         </div>
 
-        {/* Right actions */}
         <div className="flex items-center gap-6">
           <div className="relative">
             <Bell className="w-5 h-5 text-slate-300 cursor-pointer hover:text-white transition-colors" />
+            <span className="absolute -top-1 -right-1 w-2 h-2 bg-maf-red rounded-full" />
           </div>
           <div className="flex items-center gap-3 pl-6 border-l border-white/10">
             <div className="text-right">
@@ -74,12 +66,12 @@ export default function DesktopTopNav() {
                 Đăng xuất
               </button>
             </div>
-            {user?.avatar && (
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-10 h-10 rounded-full bg-slate-800 border border-white/20"
-              />
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full bg-slate-800 border border-white/20" />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/20 flex items-center justify-center text-white font-bold">
+                {user?.name?.charAt(0) || '?'}
+              </div>
             )}
           </div>
         </div>
