@@ -1,46 +1,55 @@
-import { Home, History, Users, User } from 'lucide-react';
+import { LayoutDashboard, BarChart2, Users, User, Plus } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-
-const TABS = [
-  { to: '/dashboard', icon: Home, label: 'Trang chủ' },
-  { to: '#', icon: History, label: 'Lịch sử' },
-  { to: '#', icon: Users, label: 'Cộng đồng' },
-  { to: '/profile', icon: User, label: 'Hồ sơ' },
-];
 
 export default function MobileBottomTabs() {
   const location = useLocation();
 
   return (
-    <div
-      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
-      style={{
-        background: 'rgba(255, 255, 255, 0.05)',
-        backdropFilter: 'blur(28px)',
-        borderTop: '1px solid rgba(255, 255, 255, 0.15)',
-        borderRadius: '32px 32px 0 0',
-        boxShadow: '0 -8px 32px rgba(0, 0, 0, 0.3)',
-      }}
-    >
-      <div className="flex items-center justify-around px-4 pt-3 pb-safe">
-        {TABS.map((tab) => {
-          const isActive = location.pathname === tab.to;
-          const Icon = tab.icon;
+    <nav className="fixed bottom-0 w-full glass-card border-x-0 border-b-0 border-t border-white/20 pb-safe z-50 rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.5)] lg:hidden">
+      <div className="flex justify-between items-center h-[72px] px-6 relative">
+        <Link
+          to="/dashboard"
+          className={`flex flex-col items-center gap-1.5 w-12 transition-transform active:scale-95 ${
+            location.pathname === '/dashboard' ? 'text-white' : 'text-white/50'
+          }`}
+        >
+          <LayoutDashboard className="w-6 h-6" />
+          <span className="text-[10px] font-bold">Trang chủ</span>
+        </Link>
 
-          return (
-            <Link
-              key={tab.label}
-              to={tab.to}
-              className={`flex flex-col items-center gap-1 py-1 px-3 ${
-                isActive ? 'text-white' : 'text-white/40'
-              }`}
-            >
-              <Icon className="w-5 h-5" />
-              <span className="text-[10px] font-medium">{tab.label}</span>
-            </Link>
-          );
-        })}
+        <Link
+          to="#"
+          className="flex flex-col items-center gap-1.5 w-12 text-white/50 hover:text-white active:scale-95 transition-all"
+        >
+          <BarChart2 className="w-6 h-6" />
+          <span className="text-[10px] font-medium">Lịch sử</span>
+        </Link>
+
+        {/* Center gradient button */}
+        <div className="relative -top-6">
+          <button className="w-[60px] h-[60px] bg-gradient-to-tr from-maf-red to-maf-violet text-white rounded-full flex items-center justify-center shadow-[0_8px_20px_rgba(244,42,104,0.4)] hover:-translate-y-1 transition-all active:scale-95 border-[4px] border-maf-dark">
+            <Plus className="w-8 h-8" />
+          </button>
+        </div>
+
+        <Link
+          to="#"
+          className="flex flex-col items-center gap-1.5 w-12 text-white/50 hover:text-white active:scale-95 transition-all"
+        >
+          <Users className="w-6 h-6" />
+          <span className="text-[10px] font-medium">Cộng đồng</span>
+        </Link>
+
+        <Link
+          to="/profile"
+          className={`flex flex-col items-center gap-1.5 w-12 transition-transform active:scale-95 ${
+            location.pathname === '/profile' ? 'text-white' : 'text-white/50'
+          }`}
+        >
+          <User className="w-6 h-6" />
+          <span className="text-[10px] font-medium">Hồ sơ</span>
+        </Link>
       </div>
-    </div>
+    </nav>
   );
 }

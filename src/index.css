@@ -44,3 +44,29 @@
 .text-shadow {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
+
+/* Dashboard glass card (mobile) */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Dashboard desktop card */
+.desktop-card {
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Safe area padding for mobile bottom tabs */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
