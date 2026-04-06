@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/auth-context';
 import { useUserProfile } from './hooks/use-user-profile';
@@ -44,6 +44,15 @@ const CalculatorApp: React.FC = () => {
     useMafCalculator();
 
   useProbationAutoUnlock(userProfile, setUserProfile);
+
+  // Auto-calculate on return if profile has valid data (age filled = user saved before)
+  const autoCalcDone = useRef(false);
+  useEffect(() => {
+    if (!profileLoading && !autoCalcDone.current && userProfile.age) {
+      autoCalcDone.current = true;
+      calculateMAF(userProfile, verifiedMafPace, ageNum, isChild, isNewbie, getBMI);
+    }
+  }, [profileLoading]);
 
   const handleLabComplete = (pace: string) => {
     setVerifiedMafPace(pace);
