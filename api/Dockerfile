@@ -10,7 +10,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --legacy-peer-deps
 COPY . .
-RUN npx prisma generate && npm run build
+RUN ./node_modules/.bin/prisma generate && npm run build
 
 # Stage 3: Production runtime
 FROM node:20-alpine AS runtime
