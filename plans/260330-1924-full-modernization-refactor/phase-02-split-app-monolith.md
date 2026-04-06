@@ -215,3 +215,5 @@ const App: React.FC = () => {
 
 ## Rollback
 - Revert commit; `src/app.tsx` is the only file modified (others are new files that can be deleted)
+
+<!-- Updated: Validation Session 1 - use-maf-calculator.ts landed at 367L (not 120L), user-input-form.tsx at 340L (not 180L). Render loop risk in use-user-profile.ts (effect sets own dependency). app-footer.tsx dead code. All addressed in Phase 8. -->

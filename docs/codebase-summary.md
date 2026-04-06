@@ -1,9 +1,16 @@
 # Codebase Summary
 
+## Overview
+
+- **Total Files:** 44 source files (excl. tests) + 5 test files
+- **Total LOC:** ~4,000 lines (src + tests)
+- **Entry Points:** `src/index.tsx` (React), `src/app.tsx` (root component), `src/pages/guide-page.tsx` (guide route)
+- **Build:** Vite + TypeScript, ESLint 9, Vitest 3.0.0
+
 ## Directory Structure
 
 ```
-src/ (~1,380 lines total)
+src/ (~3,800 lines, excluding tests)
 
 ├── app.tsx (119 lines)
 │   Root component. Manages activeTab ('PLAN'|'LAB'), verifiedMafPace state.
@@ -26,55 +33,94 @@ src/ (~1,380 lines total)
 ├── index.css
 │   Tailwind imports + minimal global styles.
 │
-├── components/ (~600 lines)
+├── components/ (~1,100 lines, 27 files)
 │   Functional React components (no class components):
-│
-│   ├── app-header.tsx — Logo + title
+│   
+│   Layout & Navigation:
+│   ├── app-header.tsx — Logo + title bar
+│   ├── app-footer.tsx — Bottom footer
 │   ├── tab-navigation.tsx — PLAN | LAB tabs
-│   ├── user-input-form.tsx (120+ lines)
-│   │   Inputs: age, height, weight, experience, health checkboxes
-│   │   Sections: CommitmentSelector, PaceComparison, LongRunHistory
-│   │   Button: Calculate
-│   │
-│   ├── commitment-selector.tsx — 3 card selector (onClick → setCommitment)
-│   ├── result-display.tsx — Conditional render of result sub-components
-│   ├── result-heart-rate-card.tsx — MAF zones + BMI category
-│   ├── result-schedule-table.tsx — 7-day schedule table
-│   ├── result-alerts-section.tsx — Notes + warnings
-│   ├── result-mindset-card.tsx — Motivational message
-│   ├── volume-adjustment-card.tsx — Progress/regression message
-│   ├── probation-alert.tsx — Injury recovery guidance
-│   ├── maf-lab.tsx (143 lines) — 3-step MAF verification wizard
-│   ├── welcome-modal.tsx — First-visit intro
-│   └── recovery-modal.tsx — Injury info modal
 │
-├── hooks/ (~400 lines)
+│   
+│   User Input & Selectors:
+│   ├── user-input-form.tsx — Orchestrator (104L), imports sub-forms
+│   ├── form-personal-info.tsx — Age, height, weight inputs (81L)
+│   ├── form-health-checklist.tsx — Health condition checkboxes (79L)
+│   ├── form-pace-and-long-run.tsx — Pace comparison, long-run history (168L)
+│   ├── commitment-selector.tsx — 3-card selector (HEALTH/BASE/PERFORMANCE)
+│   
+│   Results Display:
+│   ├── result-display.tsx — Container for all result components
+│   ├── result-heart-rate-card.tsx — MAF zone + BMI category
+│   ├── result-schedule-table.tsx — 7-day training plan
+│   ├── result-alerts-section.tsx — Notes + warnings
+│   ├── result-mindset-card.tsx — Motivational message by experience
+│   ├── result-children-display.tsx — Children mode (<16) guidance
+│   ├── volume-adjustment-card.tsx — Progress/regression indicator
+│   ├── probation-alert.tsx — Injury recovery 14-day countdown
+│   
+│   MAF Lab (Verification):
+│   ├── maf-lab.tsx — 3-step wizard container
+│   ├── maf-lab-step-checklist.tsx — Warmup instructions
+│   ├── maf-lab-step-data-entry.tsx — Pace + HR input form
+│   ├── maf-lab-step-results.tsx — Verified pace display
+│   
+│   Guide Page:
+│   ├── guide/guide-getting-started.tsx — Welcome section
+│   ├── guide/guide-plan-tab.tsx — Schedule explanation
+│   ├── guide/guide-lab.tsx — Lab instructions
+│   ├── guide/guide-results.tsx — Results interpretation
+│   ├── guide/guide-special-cases.tsx — Children, seniors, injured
+│   
+│   Modals:
+│   ├── welcome-modal.tsx — First-visit info (localStorage-gated)
+│   └── recovery-modal.tsx — Injury recovery info
+│
+├── hooks/ (~410 lines, 3 files)
 │   Custom React hooks (state management):
 │
-│   ├── use-user-profile.ts (120+ lines)
+│   ├── use-user-profile.ts (181 lines)
 │   │   State: userProfile (localStorage persisted)
 │   │   Handlers: handleInputChange, handleBlur, handleCheckboxChange,
 │   │            handleCommitmentSelect, handleRecoveryConfirm
 │   │   Computed: ageNum, isSenior, isChild, isNewbie, getBMI()
 │   │
-│   ├── use-maf-calculator.ts (367 lines) — Calculation pipeline
-│   │   Steps: validate → base MAF → adjustments → schedule → BMI safety
-│   │          → pace comparison → smart long-run → volume caps → format
+│   ├── use-maf-calculator.ts (93 lines, thin wrapper)
+│   │   Wraps pure calculateMAF() from utils/maf-calculator-orchestrator.ts
+│   │   Manages result state, calls setState, handles scroll-to-result
 │   │   Exports: calculateMAF(), calculateRawMaf(), getVolumeCapText()
 │   │
-│   └── use-probation.ts — Auto-unlock after 14 days
+│   └── use-probation.ts (38 lines)
+│       Auto-unlock injury probation after 14 days
 │
-└── utils/ (~250 lines)
+├── pages/
+│   └── guide-page.tsx (121 lines) — /guide route with 5 guide sections
+│
+├── index.tsx (19 lines) — React 19 entry point, mounts App to #root
+├── app.tsx (128 lines) — Root component, tab orchestration, modal gating
+├── types.ts (55 lines) — TypeScript interfaces & enums
+├── constants.ts (70 lines) — Schedules, commitment cards, experience options
+│
+└── utils/ (~1,050 lines, 9 files + 6 tests)
     Pure functions (no state, no side effects):
 
-    ├── maf-logic.ts — Barrel export
-    ├── maf-types.ts — VOLUME_CAPS constant
-    ├── maf-schedule-generator.ts — getWeeklySchedule(commitment)
-    ├── maf-safety-adjustments.ts — BMI/age swaps
-    ├── maf-smart-long-run.ts — History-based long-run calculation
-    ├── maf-volume-cap.ts — Enforce weekly caps
-    ├── maf-session-formatter.ts — 15/15 warmup/main/cool format
-    └── *.test.ts — Unit tests (Vitest)
+    ├── maf-logic.ts (12 lines) — Barrel export for all utilities
+    ├── maf-types.ts (31 lines) — VOLUME_CAPS, type enums
+    ├── maf-calculator-orchestrator.ts (197 lines) — Pure calculateMAF() function
+    ├── maf-calculator-schedule-builder.ts (198 lines) — Schedule building logic extracted
+    ├── maf-schedule-generator.ts (54 lines) — getWeeklySchedule(commitment)
+    ├── maf-safety-adjustments.ts (92 lines) — BMI ≥30 walking swap, age 60+ caps
+    ├── maf-smart-long-run.ts (177 lines) — History-based long-run ±10% adjustment
+    ├── maf-volume-cap.ts (128 lines) — Enforce weekly minute caps per commitment
+    ├── maf-session-formatter.ts (40 lines) — 15/15 warmup/main/cool breakdown
+    │
+    └── __tests__/ (6 files, ~600 LOC)
+        ├── maf-calculator-orchestrator.test.ts (15 tests)
+        ├── maf-safety-adjustments.test.ts
+        ├── maf-schedule-generator.test.ts
+        ├── maf-session-formatter.test.ts
+        ├── maf-smart-long-run.test.ts
+        └── maf-volume-cap.test.ts
 ```
 
 ---
@@ -277,23 +323,20 @@ No API client (axios, fetch wrapper) — client-side only.
 
 ---
 
-## Testing Coverage
+## Testing
 
-Vitest configured for `src/utils/**/*.test.ts`
+**Framework:** Vitest 3.0.0 + v8 coverage
 
-```typescript
-// Example: src/utils/maf-volume-cap.test.ts
-import { describe, it, expect } from 'vitest';
-import { enforceWeeklyVolumeCap } from './maf-volume-cap';
+**Coverage:** 162 tests, 98% on src/utils/ (commit: 83d57ca)
 
-describe('enforceWeeklyVolumeCap', () => {
-  it('should reduce schedule if exceeds BASE commitment (360min)', () => {
-    // Test implementation
-  });
-});
-```
+Test files: `src/utils/__tests__/*.test.ts`
+- `maf-safety-adjustments.test.ts` — BMI safety logic
+- `maf-schedule-generator.test.ts` — Schedule generation per level
+- `maf-session-formatter.test.ts` — Warmup/main/cool breakdown
+- `maf-smart-long-run.test.ts` — History-based adjustments
+- `maf-volume-cap.test.ts` — Weekly cap enforcement
 
-Excluded from coverage: `maf-logic.ts`, `maf-types.ts` (too complex for automated tests).
+Excluded: `maf-logic.ts`, `maf-types.ts` (barrel + constants)
 
 ---
 
@@ -335,4 +378,4 @@ npm run build → dist/ (optimized, chunked, source maps removed)
 
 ---
 
-**Last Updated:** March 30, 2026 | **Version:** 1.0.0
+**Last Updated:** April 6, 2026 (Phase 8 complete) | **Version:** 1.0.0

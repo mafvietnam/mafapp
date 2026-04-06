@@ -1,13 +1,51 @@
 # Deployment Guide
 
-## Local Development
+## Development Setup
+
+### Prerequisites
+- Node.js 18+, npm 9+
+- Docker & Docker Compose (for containerized dev/prod)
+
+### Local Development
 
 ```bash
 git clone https://github.com/mafvietnam/mafapp.git
 cd mafapp
+
+# Install dependencies
 npm install
+
+# Start dev server with hot reload
 npm run dev
 # Open http://localhost:5173
+
+# Lint + type check + test (pre-commit)
+npm run lint
+npm run test
+npm run test:coverage
+```
+
+### Build for Production
+
+```bash
+npm run build       # Creates dist/
+npm run preview     # Test production build locally
+```
+
+---
+
+## Docker Image
+
+**Multi-Stage Build:** `Dockerfile` (3 stages)
+1. **deps:** Install Node 20 Alpine, npm dependencies
+2. **builder:** Build React app with Vite, remove source maps
+3. **production:** Nginx 1.25 Alpine, serve SPA, ~50-60MB final size
+
+**Build Options:**
+```bash
+docker build -t maf-app:latest .              # Build with cache
+docker build -t maf-app:latest --no-cache .   # Force rebuild
+docker-compose build                          # Build all services
 ```
 
 ---
@@ -222,15 +260,18 @@ docker-compose restart cloudflared
 
 ---
 
-## Security
+## Security Checklist
 
-- ✅ .env NOT committed to git
-- ✅ All passwords 16+ chars with special chars
-- ✅ HTTPS only (Cloudflare + Tunnel)
-- ✅ Non-root container users
-- ✅ No exposed ports
-- ✅ Network isolated (internal bridge)
+- ✅ `.env` NOT committed (in `.gitignore`)
+- ✅ All passwords 16+ chars with special characters
+- ✅ HTTPS only (via Cloudflare Tunnel)
+- ✅ Non-root container user (`nginx` user)
+- ✅ No exposed ports (internal network 172.28.0.0/16)
+- ✅ CSP headers in Nginx (no inline scripts)
+- ✅ Security headers: X-Frame-Options, X-Content-Type-Options
+- ✅ Gzip compression enabled
+- ✅ Health checks every 30s
 
 ---
 
-**Version:** 1.0.0 | **Last Updated:** March 30, 2026
+**Version:** 1.0.0 | **Last Updated:** April 6, 2026

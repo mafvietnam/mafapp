@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { UserProfile, ExperienceLevel, CommitmentLevel } from '../types';
-import { EXPERIENCE_OPTIONS } from '../constants';
 
 export interface UseUserProfileReturn {
   userProfile: UserProfile;
@@ -50,6 +49,21 @@ export function useUserProfile(): UseUserProfileReturn {
     return 0;
   };
 
+  // Adjust commitment level for seniors (>= 60) based on health state
+  const adjustCommitmentForSenior = (profile: UserProfile): CommitmentLevel => {
+    const age = parseInt(profile.age);
+    if (isNaN(age) || age < 60) return profile.commitment;
+    if (profile.isRecovering || profile.isMedicatedOrInjured) return profile.commitment;
+    if (!profile.isMedicalClearanceConfirmed) {
+      if (profile.commitment === CommitmentLevel.BASE || profile.commitment === CommitmentLevel.PERFORMANCE) {
+        return CommitmentLevel.HEALTH;
+      }
+    } else if (profile.commitment === CommitmentLevel.PERFORMANCE) {
+      return CommitmentLevel.BASE;
+    }
+    return profile.commitment;
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setUserProfile((prev) => {
@@ -62,7 +76,12 @@ export function useUserProfile(): UseUserProfileReturn {
           newCommitment = CommitmentLevel.BASE;
         }
       }
-      return { ...prev, [name]: value, commitment: newCommitment };
+      const updated = { ...prev, [name]: value, commitment: newCommitment };
+      // Auto-adjust commitment when age changes to/from senior range
+      if (name === 'age') {
+        updated.commitment = adjustCommitmentForSenior(updated);
+      }
+      return updated;
     });
   };
 
@@ -84,7 +103,11 @@ export function useUserProfile(): UseUserProfileReturn {
       if (numVal > 200) newVal = 200;
     }
     if (newVal !== numVal) {
-      setUserProfile((prev) => ({ ...prev, [name]: newVal.toString() }));
+      setUserProfile((prev) => {
+        const updated = { ...prev, [name]: newVal.toString() };
+        if (name === 'age') updated.commitment = adjustCommitmentForSenior(updated);
+        return updated;
+      });
     }
   };
 
@@ -97,7 +120,12 @@ export function useUserProfile(): UseUserProfileReturn {
       if (name === 'isMedicatedOrInjured' && checked && !prev.isRecovering) {
         if (prev.commitment === CommitmentLevel.PERFORMANCE) newCommitment = CommitmentLevel.HEALTH;
       }
-      return { ...nextState, commitment: newCommitment };
+      const updated = { ...nextState, commitment: newCommitment };
+      // Auto-adjust commitment for senior health checkbox changes
+      if (name === 'isMedicalClearanceConfirmed' || name === 'isRecovering' || name === 'isMedicatedOrInjured') {
+        updated.commitment = adjustCommitmentForSenior(updated);
+      }
+      return updated;
     });
   };
 
@@ -125,42 +153,19 @@ export function useUserProfile(): UseUserProfileReturn {
   };
 
   const handleRecoveryConfirm = () => {
-    setUserProfile((prev) => ({
-      ...prev,
-      isProbation: true,
-      probationStartDate: new Date().toISOString(),
-      isRecovering: false,
-      isMedicatedOrInjured: false,
-    }));
+    setUserProfile((prev) => {
+      const updated = {
+        ...prev,
+        isProbation: true,
+        probationStartDate: new Date().toISOString(),
+        isRecovering: false,
+        isMedicatedOrInjured: false,
+      };
+      updated.commitment = adjustCommitmentForSenior(updated);
+      return updated;
+    });
     setShowRecoveryModal(false);
   };
-
-  // --- SAFETY EFFECT: auto-adjust commitment for seniors ---
-  useEffect(() => {
-    if (isNaN(ageNum)) return;
-    if (userProfile.isRecovering || userProfile.isMedicatedOrInjured) return;
-    if (ageNum >= 60) {
-      if (!userProfile.isMedicalClearanceConfirmed) {
-        if (
-          userProfile.commitment === CommitmentLevel.BASE ||
-          userProfile.commitment === CommitmentLevel.PERFORMANCE
-        ) {
-          setUserProfile((prev) => ({ ...prev, commitment: CommitmentLevel.HEALTH }));
-        }
-      } else if (userProfile.isMedicalClearanceConfirmed) {
-        if (userProfile.commitment === CommitmentLevel.PERFORMANCE) {
-          setUserProfile((prev) => ({ ...prev, commitment: CommitmentLevel.BASE }));
-        }
-      }
-    }
-  }, [
-    userProfile.age,
-    userProfile.isMedicalClearanceConfirmed,
-    userProfile.isRecovering,
-    userProfile.isMedicatedOrInjured,
-    userProfile.commitment,
-    ageNum,
-  ]);
 
   return {
     userProfile,

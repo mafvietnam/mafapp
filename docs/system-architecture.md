@@ -34,36 +34,44 @@ ResultDisplay component
 ## Component Tree
 
 ```
-App (App.tsx)
+App (App.tsx, 128 LOC)
 ├─ activeTab: 'PLAN' | 'LAB'
 ├─ verifiedMafPace: string | null
-├─ WelcomeModal
-├─ RecoveryModal
+├─ WelcomeModal (first-visit, localStorage-gated)
+├─ RecoveryModal (injury info)
 ├─ AppHeader
-├─ TabNavigation
+├─ TabNavigation (PLAN | LAB tabs)
+│
 └─ main
-    ├─── PLAN tab ──────────────────
-    │    ├─ UserInputForm
-    │    │  ├─ Age/Height/Weight inputs
-    │    │  ├─ Experience selector
-    │    │  ├─ Health checkboxes
-    │    │  ├─ CommitmentSelector (3 cards)
-    │    │  ├─ PaceComparison section
-    │    │  ├─ LongRunHistory (optional)
+    ├─── PLAN Tab ──────────────────────────
+    │    ├─ UserInputForm (orchestrator, 104 lines)
+    │    │  ├─ FormPersonalInfo (Age/Height/Weight, 81L)
+    │    │  ├─ FormHealthChecklist (Recovery, medicated, etc., 79L)
+    │    │  ├─ CommitmentSelector (3 cards: HEALTH/BASE/PERFORMANCE)
+    │    │  ├─ FormPaceAndLongRun (Pace comparison, long-run history, 168L)
     │    │  └─ Calculate button
     │    │
-    │    └─ ResultDisplay (if result exists)
-    │       ├─ ResultHeartRateCard
-    │       ├─ VolumeAdjustmentCard
-    │       ├─ ResultScheduleTable
-    │       ├─ ResultAlertsSection
-    │       └─ ResultMindsetCard
+    │    └─ ResultDisplay (conditional render)
+    │       ├─ ResultHeartRateCard (MAF zone + BMI)
+    │       ├─ VolumeAdjustmentCard (progress/regression)
+    │       ├─ ResultScheduleTable (7-day plan)
+    │       ├─ ResultAlertsSection (notes + warnings)
+    │       ├─ ResultChildrenDisplay (if age <16)
+    │       └─ ResultMindsetCard (motivational)
     │
-    └─── LAB tab ──────────────────
-         └─ MafLab
-            ├─ Step 1: Warmup checklist
-            ├─ Step 2: Data entry (pace + HR)
-            └─ Step 3: Results summary
+    ├─── LAB Tab ──────────────────────────
+    │    └─ MafLab (143 LOC wizard)
+    │       ├─ Step 1: MafLabStepChecklist (warmup instructions)
+    │       ├─ Step 2: MafLabStepDataEntry (pace + HR input)
+    │       └─ Step 3: MafLabStepResults (verified pace display)
+    │
+    └─── Guide Route (/guide) ──────────────
+         └─ GuidePage (121 LOC)
+            ├─ GuideGettingStarted (welcome)
+            ├─ GuidePlanTab (schedule explanation)
+            ├─ GuideLab (lab instructions)
+            ├─ GuideResults (interpret results)
+            └─ GuideSpecialCases (children, seniors, injured)
 ```
 
 ---
@@ -156,6 +164,8 @@ Cool 5min (50% MAF zone)
 
 | File | Purpose |
 |------|---------|
+| `maf-calculator-orchestrator.ts` | Pure calculateMAF(profile) → MafResult (core logic) |
+| `maf-calculator-schedule-builder.ts` | Schedule assembly, safety + volume adjustments |
 | `maf-schedule-generator.ts` | getWeeklySchedule(level) → base ScheduleItem[] |
 | `maf-safety-adjustments.ts` | Swap activities based on BMI/age |
 | `maf-session-formatter.ts` | Add warmup/main/cool breakdown |
@@ -197,37 +207,39 @@ interface MafResult {
 
 ---
 
-## Offline Architecture
+## Data Persistence
 
-100% client-side after load:
-- React SPA bundles all logic
-- localStorage: user profile + history
-- No API calls for calculations
-- Optional: Service Worker for asset caching
+- **localStorage:** userProfile (age, height, weight, experience, commitment, health flags, probation status)
+- **Verified pace:** Stored in component state during session (not persisted to localStorage)
+- **No backend calls:** All calculations 100% client-side
+- **Optional service worker:** Asset caching not implemented (Nginx handles via cache headers)
 
 ---
 
 ## Performance Targets
 
-- Initial load: <500ms first paint
-- MAF calculation: <100ms
-- Re-render: <50ms (React batching)
-- Bundle: <200KB gzipped
-- Mobile TTI: <1s (4G)
+| Metric | Target | Notes |
+|--------|--------|-------|
+| First paint | <500ms | Vite optimized build |
+| TTI (Time to Interactive) | <1s (4G) | Mobile-first |
+| MAF calculation | <100ms | Pure JS, no blocking |
+| Re-render | <50ms | React batching, no Context API |
+| Bundle size | <200KB gzipped | Excluding public assets |
 
 ---
 
-## Edge Case Handling
+## Edge Cases & Safety
 
 | Scenario | Action |
 |----------|--------|
-| Age < 16 | "Play naturally" guide (no structured plan) |
-| Age > 120 | Clamped to 120, alert shown |
-| BMI = 0 | Alert: "Check height/weight" |
-| BMI ≥ 30 | Force walking mode + joint warning |
-| No verified pace | Auto-select based on BMI |
-| Injured (probation) | -10 bpm, 70% volume, 14-day unlock |
+| Age < 16 | Show "children mode" — no structured plan, play naturally |
+| Age > 120 | Clamp to 120, alert user |
+| BMI = 0 | Alert: invalid height/weight |
+| BMI ≥ 30 | Force walking activities, joint health warning |
+| Recovery flag unchecked | Alert: medical clearance required |
+| In probation | -10 bpm MAF, 70% volume, 14-day auto-unlock countdown |
+| No verified pace | Auto-select based on BMI (safe default) |
 
 ---
 
-**Version:** 1.0.0 | **Last Updated:** March 30, 2026
+**Version:** 1.0.0 | **Last Updated:** April 6, 2026 (Phase 8 complete)

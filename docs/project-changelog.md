@@ -4,6 +4,27 @@ All notable changes to MAF Running Coach are documented here.
 
 ---
 
+## [1.0.1] — 2026-04-06 (Hotfix & Guide Page)
+
+### Added
+- **Guide Page:** `/guide` route with 5 Vietnamese guide sections (commit: 8b3d077)
+  - Getting Started, Plan Tab explanation, Lab instructions
+  - Results interpretation, Special cases (children, seniors, injured)
+- **Mobile UX Improvements:** (commit: dc13385)
+  - Modal scroll lock to prevent body scroll when modals open
+  - Checkbox touch targets increased to 44px minimum (accessibility)
+  - Favicon added (MAF logo SVG)
+
+### Changed
+- User guide rewritten to match actual app GUI (commit: 27ec3a7)
+- Documentation updated to reflect codebase state (this release)
+
+### Fixed
+- Mobile modal scroll behavior fixed
+- Touch target sizes meet WCAG AA accessibility standards
+
+---
+
 ## [1.0.0] — 2026-03-30 (Release)
 
 ### Major: Full Modernization Refactor
@@ -157,10 +178,10 @@ Following Semantic Versioning (MAJOR.MINOR.PATCH):
 
 **Planned Additions:**
 - User authentication (email/OAuth)
-- Training history persistence
-- Cloud backup (AWS S3 or similar)
-- Bug fixes from v1.0 feedback
+- Training history persistence (database)
+- Cloud backup to AWS S3
+- Bug fixes & performance improvements from user feedback
 
 ---
 
-**Last Updated:** March 30, 2026 | **Version:** 1.0.0
+**Last Updated:** April 6, 2026 | **Version:** 1.0.1

@@ -39,20 +39,32 @@
 - Verified pace storage & feedback
 
 ### Phase 6: Testing & Quality ✅ COMPLETED
-- ESLint 9 configuration + rules
-- Vitest unit tests for utilities
-- Split mafLogic.ts into barrel module (7 submodules)
-- Achieved 70%+ coverage on utils
+- ESLint 9 configuration + rules (commit: e941fc4)
+- Vitest 3.0.0 unit tests for utilities
+- Split mafLogic.ts into 7 submodules + barrel export
+- 162 unit tests, 98% coverage on src/utils/ (commit: 83d57ca)
 
 ### Phase 7: Documentation ✅ COMPLETED
-- Project overview & PDR
+- Project overview & PDR (commit: 5d68f06)
 - Code standards & conventions
-- Codebase summary with file descriptions
+- Codebase summary (44 source files, ~4000 LOC)
 - System architecture & data flow
-- Design guidelines (colors, typography, components)
-- Deployment guide (Docker, Nginx, Cloudflare)
+- Design guidelines (Tailwind 3, colors, typography)
+- Deployment guide (Docker, Nginx, Cloudflare Tunnel)
 - Development roadmap (this file)
-- Project changelog
+- Project changelog (semantic versioning)
+
+### Phase 8: Guide Page & Mobile UX ✅ COMPLETED
+- `/guide` route with Vietnamese user guide (commit: 8b3d077)
+- 5 guide sections: Getting Started, Plan, Lab, Results, Special Cases
+- Rewrite user guide to match actual app GUI (commit: 27ec3a7)
+- Mobile UX fixes: modal scroll lock, checkbox touch targets, favicon (commit: dc13385)
+
+### Phase 9: Sprint Planning ✅ DRAFTED
+- SP2-SP7 sprint roadmap created (commit: 86be72c)
+- Research reports generated (commit: 5d069b0)
+- Parallel execution strategy defined
+- Review reports: plan failure analysis, scope complexity critique
 
 ---
 
@@ -104,4 +116,4 @@
 
 ---
 
-**Last Updated:** March 30, 2026 | **Version:** 1.0.0
+**Last Updated:** April 6, 2026 | **Version:** 1.0.0

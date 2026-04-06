@@ -35,16 +35,11 @@ RUN npm ci --ignore-scripts && \
 COPY tsconfig.json vite.config.ts ./
 COPY tailwind.config.js postcss.config.js* ./
 
-# Entry point and styles
-COPY index.html index.tsx ./
-COPY index.css* ./
+# HTML entry point
+COPY index.html ./
 
-# Source files at root
-COPY App.tsx constants.ts types.ts ./
-
-# Source directories
-COPY components/ ./components/
-COPY utils/ ./utils/
+# All source code lives under src/
+COPY src/ ./src/
 
 # Build application with optimizations
 ENV NODE_ENV=production

@@ -4,10 +4,25 @@
 
 ### Color Palette
 
-**Primary Colors (MAF Brand):**
-- `maf-purple: #7e22ce` — Main CTA, emphasis
-- `maf-pink: #db2777` — Alerts, warnings
-- `maf-orange: #f97316` — Accent, secondary actions
+**MAF Brand Colors (Tailwind 3):**
+- `maf-purple: #7e22ce` — Primary CTA, buttons, emphasis
+- `maf-pink: #db2777` — Alerts, warnings, accent
+- `maf-orange: #f97316` — Secondary actions, BASE level
+- `maf-green: #10b981` — HEALTH level, success
+- `maf-blue: #3b82f6` — Info, cross-training
+
+**Commitment Level Colors:**
+- HEALTH → green-500 (weight management)
+- BASE → orange-500 (aerobic foundation)
+- PERFORMANCE → purple-700 (race prep)
+
+**Result Type Colors:**
+- REST → gray-500
+- LONG_RUN → orange-500
+- RUN → purple-600
+- WALK → green-600
+- CROSS_TRAIN → blue-500
+- RECOVERY → yellow-500
 
 **Neutral Scale:**
 - White: `#ffffff`
@@ -15,12 +30,6 @@
 - Medium gray: `#6b7280` (text-gray-500)
 - Dark gray: `#1f2937` (text-gray-900)
 - Black: `#000000`
-
-**Semantic Colors:**
-- Success: `#10b981` (green-500)
-- Warning: `#f59e0b` (amber-500)
-- Error: `#ef4444` (red-500)
-- Info: `#3b82f6` (blue-500)
 
 ### Typography
 
@@ -43,8 +52,8 @@
 
 ### Responsive Design
 
-**Breakpoints (Tailwind):**
-- Mobile: 0–640px (no prefix)
+**Breakpoints (Tailwind 3):**
+- Mobile: 0–640px (default, no prefix)
 - Tablet: 640px–1024px (`md:`)
 - Desktop: 1024px+ (`lg:`)
 
@@ -302,6 +311,14 @@ Avoid animating:
 
 ---
 
+## Mobile UI Features (Recent Improvements)
+
+**Modal Scroll Lock:** Prevent body scroll when modals open (April 2026 fix)
+**Checkbox Touch Targets:** Min 44px for mobile (accessibility)
+**Favicon:** MAF logo favicon added
+**Safe Area Insets:** Respect iPhone notch/home indicator with `pb-safe` class
+**Glass Morphism Cards:** Backdrop blur effect on modals (home_mobile.html prototype)
+
 ---
 
-**Version:** 1.0.0 | **Last Updated:** March 30, 2026
+**Version:** 1.0.0 | **Last Updated:** April 6, 2026

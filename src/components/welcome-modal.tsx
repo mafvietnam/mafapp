@@ -2,15 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AlertTriangle, Shield } from 'lucide-react';
 
 const WelcomeModal: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    // Kiểm tra localStorage khi component mount
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
-    if (!hasSeenWelcome) {
-      setIsOpen(true);
-    }
-  }, []);
+  const [isOpen, setIsOpen] = useState(() => !localStorage.getItem('hasSeenWelcome'));
 
   // Lock body scroll when modal is open
   useEffect(() => {

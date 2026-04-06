@@ -208,3 +208,5 @@ npm run test:coverage
 
 ## Rollback
 - Remove vitest deps, delete test files, revert package.json + vite.config.ts
+
+<!-- Updated: Validation Session 1 - calculateMAF orchestration (290L) has zero test coverage. Coverage config excludes hooks. Orchestration tests added in Phase 8 after extracting to pure util. -->

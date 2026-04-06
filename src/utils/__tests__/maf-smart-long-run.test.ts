@@ -354,7 +354,7 @@ describe('calculateSmartLongRun', () => {
       const result = calculateSmartLongRun(
         100, 160, mafHr, CommitmentLevel.BASE, age, ExperienceLevel.ADVANCED, 'VERY_TIRED'
       );
-      expect(result.message).toMatch(/^[🔴⚠️🏸📈💪✅]/); // Starts with emoji
+      expect(result.message).toMatch(/^(?:🔴|⚠️|🏸|📈|💪|✅)/); // Starts with emoji
     });
   });
 

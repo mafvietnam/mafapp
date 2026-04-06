@@ -112,3 +112,5 @@ npm run lint
 
 ## Rollback
 - Delete eslint.config.js, remove eslint deps from package.json
+
+<!-- Updated: Validation Session 1 - 8 ESLint errors remain (31 problems total). Includes set-state-in-effect (real React bugs), no-useless-assignment, no-misleading-character-class. Fixed in Phase 8. -->

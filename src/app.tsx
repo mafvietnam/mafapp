@@ -4,6 +4,7 @@ import { useUserProfile } from './hooks/use-user-profile';
 import { useMafCalculator } from './hooks/use-maf-calculator';
 import { useProbationAutoUnlock } from './hooks/use-probation';
 import AppHeader from './components/app-header';
+import AppFooter from './components/app-footer';
 import TabNavigation from './components/tab-navigation';
 import UserInputForm from './components/user-input-form';
 import ResultDisplay from './components/result-display';
@@ -107,12 +108,7 @@ const App: React.FC = () => {
           )}
         </main>
 
-        <footer className="mt-24 py-12 bg-gray-900 text-gray-500 text-center text-base border-t border-gray-800">
-          <p className="font-medium text-gray-400">MAF Running Coach</p>
-          <p className="mt-2 text-sm">
-            Based on "The Big Book of Endurance Training and Racing" by Dr. Phil Maffetone.
-          </p>
-        </footer>
+        <AppFooter />
       </div>
     </>
   );

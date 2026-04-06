@@ -4,42 +4,44 @@
 
 ```
 src/
-├── app.tsx                      # Root component — tab orchestration
-├── types.ts                     # All TypeScript interfaces + enums
-├── constants.ts                 # Schedules, commitment cards, experience options
-├── index.css                    # Tailwind + global styles
-├── index.tsx                    # React 19 entry point
+├── index.tsx              # React 19 entry point
+├── index.css              # Tailwind imports + minimal globals
+├── app.tsx                # Root component, tab/modal orchestration
+├── types.ts               # TypeScript interfaces + enums
+├── constants.ts           # Schedules, commitment cards, experience options
 │
-├── components/                  # React UI components (functional)
-│   ├── app-header.tsx
+├── pages/
+│   └── guide-page.tsx     # /guide route with 5 guide sections
+│
+├── components/ (24 files)
+│   ├── app-header.tsx, app-footer.tsx
 │   ├── tab-navigation.tsx
+│   ├── welcome-modal.tsx, recovery-modal.tsx
 │   ├── user-input-form.tsx
 │   ├── commitment-selector.tsx
 │   ├── result-display.tsx
-│   ├── result-heart-rate-card.tsx
-│   ├── result-schedule-table.tsx
-│   ├── maf-lab.tsx              # Lab wizard (MAF test)
-│   ├── welcome-modal.tsx
-│   ├── recovery-modal.tsx
-│   └── *-card.tsx, *-section.tsx
+│   ├── result-*.tsx (5 cards + sections)
+│   ├── maf-lab.tsx + maf-lab-step-*.tsx (3 step components)
+│   └── guide/ (5 guide section components)
 │
-├── hooks/                       # Custom React hooks (state management)
-│   ├── use-user-profile.ts      # Profile state + localStorage
-│   ├── use-maf-calculator.ts    # MAF calculation pipeline
-│   └── use-probation.ts         # Auto-unlock probation after 14 days
+├── hooks/ (3 files)
+│   ├── use-user-profile.ts
+│   ├── use-maf-calculator.ts
+│   └── use-probation.ts
 │
-└── utils/                       # Pure functions (no side effects)
-    ├── maf-logic.ts             # Barrel export
-    ├── maf-schedule-generator.ts # Get base schedule
-    ├── maf-safety-adjustments.ts # BMI/age activity swaps
-    ├── maf-smart-long-run.ts    # History-based adjustments
-    ├── maf-volume-cap.ts        # Weekly minute enforcement
-    ├── maf-session-formatter.ts # 15/15 warmup/main/cool format
-    └── maf-types.ts             # Constants (VOLUME_CAPS, etc.)
+└── utils/ (7 modules + 5 tests)
+    ├── maf-logic.ts (barrel)
+    ├── maf-schedule-generator.ts
+    ├── maf-safety-adjustments.ts
+    ├── maf-smart-long-run.ts
+    ├── maf-volume-cap.ts
+    ├── maf-session-formatter.ts
+    ├── maf-types.ts
+    └── __tests__/ (5 test files)
 ```
 
-**Naming:** `kebab-case` files with self-documenting names
-**File Size:** Keep <200 lines. Split large modules into focused utilities.
+**Naming:** `kebab-case` with descriptive names (e.g., `maf-smart-long-run.ts`)
+**File Size:** All source files <200 LOC (avg 100-150)
 
 ---
 
@@ -272,17 +274,22 @@ chore: update dependencies
 
 ---
 
-## ESLint Rules (eslint 9 + typescript-eslint)
+## ESLint Rules
 
+**Version:** ESLint 9.39.4 + typescript-eslint 8.57.2
+
+**Enforced Rules:**
 - No `console.log` in production (dev OK)
 - No unused variables
 - No unreachable code
 - Prefer `const` over `let`
-- React hooks rules enforced
+- React hooks dependency arrays checked
+- No restricted syntax (e.g., `any` types)
 
-### Fix Issues
+**Fix Issues:**
 ```bash
-npm run lint:fix
+npm run lint        # Check
+npm run lint:fix    # Auto-fix
 ```
 
 ---
@@ -322,4 +329,4 @@ All magic numbers → `src/constants.ts`:
 
 ---
 
-**Last Updated:** March 30, 2026 | **Version:** 1.0.0
+**Last Updated:** April 6, 2026 | **Version:** 1.0.0
