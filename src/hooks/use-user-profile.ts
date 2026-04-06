@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UserProfile, ExperienceLevel, CommitmentLevel } from '../types';
+import { getProfile, type ServerProfile } from '../services/profile-service';
 
 export interface UseUserProfileReturn {
   userProfile: UserProfile;
   setUserProfile: React.Dispatch<React.SetStateAction<UserProfile>>;
+  profileLoading: boolean;
   showRecoveryModal: boolean;
   setShowRecoveryModal: (v: boolean) => void;
   ageNum: number;
@@ -16,6 +18,26 @@ export interface UseUserProfileReturn {
   handleCheckboxChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCommitmentSelect: (level: CommitmentLevel) => void;
   handleRecoveryConfirm: () => void;
+}
+
+/** Map server profile (numbers) to client profile (strings for form inputs) */
+function mapServerToClient(s: ServerProfile): UserProfile {
+  return {
+    age: s.age ? String(s.age) : '',
+    height: s.height ? String(s.height) : '',
+    weight: s.weight ? String(s.weight) : '',
+    experience: (s.experience as ExperienceLevel) || ExperienceLevel.NONE,
+    isRecovering: s.isRecovering ?? false,
+    isMedicatedOrInjured: s.isMedicatedOrInjured ?? false,
+    isMedicalClearanceConfirmed: s.isMedicalClearanceConfirmed ?? false,
+    commitment: (s.commitment as CommitmentLevel) || CommitmentLevel.BASE,
+    previousMonthPace: s.previousMonthPace ?? '',
+    isProbation: s.isProbation ?? false,
+    probationStartDate: s.probationStartDate ?? undefined,
+    lastLongRunDuration: s.lastLongRunDuration ?? undefined,
+    lastLongRunHeartRate: s.lastLongRunHeartRate ?? undefined,
+    lastLongRunFeeling: (s.lastLongRunFeeling as UserProfile['lastLongRunFeeling']) ?? undefined,
+  };
 }
 
 export function useUserProfile(): UseUserProfileReturn {
@@ -32,6 +54,18 @@ export function useUserProfile(): UseUserProfileReturn {
   });
 
   const [showRecoveryModal, setShowRecoveryModal] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(true);
+
+  // Load saved profile from server on mount
+  useEffect(() => {
+    getProfile()
+      .then((server) => {
+        if (server) {
+          setUserProfile(mapServerToClient(server));
+        }
+      })
+      .finally(() => setProfileLoading(false));
+  }, []);
 
   const ageNum = parseInt(userProfile.age);
   const isSenior = !isNaN(ageNum) && ageNum >= 60;
@@ -170,6 +204,7 @@ export function useUserProfile(): UseUserProfileReturn {
   return {
     userProfile,
     setUserProfile,
+    profileLoading,
     showRecoveryModal,
     setShowRecoveryModal,
     ageNum,

@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/auth-context';
 import { useUserProfile } from './hooks/use-user-profile';
 import { useMafCalculator } from './hooks/use-maf-calculator';
 import { useProbationAutoUnlock } from './hooks/use-probation';
+import { updateProfile } from './services/profile-service';
 import TabNavigation from './components/tab-navigation';
 import UserInputForm from './components/user-input-form';
 import ResultDisplay from './components/result-display';
@@ -24,6 +25,7 @@ const CalculatorApp: React.FC = () => {
   const {
     userProfile,
     setUserProfile,
+    profileLoading,
     showRecoveryModal,
     setShowRecoveryModal,
     ageNum,
@@ -51,6 +53,8 @@ const CalculatorApp: React.FC = () => {
 
   const handleCalculate = () => {
     calculateMAF(userProfile, verifiedMafPace, ageNum, isChild, isNewbie, getBMI);
+    // Save profile to server in background (fire-and-forget)
+    updateProfile(userProfile);
   };
 
   return (
@@ -66,11 +70,17 @@ const CalculatorApp: React.FC = () => {
         <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
         <main className="max-w-7xl mx-auto px-4 mt-8">
-          {activeTab === 'LAB' && (
+          {profileLoading && (
+            <div className="flex justify-center py-20">
+              <div className="w-8 h-8 border-2 border-maf-violet border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
+
+          {!profileLoading && activeTab === 'LAB' && (
             <MafLab onComplete={handleLabComplete} targetMafHr={calculateRawMaf(userProfile)} />
           )}
 
-          {activeTab === 'PLAN' && (
+          {!profileLoading && activeTab === 'PLAN' && (
             <div className="space-y-10">
               <UserInputForm
                 userProfile={userProfile}
