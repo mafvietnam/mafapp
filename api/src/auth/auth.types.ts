@@ -8,6 +8,7 @@ export interface WpUserInfo {
 export interface TokenPayload {
   sub: string; // user UUID
   email: string;
+  role: string; // 'USER' | 'COACH' | 'ADMIN'
 }
 
 export interface OAuthState {

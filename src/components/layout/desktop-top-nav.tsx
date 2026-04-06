@@ -1,4 +1,4 @@
-import { Bell } from 'lucide-react';
+import { Bell, Shield } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth-context';
 
@@ -52,6 +52,15 @@ export default function DesktopTopNav() {
         </div>
 
         <div className="flex items-center gap-6">
+          {user?.role === 'ADMIN' && (
+            <Link
+              to="/admin"
+              className="text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 text-sm font-medium"
+            >
+              <Shield className="w-4 h-4" />
+              Admin
+            </Link>
+          )}
           <div className="relative">
             <Bell className="w-5 h-5 text-slate-300 cursor-pointer hover:text-white transition-colors" />
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-maf-red rounded-full" />

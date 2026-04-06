@@ -1,0 +1,66 @@
+import { api } from './api-client';
+
+export interface AdminStats {
+  totalUsers: number;
+  totalProfiles: number;
+  newUsersToday: number;
+  recentUsers: AdminUserSummary[];
+}
+
+export interface AdminUserSummary {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string | null;
+  role: string;
+  createdAt: string;
+}
+
+export interface AdminUserDetail extends AdminUserSummary {
+  profile: Record<string, unknown> | null;
+}
+
+export interface PaginatedUsers {
+  data: AdminUserDetail[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export async function getAdminStats(): Promise<AdminStats | null> {
+  try {
+    const res = await api.get('/admin/stats');
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function getAdminUsers(params: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}): Promise<PaginatedUsers | null> {
+  try {
+    const qs = new URLSearchParams();
+    if (params.page) qs.set('page', String(params.page));
+    if (params.limit) qs.set('limit', String(params.limit));
+    if (params.search) qs.set('search', params.search);
+    const res = await api.get(`/admin/users?${qs}`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function updateAdminUser(id: string, data: { role?: string }) {
+  const res = await api.patch(`/admin/users/${id}`, data);
+  return res.ok;
+}
+
+export async function deleteAdminUser(id: string) {
+  const res = await api.delete(`/admin/users/${id}`);
+  return res.ok;
+}

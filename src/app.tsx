@@ -16,7 +16,12 @@ import LoginPage from './pages/login-page';
 import ProfilePage from './pages/profile-page';
 import DashboardPage from './pages/dashboard-page';
 import ProtectedRoute from './components/layout/protected-route';
+import AdminProtectedRoute from './components/layout/admin-protected-route';
 import AppLayout from './components/layout/app-layout';
+import AdminLayout from './components/admin/admin-layout';
+import AdminDashboardPage from './pages/admin/admin-dashboard-page';
+import AdminUsersPage from './pages/admin/admin-users-page';
+import AdminPlaceholderPage from './pages/admin/admin-placeholder-page';
 
 const CalculatorApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'PLAN' | 'LAB'>('PLAN');
@@ -139,6 +144,20 @@ const App: React.FC = () => {
       <Routes>
         {/* Login page (public) */}
         <Route path="/login" element={<LoginPage />} />
+
+        {/* Admin routes — requires ADMIN role */}
+        <Route element={<AdminProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminDashboardPage />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
+            <Route path="/admin/stats" element={<AdminPlaceholderPage title="Thống kê" />} />
+            <Route path="/admin/coaches" element={<AdminPlaceholderPage title="Huấn luyện viên" />} />
+            <Route path="/admin/library" element={<AdminPlaceholderPage title="Thư viện Giáo án" />} />
+            <Route path="/admin/challenges" element={<AdminPlaceholderPage title="Thử thách & Sự kiện" />} />
+            <Route path="/admin/settings" element={<AdminPlaceholderPage title="Cài đặt chung" />} />
+            <Route path="/admin/permissions" element={<AdminPlaceholderPage title="Phân quyền" />} />
+          </Route>
+        </Route>
 
         {/* All routes require authentication */}
         <Route element={<ProtectedRoute />}>

@@ -11,7 +11,7 @@ export class UserController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async getMe(@Req() req: Request) {
-    const { id } = req.user as { id: string; email: string };
+    const { id } = req.user as { id: string; email: string; role: string };
     const user = await this.userService.findById(id);
     if (!user) throw new NotFoundException('User not found');
     return {
@@ -19,6 +19,7 @@ export class UserController {
       name: user.name,
       email: user.email,
       avatar: user.avatar,
+      role: user.role,
     };
   }
 }

@@ -8,6 +8,7 @@ import { HealthModule } from './health/health.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UserModule } from './user/user.module.js';
 import { ProfileModule } from './profile/profile.module.js';
+import { AdminModule } from './admin/admin.module.js';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ProfileModule } from './profile/profile.module.js';
     AuthModule,
     UserModule,
     ProfileModule,
+    AdminModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: ThrottlerGuard },

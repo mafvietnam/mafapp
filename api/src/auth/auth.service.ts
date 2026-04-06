@@ -44,7 +44,7 @@ export class AuthService {
     const user = await this.userService.findOrCreateFromWp(wpUser);
 
     // Generate JWT + refresh token
-    const accessToken = await this.generateAccessToken(user.id, user.email);
+    const accessToken = await this.generateAccessToken(user.id, user.email, user.role);
     const refreshToken = await this.generateRefreshToken(user.id);
 
     return { accessToken, refreshToken };
@@ -55,7 +55,7 @@ export class AuthService {
     profile: GoogleProfile,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const user = await this.userService.findOrCreateFromGoogle(profile);
-    const accessToken = await this.generateAccessToken(user.id, user.email);
+    const accessToken = await this.generateAccessToken(user.id, user.email, user.role);
     const refreshToken = await this.generateRefreshToken(user.id);
     return { accessToken, refreshToken };
   }
@@ -86,7 +86,7 @@ export class AuthService {
     const user = await this.userService.findById(userId);
     if (!user) throw new UnauthorizedException('User not found');
 
-    const accessToken = await this.generateAccessToken(user.id, user.email);
+    const accessToken = await this.generateAccessToken(user.id, user.email, user.role);
     const refreshToken = await this.generateRefreshToken(user.id);
 
     // Store grace period (60s) for race condition mitigation
@@ -105,8 +105,8 @@ export class AuthService {
     await this.redis.del(`refresh:${refreshToken}`);
   }
 
-  private async generateAccessToken(userId: string, email: string): Promise<string> {
-    const payload: TokenPayload = { sub: userId, email };
+  private async generateAccessToken(userId: string, email: string, role: string): Promise<string> {
+    const payload: TokenPayload = { sub: userId, email, role };
     return this.jwt.signAsync(payload, { expiresIn: '15m' });
   }
 

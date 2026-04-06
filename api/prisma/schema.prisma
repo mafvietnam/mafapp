@@ -7,6 +7,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  COACH
+  ADMIN
+}
+
 model User {
   id        String       @id @default(uuid())
   wpUserId  Int?         @unique
@@ -14,6 +20,7 @@ model User {
   email     String       @unique
   name      String
   avatar    String?
+  role      Role         @default(USER)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
   profile   UserProfile?
