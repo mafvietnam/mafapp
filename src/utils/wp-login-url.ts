@@ -1,4 +1,4 @@
-const WP_LOGIN_URL = import.meta.env.VITE_WP_LOGIN_URL || 'https://maf.run/login';
+const WP_LOGIN_URL = import.meta.env.VITE_WP_LOGIN_URL || 'https://maf.run/wp-login.php';
 const APP_CALLBACK_URL = `${window.location.origin}/auth/callback`;
 
 /** Build the WordPress login URL with redirect_uri back to app SSO callback */
