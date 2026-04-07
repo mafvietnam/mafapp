@@ -8,6 +8,7 @@ import {
   Target,
   Settings,
   ShieldAlert,
+  Watch,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/auth-context';
 
@@ -26,6 +27,12 @@ const sections = [
       { to: '/admin/coaches', icon: Medal, label: 'Huấn luyện viên' },
       { to: '/admin/library', icon: Dumbbell, label: 'Thư viện Giáo án' },
       { to: '/admin/challenges', icon: Target, label: 'Thử thách & Sự kiện' },
+    ],
+  },
+  {
+    title: 'Tích hợp',
+    items: [
+      { to: '/admin/garmin', icon: Watch, label: 'Garmin Connect' },
     ],
   },
   {

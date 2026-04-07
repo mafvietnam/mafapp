@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Post,
   Patch,
   Delete,
   Param,
@@ -26,6 +27,16 @@ export class AdminController {
   @Get('stats')
   getStats() {
     return this.adminService.getStats();
+  }
+
+  @Get('garmin')
+  getGarminOverview() {
+    return this.adminService.getGarminOverview();
+  }
+
+  @Post('garmin/:userId/sync')
+  triggerGarminSync(@Param('userId') userId: string) {
+    return this.adminService.triggerGarminSync(userId);
   }
 
   @Get('users')

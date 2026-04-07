@@ -75,13 +75,15 @@ export default function DesktopTopNav() {
                 Đăng xuất
               </button>
             </div>
-            {user?.avatar ? (
-              <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full bg-slate-800 border border-white/20" />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/20 flex items-center justify-center text-white font-bold">
-                {user?.name?.charAt(0) || '?'}
-              </div>
-            )}
+            <Link to="/profile" className="block">
+              {user?.avatar ? (
+                <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full bg-slate-800 border border-white/20 hover:border-white/40 transition-colors cursor-pointer" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/20 hover:border-white/40 transition-colors flex items-center justify-center text-white font-bold cursor-pointer">
+                  {user?.name?.charAt(0) || '?'}
+                </div>
+              )}
+            </Link>
           </div>
         </div>
       </div>

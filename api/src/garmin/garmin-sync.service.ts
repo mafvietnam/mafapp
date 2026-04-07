@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import type { GarminConnect } from 'garmin-connect';
+import type { GarminConnect } from '@gooin/garmin-connect';
 import { PrismaService } from '../shared/prisma.service.js';
 import { RedisService } from '../shared/redis.service.js';
 import { GarminService } from './garmin.service.js';
