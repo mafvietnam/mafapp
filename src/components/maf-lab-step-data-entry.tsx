@@ -18,6 +18,8 @@ interface MafLabStepDataEntryProps {
   targetMafHr: number | null;
   garminSource?: { activityDate: string; avgHr: string } | null;
   onDismissGarmin?: () => void;
+  stravaSource?: { activityDate: string; avgHr: string } | null;
+  onDismissStrava?: () => void;
 }
 
 const inputBase = 'w-full p-4 text-xl bg-[#1F2937] border border-white/10 rounded-xl focus:border-maf-violet outline-none text-white font-medium placeholder-white/30';
@@ -27,6 +29,7 @@ export const MafLabStepDataEntry: React.FC<MafLabStepDataEntryProps> = ({
   setDistance, setHours, setMinutes, setSeconds, setAvgHr,
   onProcess, onBack, targetMafHr,
   garminSource, onDismissGarmin,
+  stravaSource, onDismissStrava,
 }) => {
   const timeFields = [
     { value: hours, setter: setHours, placeholder: '00', label: 'Giờ' },
@@ -68,6 +71,14 @@ export const MafLabStepDataEntry: React.FC<MafLabStepDataEntryProps> = ({
         </div>
 
         <div>
+          {stravaSource && onDismissStrava && (
+            <GarminAutoFillBanner
+              activityDate={stravaSource.activityDate}
+              avgHr={stravaSource.avgHr}
+              onDismiss={onDismissStrava}
+              source="strava"
+            />
+          )}
           {garminSource && onDismissGarmin && (
             <GarminAutoFillBanner
               activityDate={garminSource.activityDate}

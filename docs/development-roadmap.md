@@ -1,6 +1,6 @@
 # Development Roadmap
 
-## Current Version: 1.3.0 (WordPress SSO + Garmin Integration + Admin Management)
+## Current Version: 1.5.0 (Strava Integration — Complete Phase 4)
 
 **Status:** Production Ready | **Frontend:** https://app.maf.run | **API:** https://api.maf.run
 
@@ -94,27 +94,44 @@
 - Parallel execution strategy defined
 - Review reports: plan failure analysis, scope complexity critique
 
+### Phase 13: Strava Integration ✅ COMPLETE
+- **Phase 13.1:** Foundation & Prisma Models ✅ COMPLETE
+  - StravaConnection + StravaActivity models, AES-256 token encryption, feature flag
+- **Phase 13.2:** OAuth2 Connection Flow ⏳ PENDING
+  - Connect/disconnect endpoints, token exchange, frontend card
+- **Phase 13.3:** Webhook & Sync Engine ✅ COMPLETE
+  - Webhook subscription (register on startup), event handler (POST /webhook)
+  - Sync service: paginated fetch, Redis locks, dedup check against Garmin
+  - Rate-limit handling (X-RateLimit headers, 429 backoff)
+  - isDuplicate flag on GarminActivity (Strava wins on conflict)
+- **Phase 13.4:** Cron Fallback & MAF Lab ✅ COMPLETE
+  - Daily 3am cron fallback (Redis global lock, syncs users not synced in 25h)
+  - GET /strava/activities — paginated (page, limit, type, excludeDuplicates)
+  - GET /strava/activities/:id — single activity endpoint
+  - useStravaAutoFill hook (mirrors Garmin, gated by VITE_FEATURE_STRAVA)
+  - MAF Lab Strava auto-fill button (orange banner, wins over Garmin)
+
 ---
 
 ## Future Roadmap (Planned)
 
 | Phase | Goal | Effort | ETA | Status |
 |-------|------|--------|-----|--------|
-| 13 | Training history logging & persistence | 2w | Q2 2026 | Planned |
-| 14 | Progress charts & visualization (Recharts) | 2w | Q3 2026 | Planned |
-| 15 | Garmin OAuth2 migration (official API) | 2w | Q3 2026 | Backlog |
-| 16 | Mobile app (React Native/Flutter) | 6-8w | Q3 2026 | Backlog |
-| 17 | Apple Watch integration | 2-3w | Q4 2026 | Backlog |
-| 18 | Multi-language support (EN, VI, FR) | 1-2w | Q4 2026 | Backlog |
-| 19+ | Social features, AI insights, coaching | TBD | 2027+ | Visionary |
+| 14 | Training history logging & persistence | 2w | Q2 2026 | Planned |
+| 15 | Progress charts & visualization (Recharts) | 2w | Q3 2026 | Planned |
+| 16 | Garmin OAuth2 migration (official API) | 2w | Q3 2026 | Backlog |
+| 17 | Mobile app (React Native/Flutter) | 6-8w | Q3 2026 | Backlog |
+| 18 | Apple Watch integration | 2-3w | Q4 2026 | Backlog |
+| 19 | Multi-language support (EN, VI, FR) | 1-2w | Q4 2026 | Backlog |
+| 20+ | Social features, AI insights, coaching | TBD | 2027+ | Visionary |
 
 ---
 
 ## Known Limitations
 
-- Garmin MVP stores encrypted credentials (Phase 15: migrate to official OAuth2 API)
-- Vietnamese UI only (Phase 18: multi-language support planned)
-- No Strava integration yet (planned for Phase 16+)
+- Garmin MVP stores encrypted credentials (Phase 16: migrate to official OAuth2 API)
+- Vietnamese UI only (Phase 19: multi-language support planned)
+- Strava OAuth2 connection pending (Phase 13.2: defer to Phase 14)
 - N8N automation server commented out (deferred)
 
 ---
@@ -145,4 +162,4 @@
 
 ---
 
-**Last Updated:** April 7, 2026 | **Version:** 1.3.0
+**Last Updated:** April 7, 2026 | **Version:** 1.5.0

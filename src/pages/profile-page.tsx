@@ -6,6 +6,7 @@ import { getProfile, updateProfile } from '../services/profile-service';
 import { ExperienceLevel, CommitmentLevel } from '../types';
 import { Activity, Heart, Flame, Zap } from 'lucide-react';
 import GarminConnectCard from '../components/garmin-connect-card';
+import StravaConnectCard from '../components/strava-connect-card';
 
 const EXPERIENCE_OPTIONS = [
   { value: ExperienceLevel.NONE, label: 'Chưa từng chạy' },
@@ -186,8 +187,9 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Connected Devices (Garmin) */}
+        {/* Connected Devices */}
         <GarminConnectCard />
+        <StravaConnectCard />
 
         {/* Commitment */}
         <div className="desktop-card p-6">

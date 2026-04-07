@@ -3,6 +3,7 @@ import { MafLabStepChecklist } from './maf-lab-step-checklist';
 import { MafLabStepDataEntry } from './maf-lab-step-data-entry';
 import { MafLabStepResults } from './maf-lab-step-results';
 import { useGarminAutoFill } from '../hooks/use-garmin-auto-fill';
+import { useStravaAutoFill } from '../hooks/use-strava-auto-fill';
 
 interface MafLabProps {
   onComplete: (pace: string) => void;
@@ -27,22 +28,35 @@ export const MafLab: React.FC<MafLabProps> = ({ onComplete, targetMafHr }) => {
   const [finalPace, setFinalPace] = useState('');
   const [isMafCompliant, setIsMafCompliant] = useState(true);
 
-  // Garmin auto-fill: populate form from latest Garmin running activity
-  const { autoFill } = useGarminAutoFill();
+  // Auto-fill from device data: Strava wins over Garmin when both have recent runs.
+  // Waits for both hooks to finish loading before applying to avoid race conditions.
+  const { autoFill: garminAutoFill, loading: garminLoading } = useGarminAutoFill();
+  const { autoFill: stravaAutoFill, loading: stravaLoading } = useStravaAutoFill();
   const [garminSource, setGarminSource] = useState<{ activityDate: string; avgHr: string } | null>(null);
+  const [stravaSource, setStravaSource] = useState<{ activityDate: string; avgHr: string } | null>(null);
   const autoFillApplied = useRef(false);
 
   useEffect(() => {
-    if (autoFill && !autoFillApplied.current && !avgHr && !distance) {
-      autoFillApplied.current = true;
-      setDistance(autoFill.distance);
-      setHours(autoFill.hours);
-      setMinutes(autoFill.minutes);
-      setSeconds(autoFill.seconds);
-      setAvgHr(autoFill.avgHr);
-      setGarminSource({ activityDate: autoFill.activityDate, avgHr: autoFill.avgHr });
+    if (garminLoading || stravaLoading) return;
+    if (autoFillApplied.current || avgHr || distance) return;
+
+    // Strava wins if available, otherwise fall back to Garmin
+    const source = stravaAutoFill ?? garminAutoFill;
+    if (!source) return;
+
+    autoFillApplied.current = true;
+    setDistance(source.distance);
+    setHours(source.hours);
+    setMinutes(source.minutes);
+    setSeconds(source.seconds);
+    setAvgHr(source.avgHr);
+
+    if (stravaAutoFill) {
+      setStravaSource({ activityDate: stravaAutoFill.activityDate, avgHr: stravaAutoFill.avgHr });
+    } else if (garminAutoFill) {
+      setGarminSource({ activityDate: garminAutoFill.activityDate, avgHr: garminAutoFill.avgHr });
     }
-  }, [autoFill, avgHr, distance]);
+  }, [garminLoading, stravaLoading, stravaAutoFill, garminAutoFill, avgHr, distance]);
 
   const handleCheck = (key: keyof typeof checklist) => {
     setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
@@ -108,7 +122,7 @@ export const MafLab: React.FC<MafLabProps> = ({ onComplete, targetMafHr }) => {
         <MafLabStepChecklist checklist={checklist} onCheck={handleCheck} allChecked={allChecked} onProceed={() => setStep(2)} targetMafHr={targetMafHr} />
       )}
       {step === 2 && (
-        <MafLabStepDataEntry distance={distance} hours={hours} minutes={minutes} seconds={seconds} avgHr={avgHr} setDistance={setDistance} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} setAvgHr={setAvgHr} onProcess={handleProcessData} onBack={() => setStep(1)} targetMafHr={targetMafHr} garminSource={garminSource} onDismissGarmin={() => setGarminSource(null)} />
+        <MafLabStepDataEntry distance={distance} hours={hours} minutes={minutes} seconds={seconds} avgHr={avgHr} setDistance={setDistance} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} setAvgHr={setAvgHr} onProcess={handleProcessData} onBack={() => setStep(1)} targetMafHr={targetMafHr} garminSource={garminSource} onDismissGarmin={() => setGarminSource(null)} stravaSource={stravaSource} onDismissStrava={() => setStravaSource(null)} />
       )}
       {step === 3 && (
         <MafLabStepResults calculatedPace={calculatedPace} finalPace={finalPace} isMafCompliant={isMafCompliant} avgHr={avgHr} targetMafHr={targetMafHr} onComplete={onComplete} onBack={() => setStep(2)} />

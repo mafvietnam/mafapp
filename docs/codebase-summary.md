@@ -85,7 +85,7 @@
 │   ├── welcome-modal.tsx — First-visit info (localStorage-gated)
 │   └── recovery-modal.tsx — Injury recovery info
 │
-├── hooks/ (~410 lines, 3 files)
+├── hooks/ (~500 lines, 5 files)
 │   Custom React hooks (state management):
 │
 │   ├── use-user-profile.ts (181 lines)
@@ -99,8 +99,18 @@
 │   │   Manages result state, calls setState, handles scroll-to-result
 │   │   Exports: calculateMAF(), calculateRawMaf(), getVolumeCapText()
 │   │
-│   └── use-probation.ts (38 lines)
-│       Auto-unlock injury probation after 14 days
+│   ├── use-probation.ts (38 lines)
+│   │   Auto-unlock injury probation after 14 days
+│   │
+│   ├── use-garmin-auto-fill.ts (~80 lines)
+│   │   Fetches latest Garmin running activity (HR, distance, duration)
+│   │   Returns null if no recent activity or on error
+│   │   Gated by FEATURE_GARMIN env var
+│   │
+│   └── use-strava-auto-fill.ts (~80 lines)
+│       Fetches latest Strava running activity (HR, distance, duration)
+│       Returns null if no recent activity or on error
+│       Gated by VITE_FEATURE_STRAVA env var (mirrors Garmin hook)
 │
 ├── contexts/
 │   ├── auth-context.tsx — Global auth state (user, token, loading)
@@ -348,9 +358,29 @@ api/
 │   │   ├── health.controller.ts — GET /health
 │   │   └── health.module.ts
 │   │
+│   ├── garmin/ (Garmin device sync — gated by FEATURE_GARMIN)
+│   │   ├── garmin.controller.ts — endpoints: connect, disconnect, status, sync, activities, daily-summary
+│   │   ├── garmin.service.ts — business logic, connection queries
+│   │   ├── garmin-sync.service.ts — sync engine (fetch + upsert from Garmin)
+│   │   ├── garmin-cron.service.ts — 2-hour cron job
+│   │   ├── garmin-encryption.service.ts — AES-256-GCM encrypt/decrypt credentials
+│   │   ├── garmin-connect.dto.ts — connect request DTO
+│   │   ├── garmin-activity.dto.ts — activity query DTOs
+│   │   └── garmin.module.ts
+│   │
+│   ├── strava/ (Strava activity sync + webhook — gated by FEATURE_STRAVA)
+│   │   ├── strava.controller.ts — GET/POST /webhook, GET /activities, GET /activities/:id, connect, disconnect, sync
+│   │   ├── strava.service.ts — business logic, connection management, getActivities()
+│   │   ├── strava-sync.service.ts — sync engine (paginated fetch + upsert, dedup, rate-limit handling)
+│   │   ├── strava-webhook.service.ts — webhook subscription, event processing, challenge validation
+│   │   ├── strava-cron.service.ts — daily 3am cron fallback (25h threshold, Redis global lock)
+│   │   ├── strava-encryption.service.ts — AES-256 encrypt/decrypt OAuth2 tokens
+│   │   ├── dto/strava-activity-query.dto.ts — page, limit, type, excludeDuplicates filters
+│   │   └── strava.module.ts
+│   │
 │   └── shared/
-│       ├── prisma.service.ts — PostgreSQL ORM (User, UserProfile models)
-│       ├── redis.service.ts — Session + cache (PKCE state, JWT, profiles)
+│       ├── prisma.service.ts — PostgreSQL ORM (User, UserProfile, GarminConnection, GarminActivity, StravaConnection, StravaActivity)
+│       ├── redis.service.ts — Session + cache (PKCE state, JWT, profiles, sync locks)
 │       └── shared.module.ts
 │
 ├── prisma/
@@ -490,4 +520,4 @@ User is authenticated for next 24h (JWT exp)
 
 ---
 
-**Last Updated:** April 6, 2026 (Phase 9 - WordPress SSO + API complete) | **Version:** 1.1.0
+**Last Updated:** April 7, 2026 (Strava Integration Phase 4 — Cron Fallback & MAF Lab) | **Version:** 1.5.0

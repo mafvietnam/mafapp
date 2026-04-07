@@ -10,6 +10,9 @@ import { AuthModule } from './auth/auth.module.js';
 import { UserModule } from './user/user.module.js';
 import { ProfileModule } from './profile/profile.module.js';
 import { AdminModule } from './admin/admin.module.js';
+import { StravaModule } from './strava/strava.module.js';
+
+const isStravaEnabled = process.env.FEATURE_STRAVA === 'true';
 
 @Module({
   imports: [
@@ -26,6 +29,20 @@ import { AdminModule } from './admin/admin.module.js';
         CORS_ORIGIN: Joi.string().default('https://app.maf.run'),
         PORT: Joi.number().default(3001),
         GARMIN_ENCRYPTION_KEY: Joi.string().default(''),
+        BACKEND_URL: Joi.string().default('http://localhost:3001'),
+        FEATURE_STRAVA: Joi.string().default('false'),
+        STRAVA_ENCRYPTION_KEY: isStravaEnabled
+          ? Joi.string().hex().length(64).required()
+          : Joi.string().default(''),
+        STRAVA_CLIENT_ID: isStravaEnabled
+          ? Joi.string().required()
+          : Joi.string().default(''),
+        STRAVA_CLIENT_SECRET: isStravaEnabled
+          ? Joi.string().required()
+          : Joi.string().default(''),
+        STRAVA_WEBHOOK_VERIFY_TOKEN: isStravaEnabled
+          ? Joi.string().required()
+          : Joi.string().default(''),
       }),
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
@@ -36,6 +53,7 @@ import { AdminModule } from './admin/admin.module.js';
     UserModule,
     ProfileModule,
     AdminModule,
+    ...(isStravaEnabled ? [StravaModule] : []),
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
