@@ -22,6 +22,7 @@ function timeAgo(isoDate: string): string {
 export default function GarminConnectCard() {
   const [status, setStatus] = useState<GarminStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const [available, setAvailable] = useState(true);
   const [connecting, setConnecting] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,6 +30,7 @@ export default function GarminConnectCard() {
 
   useEffect(() => {
     getGarminStatus().then((s) => {
+      if (s === null) setAvailable(false); // Feature disabled or API unavailable
       setStatus(s);
       setLoading(false);
     });
@@ -60,6 +62,9 @@ export default function GarminConnectCard() {
     setEmail('');
     setConnecting(false);
   };
+
+  // Hide card entirely when Garmin feature is disabled
+  if (!loading && !available) return null;
 
   if (loading) {
     return (
