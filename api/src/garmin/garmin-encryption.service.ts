@@ -16,10 +16,15 @@ export class GarminEncryptionService implements OnModuleInit {
 
   onModuleInit() {
     if (this.key.length !== 32) {
-      throw new Error(
-        'GARMIN_ENCRYPTION_KEY must be exactly 32 bytes (64 hex chars)',
+      console.warn(
+        'GARMIN_ENCRYPTION_KEY not set or invalid — Garmin encryption disabled',
       );
     }
+  }
+
+  /** Check if encryption is available */
+  get isConfigured(): boolean {
+    return this.key.length === 32;
   }
 
   encrypt(plaintext: string): string {

@@ -108,3 +108,37 @@ export async function triggerAdminGarminSync(userId: string): Promise<boolean> {
     return false;
   }
 }
+
+/* ── Garmin Settings ── */
+
+export interface GarminSettingsData {
+  enabled: boolean;
+  clientId: string;
+  clientSecret: string;
+  callbackUrl: string;
+  hasClientSecret: boolean;
+}
+
+export async function getGarminSettings(): Promise<GarminSettingsData | null> {
+  try {
+    const res = await api.get('/admin/settings/garmin');
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function saveGarminSettings(data: {
+  clientId?: string;
+  clientSecret?: string;
+  callbackUrl?: string;
+  enabled?: boolean;
+}): Promise<boolean> {
+  try {
+    const res = await api.post('/admin/settings/garmin', data);
+    return res.ok;
+  } catch {
+    return false;
+  }
+}

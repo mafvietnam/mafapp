@@ -5,14 +5,18 @@ import { GarminEncryptionService } from './garmin-encryption.service.js';
 import { GarminSyncService } from './garmin-sync.service.js';
 import { GarminCronService } from './garmin-cron.service.js';
 
+const isGarminEnabled = process.env.FEATURE_GARMIN === 'true';
+
 @Module({
-  controllers: [GarminController],
+  // Only register user-facing controller + cron when feature is enabled
+  controllers: isGarminEnabled ? [GarminController] : [],
   providers: [
-    GarminService,
     GarminEncryptionService,
-    GarminSyncService,
-    GarminCronService,
+    // Sync + cron only when enabled
+    ...(isGarminEnabled
+      ? [GarminService, GarminSyncService, GarminCronService]
+      : []),
   ],
-  exports: [GarminService, GarminSyncService],
+  exports: [GarminEncryptionService, ...(isGarminEnabled ? [GarminService, GarminSyncService] : [])],
 })
 export class GarminModule {}
