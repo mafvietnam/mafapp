@@ -1,6 +1,6 @@
 # Development Roadmap
 
-## Current Version: 1.1.0 (WordPress SSO + Backend API)
+## Current Version: 1.3.0 (WordPress SSO + Garmin Integration + Admin Management)
 
 **Status:** Production Ready | **Frontend:** https://app.maf.run | **API:** https://api.maf.run
 
@@ -61,18 +61,36 @@
 - Mobile UX fixes: modal scroll lock, checkbox touch targets, favicon (commit: dc13385)
 
 ### Phase 9: WordPress SSO + Server-Side Storage ✅ COMPLETED
-- NestJS 10 API with PostgreSQL + Redis (commit: TBD)
-- WordPress OAuth2 PKCE authentication (secure for SPAs)
-- JWT RS256 token-based auth with HTTP-only cookies
+- NestJS 10 API with PostgreSQL + Redis
+- WordPress direct login + JWT RS256 token-based auth with HTTP-only cookies
 - User profiles server-side (replaces localStorage)
 - Dashboard page (authenticated, dark theme)
-- Login page with WP SSO button
+- Login page with credentials entry
 - Profile management page
 - Docker services: maf-api, postgres, redis
 
-### Phase 10: Sprint Planning ✅ DRAFTED
-- SP2-SP7 sprint roadmap created (commit: 86be72c)
-- Research reports generated (commit: 5d069b0)
+### Phase 10: WordPress SSO Integration + Admin Panel ✅ COMPLETED
+- WordPress MU-plugin: `/wp-json/maf/v1/auth` and `/wp-json/maf/v1/sso/verify` endpoints
+- Two login methods: direct (username+password) and SSO (one-time code)
+- SSO callback page: exchanges WP code for JWT cookies
+- Account management: `isActive` field for soft-disable
+- Admin panel: user list, search, status toggle with self-protection
+- RBAC: role enum (USER, COACH, ADMIN) with endpoint guards
+- Redis revocation set for instant JWT invalidation on account disable
+- Profile sync from WordPress (name, email, avatar) on each login
+
+### Phase 11: Garmin Integration MVP ✅ COMPLETED
+- Garmin device connection with encrypted credential storage (AES-256-GCM)
+- Background sync every 2 hours via cron job
+- Activity data: distance, pace, heart rate, VO2max
+- Daily health metrics: steps, resting HR, sleep, stress
+- MAF Lab auto-fill: fetch latest running activity HR
+- Paginated activity + daily summary queries
+- Feature gated by `FEATURE_GARMIN` env var
+
+### Phase 12: Sprint Planning ✅ DRAFTED
+- SP2-SP7 sprint roadmap created
+- Research reports generated
 - Parallel execution strategy defined
 - Review reports: plan failure analysis, scope complexity critique
 
@@ -80,22 +98,24 @@
 
 ## Future Roadmap (Planned)
 
-| Phase | Goal | Effort | ETA |
-|-------|------|--------|-----|
-| 10 | Training history logging & persistence | 2w | Q2 2026 |
-| 11 | Progress charts & visualization | 2w | Q3 2026 |
-| 12 | Mobile app (React Native/Flutter) | 6-8w | Q3 2026 |
-| 13 | Fitness device integration (Garmin, Apple Watch) | 3-4w | Q4 2026 |
-| 14 | Multi-language support (EN, VI, FR) | 1-2w | Q4 2026 |
-| 15+ | Social features, AI insights | TBD | 2027+ |
+| Phase | Goal | Effort | ETA | Status |
+|-------|------|--------|-----|--------|
+| 13 | Training history logging & persistence | 2w | Q2 2026 | Planned |
+| 14 | Progress charts & visualization (Recharts) | 2w | Q3 2026 | Planned |
+| 15 | Garmin OAuth2 migration (official API) | 2w | Q3 2026 | Backlog |
+| 16 | Mobile app (React Native/Flutter) | 6-8w | Q3 2026 | Backlog |
+| 17 | Apple Watch integration | 2-3w | Q4 2026 | Backlog |
+| 18 | Multi-language support (EN, VI, FR) | 1-2w | Q4 2026 | Backlog |
+| 19+ | Social features, AI insights, coaching | TBD | 2027+ | Visionary |
 
 ---
 
 ## Known Limitations
 
-- Manual heart rate input in Lab (future: wearable integration)
-- Vietnamese UI (future: multi-language support)
-- N8N automation server commented out (Phase 10 task)
+- Garmin MVP stores encrypted credentials (Phase 15: migrate to official OAuth2 API)
+- Vietnamese UI only (Phase 18: multi-language support planned)
+- No Strava integration yet (planned for Phase 16+)
+- N8N automation server commented out (deferred)
 
 ---
 
@@ -125,4 +145,4 @@
 
 ---
 
-**Last Updated:** April 6, 2026 | **Version:** 1.1.0
+**Last Updated:** April 7, 2026 | **Version:** 1.3.0

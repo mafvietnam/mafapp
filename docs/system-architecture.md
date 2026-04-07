@@ -53,15 +53,25 @@ ResultDisplay component
 ```
 App (App.tsx)
 ├─ Auth Context (checks JWT cookie)
-├─ Protected Routes (AuthGuard)
+├─ Protected Routes (AuthGuard, checks isActive status)
 │   ├─ /login → LoginPage
-│   │  └─ WP SSO OAuth2 PKCE flow
+│   │  ├─ Direct login: username + password
+│   │  └─ SSO: "Login with WordPress" button
+│   │
+│   ├─ /auth/callback → SsoCallbackPage
+│   │  └─ Exchange WP one-time code for JWT cookies
 │   │
 │   ├─ /dashboard → DashboardPage (authenticated)
 │   │  └─ User's MAF zone, recent results, training history
 │   │
 │   ├─ /profile → ProfilePage (authenticated)
-│   │  └─ User profile management, server-side sync
+│   │  ├─ User profile management, server-side sync
+│   │  └─ Garmin device connection (if FEATURE_GARMIN enabled)
+│   │
+│   ├─ /admin → AdminPage (authenticated, ADMIN role)
+│   │  ├─ User management with isActive toggle
+│   │  ├─ Account status badges (Hoạt động/Đã khóa)
+│   │  └─ Self-protection: cannot disable own account
 │   │
 │   ├─ /app → AppPageWrapper (with nav)
 │   │  ├─ PLAN Tab ──────────────────────────
@@ -84,6 +94,7 @@ App (App.tsx)
 │   │     └─ MafLab (3-step wizard)
 │   │        ├─ Step 1: MafLabStepChecklist (warmup instructions)
 │   │        ├─ Step 2: MafLabStepDataEntry (pace + HR input)
+│   │        │  └─ GarminAutoFillBanner (if Garmin connected)
 │   │        └─ Step 3: MafLabStepResults (verified pace display)
 │   │
 │   └─ /guide → GuidePage (public)
@@ -250,10 +261,27 @@ interface MafResult {
   - Caching for frequently accessed profiles
 
 ### Authentication
-- **WordPress OAuth2:** PKCE flow (most secure for SPAs)
+- **Two Login Methods:**
+  - **Direct:** POST `/auth/login` with username+password → validates via WordPress REST API
+  - **SSO:** POST `/auth/wp-sso` with one-time code → exchanges code from WordPress redirect
+- **WordPress SSO Flow:**
+  - User logs in at maf.run/wp-login.php with `redirect_to=app.maf.run/auth/callback`
+  - WP generates single-use HMAC-SHA256 code (5min TTL, only used once)
+  - Frontend exchanges code for JWT cookies via `/auth/wp-sso`
+  - Profile synced from WordPress on each login (name, email, avatar)
 - **JWT (RS256):** Asymmetric signing, RS256 private/public keys
-- **Cookies:** HTTP-only, Secure, SameSite=Strict
+  - Access token: 15min (httpOnly cookie: `maf_access`)
+  - Refresh token: 7 days (httpOnly cookie: `maf_refresh`, path=/auth/refresh)
+- **Account Status Check:**
+  - `isActive` field checked on login, SSO, and token refresh
+  - Disabled accounts rejected immediately
+  - Redis revocation set (`revoked:user:{id}`) for instant JWT invalidation when admin disables account
+- **Cookies:** HTTP-only, Secure, SameSite=Lax, domain=.maf.run (production)
 - **CORS:** Restricted to app.maf.run
+- **Rate Limiting:**
+  - WP auth endpoint: 5/minute per IP (WordPress transient-based)
+  - Direct login: 5/minute per request
+  - SSO code exchange: verified by WP plugin directly
 
 ---
 
@@ -290,18 +318,25 @@ api/ (NestJS 10)
 ├─ src/
 │  ├─ app.module.ts (root)
 │  │
-│  ├─ auth/ (OAuth2 + JWT)
-│  │  ├─ auth.controller.ts (POST /auth/initiate, GET /auth/callback)
-│  │  ├─ auth.service.ts (PKCE, token generation, user creation)
+│  ├─ auth/ (WordPress SSO + JWT)
+│  │  ├─ auth.controller.ts (POST /auth/login, POST /auth/wp-sso, POST /auth/refresh)
+│  │  ├─ auth.service.ts (WP credential validation, SSO code exchange, JWT generation)
 │  │  ├─ auth.types.ts (TokenPayload, WpUserInfo interfaces)
-│  │  ├─ jwt.strategy.ts (JWT RS256 validation)
-│  │  ├─ auth.guard.ts (JwtAuthGuard)
+│  │  ├─ jwt.strategy.ts (JWT RS256 validation + isActive check)
+│  │  ├─ auth.guard.ts (JwtAuthGuard with Redis revocation check)
 │  │  └─ auth.module.ts
 │  │
 │  ├─ user/ (User management)
 │  │  ├─ user.controller.ts (GET /users/:id, etc.)
-│  │  ├─ user.service.ts (CRUD operations)
+│  │  ├─ user.service.ts (findOrCreateFromWp, CRUD operations)
 │  │  └─ user.module.ts
+│  │
+│  ├─ admin/ (Account management, RBAC)
+│  │  ├─ admin.controller.ts (GET users list, PATCH user status)
+│  │  ├─ admin.service.ts (toggle isActive, query users, stats)
+│  │  ├─ admin.guard.ts (requires ADMIN role)
+│  │  ├─ admin-stats.dto.ts, admin-user-query.dto.ts, admin-update-user.dto.ts
+│  │  └─ admin.module.ts
 │  │
 │  ├─ profile/ (Training profiles)
 │  │  ├─ profile.controller.ts (POST /profile, PATCH /profile/:id)
@@ -325,13 +360,13 @@ api/ (NestJS 10)
 │  │
 │  ├─ shared/
 │  │  ├─ prisma.service.ts (PostgreSQL ORM)
-│  │  ├─ redis.service.ts (session + cache management)
+│  │  ├─ redis.service.ts (session + cache + revocation management)
 │  │  └─ shared.module.ts
 │  │
 │  └─ main.ts (entry point, bootstrap NestJS)
 │
 ├─ prisma/
-│  ├─ schema.prisma (User, UserProfile, GarminConnection, GarminActivity, GarminDailySummary)
+│  ├─ schema.prisma (User[role,isActive], UserProfile, GarminConnection, GarminActivity, GarminDailySummary)
 │  └─ migrations/
 │
 └─ Dockerfile (Node Alpine, pm2)
@@ -339,48 +374,121 @@ api/ (NestJS 10)
 
 ### API Endpoints
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| POST | `/auth/initiate` | ❌ | Start OAuth2 PKCE → redirect to WordPress |
-| GET | `/auth/callback` | ❌ | OAuth2 callback, create JWT, set cookie |
-| GET | `/health` | ❌ | Health check (Docker healthcheck) |
-| GET | `/profile` | ✅ | Get current user's profile |
-| POST | `/profile` | ✅ | Create profile for authenticated user |
-| PATCH | `/profile/:id` | ✅ | Update profile (age, commitment, history) |
-| GET | `/users/:id` | ✅ | Fetch user details |
+| Method | Endpoint | Auth | Role | Description |
+|--------|----------|------|------|-------------|
+| POST | `/auth/login` | ❌ | — | Direct login: username+password → JWT cookies |
+| POST | `/auth/wp-sso` | ❌ | — | SSO callback: exchange one-time code for JWT cookies |
+| POST | `/auth/refresh` | ✅ | — | Refresh access token using refresh cookie |
+| GET | `/health` | ❌ | — | Health check (Docker healthcheck) |
+| GET | `/profile` | ✅ | — | Get current user's profile |
+| POST | `/profile` | ✅ | — | Create profile for authenticated user |
+| PATCH | `/profile/:id` | ✅ | — | Update profile (age, commitment, history) |
+| GET | `/users/:id` | ✅ | — | Fetch user details |
+| GET | `/admin/users` | ✅ | ADMIN | List users (paginated, searchable) |
+| GET | `/admin/users/:id` | ✅ | ADMIN | Get user details with role + isActive |
+| PATCH | `/admin/users/:id` | ✅ | ADMIN | Toggle user isActive status (self-protection) |
+| GET | `/admin/stats` | ✅ | ADMIN | Dashboard stats: total users, new today, recent users |
 
 ### Database Schema (Prisma)
 
 ```prisma
+enum Role {
+  USER
+  COACH
+  ADMIN
+}
+
 model User {
-  id              String      @id @default(cuid())
-  wpUserId        String      @unique
-  email           String      @unique
-  displayName     String?
-  wpAvatarUrl     String?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  profiles        UserProfile[]
+  id        String   @id @default(uuid())
+  wpUserId  Int?     @unique
+  googleId  String?  @unique
+  email     String   @unique
+  name      String
+  avatar    String?
+  role      Role     @default(USER)
+  isActive  Boolean  @default(true)          // Account status: true=active, false=disabled
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile              UserProfile?
+  garminConnection     GarminConnection?
+  garminActivities     GarminActivity[]
+  garminDailySummaries GarminDailySummary[]
 }
 
 model UserProfile {
-  id                    String      @id @default(cuid())
-  userId                String
-  user                  User        @relation(fields: [userId], references: [id])
-  age                   Int
-  height                Float       // cm
-  weight                Float       // kg
-  experience            String      // NONE|INCONSISTENT|REGULAR_NEW|ADVANCED
-  commitment            String      // HEALTH|BASE|PERFORMANCE
-  isRecovering          Boolean     @default(false)
-  isMedicatedOrInjured  Boolean     @default(false)
-  previousMonthPace     String?
-  probationStartDate    DateTime?
-  createdAt             DateTime    @default(now())
-  updatedAt             DateTime    @updatedAt
+  id                         String   @id @default(uuid())
+  userId                     String   @unique
+  user                       User     @relation(fields: [userId], references: [id])
+  age                        Int
+  height                     Float    // cm
+  weight                     Float    // kg
+  experience                 String   // NONE|INCONSISTENT|REGULAR_NEW|ADVANCED
+  commitment                 String   // HEALTH|BASE|PERFORMANCE
+  isRecovering               Boolean  @default(false)
+  isMedicatedOrInjured       Boolean  @default(false)
+  previousMonthPace          String?
+  probationStartDate         DateTime?
+  lastLongRunDuration        Int?
+  lastLongRunHeartRate       Int?
+  lastLongRunFeeling         String?  // GOOD|TIRED|VERY_TIRED
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
 }
 ```
 
 ---
 
-**Version:** 1.1.0 | **Last Updated:** April 6, 2026 (Phase 9 - WordPress SSO + API complete)
+---
+
+## WordPress SSO Integration Details
+
+### MU-Plugin: maf-sso-provider.php
+Located at `wordpress/mu-plugins/maf-sso-provider.php`
+
+**Endpoints:**
+- `POST /wp-json/maf/v1/auth` — Validate username+password, return WP user info
+- `GET /wp-json/maf/v1/sso/verify?code=XXX` — Exchange one-time code for user info
+
+**Login Flow:**
+1. User logs in at maf.run/wp-login.php with `redirect_to=app.maf.run/auth/callback`
+2. On successful WP login, `login_redirect` hook generates HMAC-SHA256 code
+3. Code is single-use (transient), expires in 5 minutes
+4. Redirects to `app.maf.run/auth/callback?code={code}`
+5. Frontend exchanges code for JWT cookies
+
+**Security:**
+- HMAC-SHA256 integrity check on code payload
+- Rate limiting: 5 login attempts/minute per IP (WordPress transient)
+- Codes are 64-char hex (32 bytes entropy), single-use only
+- Whitelisted redirect origins: `https://app.maf.run`, `http://localhost:5173` (dev)
+- `allowed_redirect_hosts` filter prevents open redirects
+
+### Frontend SSO Flow
+Files: `src/utils/wp-login-url.ts`, `src/pages/sso-callback-page.tsx`, `src/pages/login-page.tsx`
+
+1. **LoginPage:** Renders "Login with WordPress" button
+2. **On click:** Navigate to WordPress login with `redirect_to=app.maf.run/auth/callback`
+3. **User authenticates** at maf.run (WordPress handles password)
+4. **SsoCallbackPage:** Receives code from URL, calls `POST /auth/wp-sso` with code
+5. **API exchanges code:** Verifies with WP, upserts User, issues JWT cookies
+6. **On success:** Redirects to `/dashboard`
+
+**Profile Sync:**
+- Name, email, avatar synced from WordPress on each login
+- Local User record upserted via `findOrCreateFromWp()`
+- WordPress is source of truth for identity
+
+### Account Management (Admin)
+File: `api/src/admin/admin.service.ts`
+
+**Features:**
+- `isActive` field soft-disables accounts (boolean, not deletion)
+- Admin can toggle any user's isActive status
+- Self-protection: cannot disable own account or demote self
+- Disabled accounts rejected immediately on login/SSO/refresh
+- Redis revocation set: `revoked:user:{id}` for instant JWT invalidation
+- Admin UI shows status badge: "Hoạt động" (active) or "Đã khóa" (disabled)
+
+---
+
+**Version:** 1.2.0 | **Last Updated:** April 7, 2026 (WordPress SSO + Admin Account Management)

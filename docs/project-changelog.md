@@ -4,6 +4,103 @@ All notable changes to MAF Running Coach are documented here.
 
 ---
 
+## [1.3.0] — 2026-04-07 (WordPress SSO + Account Management)
+
+### Major: WordPress SSO Authentication & Admin Account Control
+
+**Scope:** Integrate WordPress as identity provider with custom SSO MU-plugin, add account management with role-based access control (RBAC).
+
+### Added
+
+#### WordPress SSO Provider (MU-plugin)
+- **File:** `wordpress/mu-plugins/maf-sso-provider.php`
+- **Endpoints:**
+  - `POST /wp-json/maf/v1/auth` — Validate username+password against WordPress
+  - `GET /wp-json/maf/v1/sso/verify?code=XXX` — Exchange one-time code for user info
+- **Security:**
+  - HMAC-SHA256 integrity check on one-time codes
+  - Single-use codes, 5-minute TTL (WordPress transient)
+  - Rate limiting: 5 attempts/minute per IP
+  - Whitelisted redirect origins: `https://app.maf.run`, `http://localhost:5173` (dev)
+  - 64-char hex codes (32 bytes entropy)
+
+#### Backend Authentication (NestJS API)
+- **Two login methods:**
+  - Direct: `POST /auth/login` with username+password
+  - SSO: `POST /auth/wp-sso` with one-time code from WordPress
+- **Token management:**
+  - Access token: 15min (httpOnly cookie: `maf_access`)
+  - Refresh token: 7 days (httpOnly cookie: `maf_refresh`)
+  - JWT RS256 asymmetric signing (private key on backend only)
+  - Rate limiting: 5 login attempts/minute per request
+- **Account status check:**
+  - `isActive` field on User model (soft-disable, not deletion)
+  - Checked on login, SSO, and token refresh
+  - Disabled accounts rejected immediately
+  - Redis revocation set: `revoked:user:{id}` for instant JWT invalidation
+
+#### Frontend SSO Flow
+- **File:** `src/pages/sso-callback-page.tsx`
+- **Flow:**
+  1. User clicks "Login with WordPress" on LoginPage
+  2. Redirects to `maf.run/wp-login.php?redirect_to=app.maf.run/auth/callback`
+  3. User authenticates at WordPress
+  4. WP generates one-time code, redirects back with `?code={code}`
+  5. SsoCallbackPage exchanges code for JWT cookies via `POST /auth/wp-sso`
+  6. On success, redirects to `/dashboard`
+- **Profile sync:** Name, email, avatar synced from WordPress on each login
+
+#### Admin Account Management
+- **File:** `api/src/admin/admin.service.ts`
+- **Features:**
+  - List users with pagination & search
+  - View user details: name, email, role, isActive status
+  - Toggle user isActive status (soft-disable)
+  - Dashboard stats: total users, new today, recent users
+  - Self-protection: cannot disable own account or demote self
+- **Frontend:**
+  - Admin page with user table
+  - Status badges: "Hoạt động" (active) or "Đã khóa" (disabled)
+  - ShieldOff/ShieldCheck toggle icons
+- **API:** 
+  - `GET /admin/users` — List users (paginated, searchable)
+  - `PATCH /admin/users/:id` — Toggle isActive status
+  - `GET /admin/stats` — Dashboard stats
+- **RBAC:** Admin endpoints require `role=ADMIN`
+
+#### Database Schema Updates
+- Added `role` enum: USER, COACH, ADMIN (default: USER)
+- Added `isActive` boolean field (default: true)
+- Updated User model to track WordPress identity + local role/status
+
+### Changed
+
+#### Auth Module
+- Refactored auth flow to support two methods (direct + SSO)
+- JWT validation now checks `isActive` status
+- Token expiry handled via refresh endpoint (not auto-extend)
+- Cookie domain set to `.maf.run` (production) for cross-subdomain sharing
+
+#### Component Tree
+- Added `/admin` route (ADMIN-only, ProtectedRoute with role check)
+- Added `/auth/callback` route (SsoCallbackPage)
+- Updated LoginPage with WordPress SSO button
+- Protected routes now validate both JWT + isActive status
+
+### Security
+- Password stored only in WordPress (never synced to app)
+- JWT tokens as httpOnly cookies (XSS resistant)
+- Redis revocation for instant account disable (no cache delay)
+- Disabled users cannot obtain new tokens or refresh existing ones
+- Admin cannot self-disable (prevents account lockout)
+
+### Performance
+- SSO code exchange: ~200-300ms (WP REST API call + local upsert)
+- Account status check: <1ms (Redis lookup)
+- JWT revocation cleanup: automatic on account disable
+
+---
+
 ## [1.2.0] — 2026-04-07 (Garmin Integration — MVP)
 
 ### Major: Garmin Device Data Sync & MAF Lab Auto-fill
@@ -341,4 +438,4 @@ Following Semantic Versioning (MAJOR.MINOR.PATCH):
 
 ---
 
-**Last Updated:** April 6, 2026 | **Version:** 1.1.0
+**Last Updated:** April 7, 2026 | **Version:** 1.3.0
