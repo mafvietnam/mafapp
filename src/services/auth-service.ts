@@ -31,6 +31,7 @@ export async function getMe(): Promise<AuthUser | null> {
 
 /** Logout — clear app JWT cookies, then redirect to WP to destroy WP session */
 export async function logout(): Promise<void> {
+  console.error('[MAF AUTH] logout() called', new Error().stack);
   await api.post('/auth/logout');
   // Redirect to WP logout endpoint which destroys WP session then goes to maf.run homepage
   const wpBase = import.meta.env.VITE_WP_URL || 'https://maf.run';
