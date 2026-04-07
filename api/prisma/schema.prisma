@@ -13,6 +13,13 @@ enum Role {
   ADMIN
 }
 
+enum GarminConnectionStatus {
+  CONNECTED
+  DISCONNECTED
+  TOKEN_EXPIRED
+  ERROR
+}
+
 model User {
   id        String       @id @default(uuid())
   wpUserId  Int?         @unique
@@ -23,7 +30,68 @@ model User {
   role      Role         @default(USER)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
-  profile   UserProfile?
+  profile              UserProfile?
+  garminConnection     GarminConnection?
+  garminActivities     GarminActivity[]
+  garminDailySummaries GarminDailySummary[]
+}
+
+model GarminConnection {
+  id              String                 @id @default(uuid())
+  userId          String                 @unique
+  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  garminUserId    String?
+  accessToken     String                 // AES-256-GCM encrypted email
+  refreshToken    String                 // AES-256-GCM encrypted password
+  tokenExpiry     DateTime?
+  status          GarminConnectionStatus @default(CONNECTED)
+  backfillStatus  String                 @default("NONE")
+  lastSyncAt      DateTime?
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+}
+
+model GarminActivity {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  garminActivityId String   @unique
+  activityType     String
+  startTime        DateTime
+  duration         Int      // seconds
+  distance         Float?   // meters
+  avgHeartRate     Int?
+  maxHeartRate     Int?
+  minHeartRate     Int?
+  avgPace          Float?   // min/km
+  calories         Int?
+  vo2Max           Float?
+  trainingEffect   Float?
+  createdAt        DateTime @default(now())
+
+  @@index([userId, startTime])
+}
+
+model GarminDailySummary {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date             DateTime @db.Date
+  steps            Int?
+  restingHeartRate Int?
+  avgHeartRate     Int?
+  maxHeartRate     Int?
+  minHeartRate     Int?
+  sleepDuration    Int?     // minutes
+  sleepScore       Float?
+  stressAvg        Int?
+  calories         Int?
+  activeMinutes    Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
 }
 
 model UserProfile {

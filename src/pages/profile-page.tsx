@@ -5,6 +5,7 @@ import { useMafCalculator } from '../hooks/use-maf-calculator';
 import { getProfile, updateProfile } from '../services/profile-service';
 import { ExperienceLevel, CommitmentLevel } from '../types';
 import { Activity, Heart, Flame, Zap } from 'lucide-react';
+import GarminConnectCard from '../components/garmin-connect-card';
 
 const EXPERIENCE_OPTIONS = [
   { value: ExperienceLevel.NONE, label: 'Chưa từng chạy' },
@@ -184,6 +185,9 @@ export default function ProfilePage() {
             </label>
           </div>
         </div>
+
+        {/* Connected Devices (Garmin) */}
+        <GarminConnectCard />
 
         {/* Commitment */}
         <div className="desktop-card p-6">

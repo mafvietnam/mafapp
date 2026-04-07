@@ -240,11 +240,13 @@ interface MafResult {
   - User profiles (from WordPress SSO)
   - Training history (results, schedules)
   - User settings & preferences
+  - Garmin data: GarminConnection (encrypted credentials), GarminActivity, GarminDailySummary
   
 - **Redis 7:**
   - JWT token storage (RS256 signed)
   - OAuth2 PKCE state + verifier (5min TTL)
   - Session management
+  - Garmin sync mutex locks (per-user + global)
   - Caching for frequently accessed profiles
 
 ### Authentication
@@ -311,6 +313,16 @@ api/ (NestJS 10)
 │  │  ├─ health.controller.ts (GET /health)
 │  │  └─ health.module.ts
 │  │
+│  ├─ garmin/ (Garmin device sync — gated by FEATURE_GARMIN)
+│  │  ├─ garmin.controller.ts (connect/disconnect/status/sync/activities/daily-summary)
+│  │  ├─ garmin.service.ts (business logic, data queries)
+│  │  ├─ garmin-sync.service.ts (sync engine — fetch + upsert from Garmin)
+│  │  ├─ garmin-cron.service.ts (2-hour cron job)
+│  │  ├─ garmin-encryption.service.ts (AES-256-GCM for credentials)
+│  │  ├─ garmin-connect.dto.ts (connect request DTO)
+│  │  ├─ garmin-activity.dto.ts (query DTOs)
+│  │  └─ garmin.module.ts
+│  │
 │  ├─ shared/
 │  │  ├─ prisma.service.ts (PostgreSQL ORM)
 │  │  ├─ redis.service.ts (session + cache management)
@@ -319,7 +331,7 @@ api/ (NestJS 10)
 │  └─ main.ts (entry point, bootstrap NestJS)
 │
 ├─ prisma/
-│  ├─ schema.prisma (User, UserProfile models)
+│  ├─ schema.prisma (User, UserProfile, GarminConnection, GarminActivity, GarminDailySummary)
 │  └─ migrations/
 │
 └─ Dockerfile (Node Alpine, pm2)

@@ -4,6 +4,48 @@ All notable changes to MAF Running Coach are documented here.
 
 ---
 
+## [1.2.0] — 2026-04-07 (Garmin Integration — MVP)
+
+### Major: Garmin Device Data Sync & MAF Lab Auto-fill
+
+**Scope:** Two-track Garmin integration — ship MVP with `garmin-connect` npm lib (credential-based), migrate to official OAuth API later.
+
+### Added
+
+#### Backend — GarminModule (`api/src/garmin/`)
+- **GarminEncryptionService**: AES-256-GCM encrypt/decrypt for credential storage
+- **GarminService**: Connect/disconnect/status + paginated activity & daily summary queries
+- **GarminSyncService**: Sync engine — fetches activities + daily health data from Garmin
+- **GarminCronService**: Cron job runs every 2 hours to sync all connected users
+- **Endpoints**: POST connect/disconnect/sync, GET status/activities/daily-summary
+- **Security**: JWT-protected endpoints, rate limiting (3/min connect, 1/5min sync), Redis mutex for sync
+
+#### Database — Prisma Schema
+- `GarminConnection`: Stores encrypted credentials, connection status, sync metadata
+- `GarminActivity`: Synced activities with HR, pace, distance, VO2max
+- `GarminDailySummary`: Daily health metrics (steps, resting HR, sleep, stress)
+- `GarminConnectionStatus` enum: CONNECTED, DISCONNECTED, TOKEN_EXPIRED, ERROR
+
+#### Frontend — Garmin UI Components
+- **GarminConnectCard**: Connect/disconnect form on Profile page with status display
+- **GarminAutoFillBanner**: "Từ Garmin" label above MAF Lab HR input
+- **useGarminAutoFill hook**: Fetches latest Garmin running activity for MAF Lab auto-fill
+- **garmin-service.ts**: Frontend API client for all Garmin endpoints
+
+#### Infrastructure
+- `FEATURE_GARMIN` env var gates entire Garmin module (backend + frontend)
+- `GARMIN_ENCRYPTION_KEY` env var required when Garmin enabled (64 hex chars)
+- `@nestjs/schedule` added for cron job support
+- `ScheduleModule.forRoot()` registered in AppModule
+
+### Security Notes
+- MVP stores encrypted Garmin credentials (email/password) — to be replaced by OAuth in Phase 5
+- Credentials encrypted AES-256-GCM, never logged or returned in API responses
+- Disconnect performs full cleanup: deletes all synced data + credentials
+- Redis lock prevents concurrent sync runs per user and globally
+
+---
+
 ## [1.1.0] — 2026-04-06 (WordPress SSO + Server-Side Storage)
 
 ### Major: Backend API & Authentication Overhaul

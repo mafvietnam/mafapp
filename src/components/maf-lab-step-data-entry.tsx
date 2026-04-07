@@ -1,5 +1,6 @@
 import React from 'react';
 import { Activity, HeartPulse, Gauge } from 'lucide-react';
+import GarminAutoFillBanner from './garmin-auto-fill-banner';
 
 interface MafLabStepDataEntryProps {
   distance: string;
@@ -15,6 +16,8 @@ interface MafLabStepDataEntryProps {
   onProcess: () => void;
   onBack: () => void;
   targetMafHr: number | null;
+  garminSource?: { activityDate: string; avgHr: string } | null;
+  onDismissGarmin?: () => void;
 }
 
 const inputBase = 'w-full p-4 text-xl bg-[#1F2937] border border-white/10 rounded-xl focus:border-maf-violet outline-none text-white font-medium placeholder-white/30';
@@ -23,6 +26,7 @@ export const MafLabStepDataEntry: React.FC<MafLabStepDataEntryProps> = ({
   distance, hours, minutes, seconds, avgHr,
   setDistance, setHours, setMinutes, setSeconds, setAvgHr,
   onProcess, onBack, targetMafHr,
+  garminSource, onDismissGarmin,
 }) => {
   const timeFields = [
     { value: hours, setter: setHours, placeholder: '00', label: 'Giờ' },
@@ -64,6 +68,13 @@ export const MafLabStepDataEntry: React.FC<MafLabStepDataEntryProps> = ({
         </div>
 
         <div>
+          {garminSource && onDismissGarmin && (
+            <GarminAutoFillBanner
+              activityDate={garminSource.activityDate}
+              avgHr={garminSource.avgHr}
+              onDismiss={onDismissGarmin}
+            />
+          )}
           <label className="block text-sm font-bold text-slate-500 uppercase mb-3">3. Nhịp tim trung bình (Avg HR)</label>
           <div className="relative">
             <input type="number" value={avgHr} onChange={(e) => setAvgHr(e.target.value)} placeholder="VD: 142" className={`${inputBase} text-maf-red font-bold`} />

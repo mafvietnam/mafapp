@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MafLabStepChecklist } from './maf-lab-step-checklist';
 import { MafLabStepDataEntry } from './maf-lab-step-data-entry';
 import { MafLabStepResults } from './maf-lab-step-results';
+import { useGarminAutoFill } from '../hooks/use-garmin-auto-fill';
 
 interface MafLabProps {
   onComplete: (pace: string) => void;
@@ -25,6 +26,23 @@ export const MafLab: React.FC<MafLabProps> = ({ onComplete, targetMafHr }) => {
   const [calculatedPace, setCalculatedPace] = useState('');
   const [finalPace, setFinalPace] = useState('');
   const [isMafCompliant, setIsMafCompliant] = useState(true);
+
+  // Garmin auto-fill: populate form from latest Garmin running activity
+  const { autoFill } = useGarminAutoFill();
+  const [garminSource, setGarminSource] = useState<{ activityDate: string; avgHr: string } | null>(null);
+  const autoFillApplied = useRef(false);
+
+  useEffect(() => {
+    if (autoFill && !autoFillApplied.current && !avgHr && !distance) {
+      autoFillApplied.current = true;
+      setDistance(autoFill.distance);
+      setHours(autoFill.hours);
+      setMinutes(autoFill.minutes);
+      setSeconds(autoFill.seconds);
+      setAvgHr(autoFill.avgHr);
+      setGarminSource({ activityDate: autoFill.activityDate, avgHr: autoFill.avgHr });
+    }
+  }, [autoFill, avgHr, distance]);
 
   const handleCheck = (key: keyof typeof checklist) => {
     setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
@@ -90,7 +108,7 @@ export const MafLab: React.FC<MafLabProps> = ({ onComplete, targetMafHr }) => {
         <MafLabStepChecklist checklist={checklist} onCheck={handleCheck} allChecked={allChecked} onProceed={() => setStep(2)} targetMafHr={targetMafHr} />
       )}
       {step === 2 && (
-        <MafLabStepDataEntry distance={distance} hours={hours} minutes={minutes} seconds={seconds} avgHr={avgHr} setDistance={setDistance} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} setAvgHr={setAvgHr} onProcess={handleProcessData} onBack={() => setStep(1)} targetMafHr={targetMafHr} />
+        <MafLabStepDataEntry distance={distance} hours={hours} minutes={minutes} seconds={seconds} avgHr={avgHr} setDistance={setDistance} setHours={setHours} setMinutes={setMinutes} setSeconds={setSeconds} setAvgHr={setAvgHr} onProcess={handleProcessData} onBack={() => setStep(1)} targetMafHr={targetMafHr} garminSource={garminSource} onDismissGarmin={() => setGarminSource(null)} />
       )}
       {step === 3 && (
         <MafLabStepResults calculatedPace={calculatedPace} finalPace={finalPace} isMafCompliant={isMafCompliant} avgHr={avgHr} targetMafHr={targetMafHr} onComplete={onComplete} onBack={() => setStep(2)} />
