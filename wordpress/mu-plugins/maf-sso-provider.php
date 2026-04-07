@@ -135,11 +135,51 @@ function maf_sso_verify_handler(WP_REST_Request $request): WP_REST_Response {
 }
 
 /**
- * After WordPress login, if redirect_to points to an allowed app origin,
- * generate one-time code and redirect back to app instead of wp-admin.
+ * SSO Gateway — entry point for app.maf.run authentication.
+ * URL: https://maf.run/?maf_sso_redirect=CALLBACK_URL
  *
- * Uses WP's native redirect_to param (passed via hidden form field in wp-login.php).
- * The $requested param holds the original redirect_to value from the login form.
+ * If user is already logged in at maf.run → generate code, redirect immediately.
+ * If not logged in → redirect to homepage (custom login modal will open).
+ * After login via custom modal, the login_redirect filter handles the SSO flow.
+ */
+add_action('template_redirect', function () {
+    $redirect_to = isset($_GET['maf_sso_redirect']) ? esc_url_raw($_GET['maf_sso_redirect']) : '';
+
+    if (empty($redirect_to)) {
+        return; // Not an SSO request, proceed normally
+    }
+
+    // Validate origin
+    if (!maf_sso_is_allowed_origin($redirect_to)) {
+        return;
+    }
+
+    // User already logged in — generate code and redirect immediately
+    if (is_user_logged_in()) {
+        $user = wp_get_current_user();
+        $code = maf_sso_generate_code($user->ID);
+        $separator = (strpos($redirect_to, '?') !== false) ? '&' : '?';
+        wp_redirect($redirect_to . $separator . 'code=' . $code);
+        exit;
+    }
+
+    // Not logged in — store redirect target in session cookie for after-login pickup
+    // The custom login modal AJAX handler or login_redirect filter will use this
+    setcookie('maf_sso_pending', $redirect_to, [
+        'expires'  => time() + 600, // 10 minutes
+        'path'     => '/',
+        'secure'   => is_ssl(),
+        'httponly'  => true,
+        'samesite' => 'Lax',
+    ]);
+
+    // Stay on the current page — the custom login modal opens from the nav bar
+    // No redirect needed; the page loads normally with the login modal available
+});
+
+/**
+ * After any WP login (wp-login.php or custom AJAX modal), check for pending SSO redirect.
+ * Picks up from maf_sso_pending cookie or redirect_to form param.
  */
 add_filter('login_redirect', function (string $redirect_to, string $requested, $user): string {
     // Only act when a real user logged in
@@ -147,13 +187,27 @@ add_filter('login_redirect', function (string $redirect_to, string $requested, $
         return $redirect_to;
     }
 
-    // Use $requested (the raw redirect_to from form) — it preserves the app URL
-    // even when WP's default logic overrides $redirect_to to wp-admin
+    // Check sources for SSO callback URL (in priority order):
+    // 1. redirect_to form param (from wp-login.php flow)
+    // 2. maf_sso_pending cookie (from custom login modal flow)
     $target = !empty($requested) ? $requested : $redirect_to;
 
-    // Only intercept if target points to an allowed app origin
     if (!maf_sso_is_allowed_origin($target)) {
-        return $redirect_to;
+        // Fallback: check pending SSO cookie from gateway
+        $pending = $_COOKIE['maf_sso_pending'] ?? '';
+        if (!empty($pending) && maf_sso_is_allowed_origin($pending)) {
+            $target = $pending;
+            // Clear the cookie
+            setcookie('maf_sso_pending', '', [
+                'expires'  => time() - 3600,
+                'path'     => '/',
+                'secure'   => is_ssl(),
+                'httponly'  => true,
+                'samesite' => 'Lax',
+            ]);
+        } else {
+            return $redirect_to;
+        }
     }
 
     // Generate one-time code and redirect to app callback
