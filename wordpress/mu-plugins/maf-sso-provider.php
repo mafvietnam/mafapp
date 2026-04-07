@@ -135,8 +135,11 @@ function maf_sso_verify_handler(WP_REST_Request $request): WP_REST_Response {
 }
 
 /**
- * After WordPress login, if redirect_uri points to allowed origin,
- * generate one-time code and redirect back to app.
+ * After WordPress login, if redirect_to points to an allowed app origin,
+ * generate one-time code and redirect back to app instead of wp-admin.
+ *
+ * Uses WP's native redirect_to param (passed via hidden form field in wp-login.php).
+ * The $requested param holds the original redirect_to value from the login form.
  */
 add_filter('login_redirect', function (string $redirect_to, string $requested, $user): string {
     // Only act when a real user logged in
@@ -144,45 +147,30 @@ add_filter('login_redirect', function (string $redirect_to, string $requested, $
         return $redirect_to;
     }
 
-    // Check if redirect_uri was passed (GET on initial load, POST after form submit)
-    $redirect_uri = isset($_REQUEST['redirect_uri']) ? esc_url_raw($_REQUEST['redirect_uri']) : '';
+    // Use $requested (the raw redirect_to from form) — it preserves the app URL
+    // even when WP's default logic overrides $redirect_to to wp-admin
+    $target = !empty($requested) ? $requested : $redirect_to;
 
-    if (empty($redirect_uri)) {
+    // Only intercept if target points to an allowed app origin
+    if (!maf_sso_is_allowed_origin($target)) {
         return $redirect_to;
     }
 
-    // Validate origin against whitelist
-    if (!maf_sso_is_allowed_origin($redirect_uri)) {
-        return $redirect_to;
-    }
-
-    // Generate one-time code
+    // Generate one-time code and redirect to app callback
     $code = maf_sso_generate_code($user->ID);
-
-    // Append code to redirect URI
-    $separator = (strpos($redirect_uri, '?') !== false) ? '&' : '?';
-    return $redirect_uri . $separator . 'code=' . $code;
+    $separator = (strpos($target, '?') !== false) ? '&' : '?';
+    return $target . $separator . 'code=' . $code;
 }, 10, 3);
 
 /**
- * Pass redirect_uri through WordPress login form so it survives form submission.
+ * Allow external redirect to app.maf.run after login.
+ * By default WP blocks redirects to external domains via wp_safe_redirect.
  */
-add_action('login_form', function () {
-    if (isset($_GET['redirect_uri'])) {
-        $uri = esc_url($_GET['redirect_uri']);
-        echo '<input type="hidden" name="redirect_uri" value="' . esc_attr($uri) . '" />';
-    }
+add_filter('allowed_redirect_hosts', function (array $hosts): array {
+    $hosts[] = 'app.maf.run';
+    $hosts[] = 'localhost';
+    return $hosts;
 });
-
-/**
- * Preserve redirect_uri in login URL query params after form POST.
- */
-add_filter('login_url', function (string $login_url, string $redirect): string {
-    if (isset($_REQUEST['redirect_uri'])) {
-        $login_url = add_query_arg('redirect_uri', urlencode($_REQUEST['redirect_uri']), $login_url);
-    }
-    return $login_url;
-}, 10, 2);
 
 // --- Helper Functions ---
 
