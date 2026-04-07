@@ -8,6 +8,7 @@ export interface AdminStatsResponse {
     email: string;
     avatar: string | null;
     role: string;
+    isActive: boolean;
     createdAt: string;
   }>;
 }

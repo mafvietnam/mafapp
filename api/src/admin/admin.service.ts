@@ -1,5 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../shared/prisma.service.js';
+import { RedisService } from '../shared/redis.service.js';
+import { REVOKED_USER_KEY } from '../auth/auth.guard.js';
 import type { AdminStatsResponse } from './admin-stats.dto.js';
 import type { AdminUserQueryDto } from './admin-user-query.dto.js';
 import type { AdminUpdateUserDto } from './admin-update-user.dto.js';
@@ -7,7 +9,10 @@ import type { Role } from '@prisma/client';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
+  ) {}
 
   async getStats(): Promise<AdminStatsResponse> {
     const today = new Date();
@@ -27,6 +32,7 @@ export class AdminService {
             email: true,
             avatar: true,
             role: true,
+            isActive: true,
             createdAt: true,
           },
         }),
@@ -80,12 +86,34 @@ export class AdminService {
     return user;
   }
 
-  async updateUser(id: string, dto: AdminUpdateUserDto) {
+  async updateUser(id: string, dto: AdminUpdateUserDto, currentUserId: string) {
+    // Prevent admin from disabling or demoting themselves
+    if (id === currentUserId) {
+      if (dto.isActive === false) {
+        throw new ForbiddenException('Cannot deactivate your own account');
+      }
+      if (dto.role && dto.role !== 'ADMIN') {
+        throw new ForbiddenException('Cannot demote your own account');
+      }
+    }
+
     await this.ensureUserExists(id);
-    return this.prisma.user.update({
+    const user = await this.prisma.user.update({
       where: { id },
-      data: { ...(dto.role && { role: dto.role as Role }) },
+      data: {
+        ...(dto.role && { role: dto.role as Role }),
+        ...(dto.isActive !== undefined && { isActive: dto.isActive }),
+      },
     });
+
+    // Sync Redis revocation set for immediate JWT invalidation
+    if (dto.isActive === false) {
+      await this.redis.set(`${REVOKED_USER_KEY}${id}`, '1');
+    } else if (dto.isActive === true) {
+      await this.redis.del(`${REVOKED_USER_KEY}${id}`);
+    }
+
+    return user;
   }
 
   async deleteUser(id: string) {

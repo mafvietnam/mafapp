@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Search, Edit2, Trash2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Edit2, ShieldOff, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   getAdminUsers,
   updateAdminUser,
-  deleteAdminUser,
   type AdminUserDetail,
 } from '../../services/admin-service';
 
@@ -62,10 +61,15 @@ export default function AdminUsersPage() {
     setEditingId(null);
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Xóa người dùng "${name}"? Hành động này không thể hoàn tác.`)) return;
-    const ok = await deleteAdminUser(id);
-    if (ok) fetchUsers();
+  const handleToggleActive = async (id: string, currentlyActive: boolean, name: string) => {
+    const action = currentlyActive ? 'Vô hiệu hóa' : 'Kích hoạt lại';
+    if (!window.confirm(`${action} tài khoản "${name}"?`)) return;
+    const ok = await updateAdminUser(id, { isActive: !currentlyActive });
+    if (ok) {
+      setUsers((prev) =>
+        prev.map((u) => (u.id === id ? { ...u, isActive: !currentlyActive } : u)),
+      );
+    }
   };
 
   const totalPages = Math.ceil(total / limit);
@@ -102,7 +106,7 @@ export default function AdminUsersPage() {
                 <tr>
                   <th className="px-6 py-4 font-bold">Người dùng</th>
                   <th className="px-6 py-4 font-bold">Vai trò</th>
-                  <th className="px-6 py-4 font-bold">Hồ sơ</th>
+                  <th className="px-6 py-4 font-bold">Trạng thái</th>
                   <th className="px-6 py-4 font-bold">Đăng ký</th>
                   <th className="px-6 py-4 font-bold text-right">Hành động</th>
                 </tr>
@@ -146,8 +150,16 @@ export default function AdminUsersPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-slate-400 text-xs">
-                        {u.profile ? 'Đã tạo' : 'Chưa tạo'}
+                      <td className="px-6 py-4">
+                        {u.isActive ? (
+                          <span className="inline-flex items-center px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-bold">
+                            Hoạt động
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2.5 py-1 rounded bg-red-500/10 border border-red-500/20 text-red-400 text-[11px] font-bold">
+                            Đã khóa
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-slate-400 text-xs">
                         {timeAgo(u.createdAt)}
@@ -161,11 +173,19 @@ export default function AdminUsersPage() {
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(u.id, u.name)}
-                          className="text-slate-400 hover:text-[#F42A68] transition-colors p-1 ml-2"
-                          title="Xóa"
+                          onClick={() => handleToggleActive(u.id, u.isActive, u.name)}
+                          className={`transition-colors p-1 ml-2 ${
+                            u.isActive
+                              ? 'text-slate-400 hover:text-[#F42A68]'
+                              : 'text-slate-400 hover:text-emerald-400'
+                          }`}
+                          title={u.isActive ? 'Vô hiệu hóa' : 'Kích hoạt lại'}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          {u.isActive ? (
+                            <ShieldOff className="w-4 h-4" />
+                          ) : (
+                            <ShieldCheck className="w-4 h-4" />
+                          )}
                         </button>
                       </td>
                     </tr>

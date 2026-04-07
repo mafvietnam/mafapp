@@ -13,6 +13,7 @@ import WelcomeModal from './components/welcome-modal';
 import RecoveryModal from './components/recovery-modal';
 import GuidePage from './pages/guide-page';
 import LoginPage from './pages/login-page';
+import SsoCallbackPage from './pages/sso-callback-page';
 import ProfilePage from './pages/profile-page';
 import DashboardPage from './pages/dashboard-page';
 import ProtectedRoute from './components/layout/protected-route';
@@ -142,8 +143,9 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <Routes>
-        {/* Login page (public) */}
+        {/* Login redirects to WordPress, callback handles SSO code */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/auth/callback" element={<SsoCallbackPage />} />
 
         {/* Admin routes — requires ADMIN role */}
         <Route element={<AdminProtectedRoute />}>

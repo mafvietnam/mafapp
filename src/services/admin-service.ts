@@ -13,6 +13,7 @@ export interface AdminUserSummary {
   email: string;
   avatar: string | null;
   role: string;
+  isActive: boolean;
   createdAt: string;
 }
 
@@ -55,7 +56,10 @@ export async function getAdminUsers(params: {
   }
 }
 
-export async function updateAdminUser(id: string, data: { role?: string }) {
+export async function updateAdminUser(
+  id: string,
+  data: { role?: string; isActive?: boolean },
+) {
   const res = await api.patch(`/admin/users/${id}`, data);
   return res.ok;
 }

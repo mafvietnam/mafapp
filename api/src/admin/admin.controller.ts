@@ -6,8 +6,10 @@ import {
   Param,
   Query,
   Body,
+  Req,
   UseGuards,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { JwtAuthGuard } from '../auth/auth.guard.js';
 import { RolesGuard } from '../auth/roles.guard.js';
 import { Roles } from '../auth/roles.decorator.js';
@@ -37,8 +39,13 @@ export class AdminController {
   }
 
   @Patch('users/:id')
-  updateUser(@Param('id') id: string, @Body() dto: AdminUpdateUserDto) {
-    return this.adminService.updateUser(id, dto);
+  updateUser(
+    @Param('id') id: string,
+    @Body() dto: AdminUpdateUserDto,
+    @Req() req: Request,
+  ) {
+    const currentUserId = (req.user as { id: string }).id;
+    return this.adminService.updateUser(id, dto, currentUserId);
   }
 
   @Delete('users/:id')

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, Logger } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ForbiddenException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
@@ -41,6 +41,7 @@ export class AuthService {
 
     // Upsert local user from WordPress data
     const user = await this.userService.findOrCreateFromWp(wpUser);
+    this.assertUserActive(user);
 
     // Generate JWT + refresh token
     const accessToken = await this.generateAccessToken(
@@ -68,6 +69,8 @@ export class AuthService {
 
     const wpUser: WpUserInfo = await wpRes.json();
     const user = await this.userService.findOrCreateFromWp(wpUser);
+    this.assertUserActive(user);
+
     const accessToken = await this.generateAccessToken(
       user.id,
       user.email,
@@ -102,6 +105,7 @@ export class AuthService {
     // Get user for new JWT
     const user = await this.userService.findById(userId);
     if (!user) throw new UnauthorizedException('User not found');
+    this.assertUserActive(user);
 
     const accessToken = await this.generateAccessToken(
       user.id,
@@ -139,5 +143,12 @@ export class AuthService {
     const token = crypto.randomBytes(32).toString('hex');
     await this.redis.set(`refresh:${token}`, userId, 'EX', 7 * 24 * 60 * 60);
     return token;
+  }
+
+  /** Reject login if account is disabled by admin */
+  private assertUserActive(user: { isActive: boolean }): void {
+    if (!user.isActive) {
+      throw new ForbiddenException('Account is disabled');
+    }
   }
 }
