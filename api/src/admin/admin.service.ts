@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, Optional, Inject, NotFoundException, ForbiddenException, Logger } from '@nestjs/common';
 import { PrismaService } from '../shared/prisma.service.js';
 import { RedisService } from '../shared/redis.service.js';
+import { GarminSyncService } from '../garmin/garmin-sync.service.js';
 import { REVOKED_USER_KEY } from '../auth/auth.guard.js';
 import type { AdminStatsResponse } from './admin-stats.dto.js';
 import type { AdminUserQueryDto } from './admin-user-query.dto.js';
@@ -9,9 +10,12 @@ import type { Role } from '@prisma/client';
 
 @Injectable()
 export class AdminService {
+  private readonly logger = new Logger(AdminService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
+    @Optional() @Inject(GarminSyncService) private readonly garminSync?: GarminSyncService,
   ) {}
 
   async getStats(): Promise<AdminStatsResponse> {
@@ -120,6 +124,61 @@ export class AdminService {
     await this.ensureUserExists(id);
     await this.prisma.user.delete({ where: { id } });
     return { ok: true };
+  }
+
+  /** Admin overview of all Garmin connections with user info and sync stats */
+  async getGarminOverview() {
+    const isEnabled = process.env.FEATURE_GARMIN === 'true';
+
+    const connections = await this.prisma.garminConnection.findMany({
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        user: { select: { id: true, name: true, email: true, avatar: true } },
+      },
+    });
+
+    const activityCounts = await this.prisma.garminActivity.groupBy({
+      by: ['userId'],
+      _count: { id: true },
+    });
+    const countMap = new Map(activityCounts.map((c) => [c.userId, c._count.id]));
+
+    return {
+      featureEnabled: isEnabled,
+      totalConnections: connections.length,
+      connections: connections.map((c) => ({
+        userId: c.userId,
+        userName: c.user.name,
+        userEmail: c.user.email,
+        userAvatar: c.user.avatar,
+        garminUserId: c.garminUserId,
+        status: c.status,
+        backfillStatus: c.backfillStatus,
+        lastSyncAt: c.lastSyncAt?.toISOString() ?? null,
+        connectedAt: c.createdAt.toISOString(),
+        activityCount: countMap.get(c.userId) ?? 0,
+      })),
+    };
+  }
+
+  /** Trigger a manual Garmin sync for a specific user */
+  async triggerGarminSync(userId: string) {
+    if (!this.garminSync) {
+      return { ok: false, message: 'Garmin feature is disabled' };
+    }
+
+    const conn = await this.prisma.garminConnection.findUnique({
+      where: { userId },
+    });
+    if (!conn) throw new NotFoundException('Garmin connection not found');
+
+    // Fire async — don't await
+    this.garminSync.syncUser(userId).catch((err) => {
+      const msg = err instanceof Error ? err.message : 'Unknown';
+      this.logger.error(`Admin-triggered sync failed for user ${userId}: ${msg}`);
+    });
+
+    return { ok: true, message: 'Sync triggered' };
   }
 
   private async ensureUserExists(id: string) {

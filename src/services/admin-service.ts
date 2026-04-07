@@ -68,3 +68,43 @@ export async function deleteAdminUser(id: string) {
   const res = await api.delete(`/admin/users/${id}`);
   return res.ok;
 }
+
+/* ── Garmin Admin ── */
+
+export interface AdminGarminConnection {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userAvatar: string | null;
+  garminUserId: string | null;
+  status: string;
+  backfillStatus: string;
+  lastSyncAt: string | null;
+  connectedAt: string;
+  activityCount: number;
+}
+
+export interface AdminGarminOverview {
+  featureEnabled: boolean;
+  totalConnections: number;
+  connections: AdminGarminConnection[];
+}
+
+export async function getAdminGarminOverview(): Promise<AdminGarminOverview | null> {
+  try {
+    const res = await api.get('/admin/garmin');
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function triggerAdminGarminSync(userId: string): Promise<boolean> {
+  try {
+    const res = await api.post(`/admin/garmin/${userId}/sync`);
+    return res.ok;
+  } catch {
+    return false;
+  }
+}

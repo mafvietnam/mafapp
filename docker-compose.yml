@@ -122,6 +122,8 @@ services:
       - WP_OAUTH_REDIRECT_URI=${WP_OAUTH_REDIRECT_URI:-https://api.maf.run/auth/callback}
       - WP_OAUTH_URL=${WP_OAUTH_URL:-https://maf.run}
       - CORS_ORIGIN=${CORS_ORIGIN:-https://app.maf.run}
+      - FEATURE_GARMIN=${FEATURE_GARMIN:-false}
+      - GARMIN_ENCRYPTION_KEY=${GARMIN_ENCRYPTION_KEY:-}
       - TZ=${TZ:-Asia/Ho_Chi_Minh}
 
     depends_on:

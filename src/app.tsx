@@ -23,6 +23,7 @@ import AdminLayout from './components/admin/admin-layout';
 import AdminDashboardPage from './pages/admin/admin-dashboard-page';
 import AdminUsersPage from './pages/admin/admin-users-page';
 import AdminPlaceholderPage from './pages/admin/admin-placeholder-page';
+import AdminGarminPage from './pages/admin/admin-garmin-page';
 
 const CalculatorApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'PLAN' | 'LAB'>('PLAN');
@@ -156,6 +157,7 @@ const App: React.FC = () => {
             <Route path="/admin/coaches" element={<AdminPlaceholderPage title="Huấn luyện viên" />} />
             <Route path="/admin/library" element={<AdminPlaceholderPage title="Thư viện Giáo án" />} />
             <Route path="/admin/challenges" element={<AdminPlaceholderPage title="Thử thách & Sự kiện" />} />
+            <Route path="/admin/garmin" element={<AdminGarminPage />} />
             <Route path="/admin/settings" element={<AdminPlaceholderPage title="Cài đặt chung" />} />
             <Route path="/admin/permissions" element={<AdminPlaceholderPage title="Phân quyền" />} />
           </Route>

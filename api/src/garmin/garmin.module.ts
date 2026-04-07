@@ -13,6 +13,6 @@ import { GarminCronService } from './garmin-cron.service.js';
     GarminSyncService,
     GarminCronService,
   ],
-  exports: [GarminService],
+  exports: [GarminService, GarminSyncService],
 })
 export class GarminModule {}
