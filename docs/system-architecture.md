@@ -252,6 +252,7 @@ interface MafResult {
   - Training history (results, schedules)
   - User settings & preferences
   - Garmin data: GarminConnection (encrypted credentials), GarminActivity, GarminDailySummary
+  - Strava data: StravaConnection (encrypted OAuth2 tokens), StravaActivity (synced runs)
   
 - **Redis 7:**
   - JWT token storage (RS256 signed)
@@ -358,6 +359,15 @@ api/ (NestJS 10)
 │  │  ├─ garmin-activity.dto.ts (query DTOs)
 │  │  └─ garmin.module.ts
 │  │
+│  ├─ strava/ (Strava activity sync + webhook — gated by FEATURE_STRAVA)
+│  │  ├─ strava.controller.ts (GET/POST /strava/webhook, connect/disconnect/sync endpoints)
+│  │  ├─ strava.service.ts (business logic, connection management)
+│  │  ├─ strava-sync.service.ts (sync engine — fetch + upsert from Strava API)
+│  │  ├─ strava-webhook.service.ts (webhook subscription, event processing)
+│  │  ├─ strava-encryption.service.ts (AES-256 for token encryption)
+│  │  ├─ strava.module.ts
+│  │  └─ types/ (TypeScript types for Strava API contracts)
+│  │
 │  ├─ shared/
 │  │  ├─ prisma.service.ts (PostgreSQL ORM)
 │  │  ├─ redis.service.ts (session + cache + revocation management)
@@ -388,6 +398,13 @@ api/ (NestJS 10)
 | GET | `/admin/users/:id` | ✅ | ADMIN | Get user details with role + isActive |
 | PATCH | `/admin/users/:id` | ✅ | ADMIN | Toggle user isActive status (self-protection) |
 | GET | `/admin/stats` | ✅ | ADMIN | Dashboard stats: total users, new today, recent users |
+| GET | `/strava/webhook` | ❌ | — | Strava webhook challenge validation (public) |
+| POST | `/strava/webhook` | ❌ | — | Strava webhook event push handler (public, async) |
+| POST | `/strava/connect` | ✅ | — | Initiate Strava OAuth2 connection flow |
+| POST | `/strava/disconnect` | ✅ | — | Disconnect Strava account |
+| GET | `/strava/status` | ✅ | — | Check Strava connection status |
+| POST | `/strava/sync` | ✅ | — | Manual sync: fetch and upsert activities |
+| GET | `/strava/activities` | ✅ | — | List synced Strava activities (paginated) |
 
 ### Database Schema (Prisma)
 
@@ -413,6 +430,8 @@ model User {
   garminConnection     GarminConnection?
   garminActivities     GarminActivity[]
   garminDailySummaries GarminDailySummary[]
+  stravaConnection     StravaConnection?
+  stravaActivities     StravaActivity[]
 }
 
 model UserProfile {
@@ -433,6 +452,43 @@ model UserProfile {
   lastLongRunFeeling         String?  // GOOD|TIRED|VERY_TIRED
   createdAt                  DateTime @default(now())
   updatedAt                  DateTime @updatedAt
+}
+
+model StravaConnection {
+  id                    String   @id @default(uuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id])
+  stravaAthleteId       Int      @unique
+  accessToken           String   // AES-256 encrypted
+  refreshToken          String?  // AES-256 encrypted
+  expiresAt             DateTime?
+  status                String   // CONNECTED|DISCONNECTED|TOKEN_EXPIRED|ERROR
+  lastSyncAt            DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  stravaActivities      StravaActivity[]
+}
+
+model StravaActivity {
+  id                    String   @id @default(uuid())
+  stravaConnectionId    String
+  stravaConnection      StravaConnection @relation(fields: [stravaConnectionId], references: [id])
+  stravaActivityId      Int      @unique
+  name                  String
+  type                  String   // Run|TrailRun|VirtualRun|etc.
+  startDate             DateTime
+  distance              Float    // meters
+  movingTime            Int      // seconds
+  elapsedTime           Int      // seconds
+  avgHeartRate          Float?
+  maxHeartRate          Float?
+  avgPace               Float?   // min/km
+  maxSpeed              Float?   // m/s
+  totalElevationGain    Float?   // meters
+  calories              Float?
+  isDuplicate           Boolean  @default(false)  // Duplicate with Garmin activity
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 ```
 
@@ -491,4 +547,4 @@ File: `api/src/admin/admin.service.ts`
 
 ---
 
-**Version:** 1.2.0 | **Last Updated:** April 7, 2026 (WordPress SSO + Admin Account Management)
+**Version:** 1.4.0 | **Last Updated:** April 7, 2026 (Strava Integration Phase 3 — Webhook & Sync Engine Complete)

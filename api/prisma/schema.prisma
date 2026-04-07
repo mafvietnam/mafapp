@@ -13,6 +13,13 @@ enum Role {
   ADMIN
 }
 
+enum StravaConnectionStatus {
+  CONNECTED
+  DISCONNECTED
+  TOKEN_EXPIRED
+  ERROR
+}
+
 enum GarminConnectionStatus {
   CONNECTED
   DISCONNECTED
@@ -35,6 +42,8 @@ model User {
   garminConnection     GarminConnection?
   garminActivities     GarminActivity[]
   garminDailySummaries GarminDailySummary[]
+  stravaConnection     StravaConnection?
+  stravaActivities     StravaActivity[]
 }
 
 model GarminConnection {
@@ -68,6 +77,7 @@ model GarminActivity {
   calories         Int?
   vo2Max           Float?
   trainingEffect   Float?
+  isDuplicate      Boolean  @default(false)         // true when Strava has same run
   createdAt        DateTime @default(now())
 
   @@index([userId, startTime])
@@ -93,6 +103,47 @@ model GarminDailySummary {
 
   @@unique([userId, date])
   @@index([userId, date])
+}
+
+model StravaConnection {
+  id                    String                 @id @default(cuid())
+  userId                String                 @unique
+  stravaAthleteId       String?                // Strava numeric athlete ID
+  accessToken           String                 // AES-256-GCM encrypted
+  refreshToken          String                 // AES-256-GCM encrypted
+  tokenExpiresAt        DateTime               // Strava tokens expire every ~6h
+  webhookSubscriptionId Int?                   // Strava webhook subscription ID
+  status                StravaConnectionStatus @default(CONNECTED)
+  lastSyncAt            DateTime?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model StravaActivity {
+  id               String   @id @default(cuid())
+  userId           String
+  stravaActivityId String   @unique                // Strava numeric activity ID (as string)
+  name             String
+  type             String                           // Run | TrailRun | VirtualRun
+  startDate        DateTime
+  distance         Float                            // meters
+  movingTime       Int                              // seconds
+  elapsedTime      Int                              // seconds
+  avgHeartRate     Int?
+  maxHeartRate     Int?
+  avgSpeed         Float?                           // m/s
+  maxSpeed         Float?                           // m/s
+  totalElevationGain Float?                         // meters
+  calories         Float?
+  avgPace          Float?                           // min/km (computed on insert)
+  isDuplicate      Boolean  @default(false)         // true when Garmin has same run
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startDate])
+  @@index([userId, stravaActivityId])
 }
 
 model UserProfile {
