@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { GarminConnect } from 'garmin-connect';
+import { GarminConnect } from '@gooin/garmin-connect';
 import { PrismaService } from '../shared/prisma.service.js';
 import { RedisService } from '../shared/redis.service.js';
 import { GarminEncryptionService } from './garmin-encryption.service.js';
