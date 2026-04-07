@@ -135,6 +135,41 @@ function maf_sso_verify_handler(WP_REST_Request $request): WP_REST_Response {
 }
 
 /**
+ * SSO Logout — destroy WP session and redirect back to app or maf.run homepage.
+ * URL: https://maf.run/?maf_sso_logout=REDIRECT_URL
+ *
+ * Called by app.maf.run after clearing its own JWT cookies.
+ * Clears WP auth cookies so user is fully logged out of both systems.
+ */
+add_action('template_redirect', function () {
+    $redirect_to = isset($_GET['maf_sso_logout']) ? esc_url_raw($_GET['maf_sso_logout']) : '';
+
+    if (empty($redirect_to)) {
+        return; // Not a logout request
+    }
+
+    // Validate origin — only allow redirect to whitelisted domains
+    if (!maf_sso_is_allowed_origin($redirect_to)) {
+        $redirect_to = home_url('/');
+    }
+
+    // Destroy WP session
+    wp_logout();
+
+    // Clear any pending SSO cookie
+    setcookie('maf_sso_pending', '', [
+        'expires'  => time() - 3600,
+        'path'     => '/',
+        'secure'   => is_ssl(),
+        'httponly'  => true,
+        'samesite' => 'Lax',
+    ]);
+
+    wp_redirect($redirect_to);
+    exit;
+}, 5); // Priority 5 — run before SSO gateway (default 10)
+
+/**
  * SSO Gateway — entry point for app.maf.run authentication.
  * URL: https://maf.run/?maf_sso_redirect=CALLBACK_URL
  *

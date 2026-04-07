@@ -29,7 +29,10 @@ export async function getMe(): Promise<AuthUser | null> {
   }
 }
 
-/** Logout — clear cookies server-side */
+/** Logout — clear app JWT cookies, then redirect to WP to destroy WP session */
 export async function logout(): Promise<void> {
   await api.post('/auth/logout');
+  // Redirect to WP logout endpoint which destroys WP session then goes to maf.run homepage
+  const wpBase = import.meta.env.VITE_WP_URL || 'https://maf.run';
+  window.location.href = `${wpBase}/?maf_sso_logout=${encodeURIComponent(wpBase)}`;
 }
