@@ -108,6 +108,9 @@ function maf_sso_verify_handler(WP_REST_Request $request): WP_REST_Response {
     $transient_key = 'maf_sso_code_' . hash('sha256', $code);
     $data = get_transient($transient_key);
 
+    // Debug logging
+    error_log("[MAF SSO] verify: code_prefix=" . substr($code, 0, 16) . " key=$transient_key found=" . ($data !== false ? 'YES' : 'NO'));
+
     if ($data === false) {
         return new WP_REST_Response(['error' => 'Invalid or expired code'], 401);
     }
@@ -147,6 +150,8 @@ add_action('template_redirect', function () {
     if (empty($redirect_to)) {
         return; // Not a logout request
     }
+
+    error_log("[MAF SSO] LOGOUT: redirect_to=$redirect_to logged_in=" . (is_user_logged_in() ? 'YES' : 'NO'));
 
     // Validate origin — only allow redirect to whitelisted domains
     if (!maf_sso_is_allowed_origin($redirect_to)) {
@@ -188,6 +193,8 @@ add_action('template_redirect', function () {
     if (!maf_sso_is_allowed_origin($redirect_to)) {
         return;
     }
+
+    error_log("[MAF SSO] GATEWAY: redirect_to=$redirect_to logged_in=" . (is_user_logged_in() ? 'YES' : 'NO') . " user_id=" . get_current_user_id());
 
     // User already logged in — generate code and redirect immediately
     if (is_user_logged_in()) {
@@ -279,7 +286,10 @@ function maf_sso_generate_code(int $user_id): string {
 
     // Store by hash of code (not the code itself) for extra safety
     $transient_key = 'maf_sso_code_' . hash('sha256', $code);
-    set_transient($transient_key, $payload, MAF_SSO_CODE_TTL);
+    $stored = set_transient($transient_key, $payload, MAF_SSO_CODE_TTL);
+
+    // Debug logging
+    error_log("[MAF SSO] generate_code: user=$user_id code_prefix=" . substr($code, 0, 16) . " key=$transient_key stored=" . ($stored ? 'YES' : 'NO'));
 
     return $code;
 }
