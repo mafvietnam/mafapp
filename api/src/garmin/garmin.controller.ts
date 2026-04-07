@@ -19,7 +19,8 @@ import {
   ListActivitiesDto,
   DailySummaryQueryDto,
 } from './garmin-activity.dto.js';
-import type { TokenPayload } from '../auth/auth.types.js';
+/** Shape of req.user after JWT strategy validate() */
+interface JwtUser { id: string; email: string; role: string }
 
 @Controller('garmin')
 @UseGuards(JwtAuthGuard)
@@ -32,7 +33,7 @@ export class GarminController {
   @Post('connect')
   @Throttle({ default: { limit: 3, ttl: 60000 } })
   async connect(@Req() req: Request, @Body() dto: ConnectGarminDto) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as JwtUser).id;
     const result = await this.garminService.connect(
       userId,
       dto.email,
@@ -48,27 +49,27 @@ export class GarminController {
 
   @Post('disconnect')
   async disconnect(@Req() req: Request) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as JwtUser).id;
     return this.garminService.disconnect(userId);
   }
 
   @Get('status')
   async getStatus(@Req() req: Request) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as JwtUser).id;
     return this.garminService.getStatus(userId);
   }
 
   @Post('sync')
   @Throttle({ default: { limit: 1, ttl: 300000 } })
   async sync(@Req() req: Request) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as JwtUser).id;
     await this.syncService.syncUser(userId);
     return { ok: true };
   }
 
   @Get('activities')
   async getActivities(@Req() req: Request, @Query() query: ListActivitiesDto) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as JwtUser).id;
     return this.garminService.getActivities(
       userId,
       query.page ?? 1,
@@ -79,7 +80,7 @@ export class GarminController {
 
   @Get('activities/:id')
   async getActivity(@Req() req: Request, @Param('id') id: string) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as JwtUser).id;
     const activity = await this.garminService.getActivity(userId, id);
     if (!activity) throw new NotFoundException('Activity not found');
     return activity;
@@ -90,7 +91,7 @@ export class GarminController {
     @Req() req: Request,
     @Query() query: DailySummaryQueryDto,
   ) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as JwtUser).id;
     const to = query.to ?? new Date().toISOString().split('T')[0];
     return this.garminService.getDailySummaries(userId, query.from, to);
   }
