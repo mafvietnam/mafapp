@@ -54,6 +54,13 @@ export class GarminService {
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Unknown error';
       this.logger.error(`Garmin connect failed for user ${userId}: ${message}`);
+
+      // MFA/2FA enabled — garmin-connect library can't handle it
+      if (message.includes('MFA') || message.includes('Ticket not found')) {
+        throw new UnauthorizedException(
+          'Tài khoản Garmin có bật xác thực 2 bước (MFA). Vui lòng tắt MFA trong Garmin Connect rồi thử lại.',
+        );
+      }
       if (
         message.includes('credentials') ||
         message.includes('401') ||
