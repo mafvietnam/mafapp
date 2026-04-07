@@ -11,7 +11,3 @@ export interface TokenPayload {
   role: string; // 'USER' | 'COACH' | 'ADMIN'
 }
 
-export interface OAuthState {
-  codeVerifier: string;
-  state: string;
-}

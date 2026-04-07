@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import {
   getMe,
-  login as loginApi,
+  loginWithSsoCode as loginSsoApi,
   logout as logoutApi,
   type AuthUser,
 } from '../services/auth-service';
@@ -10,7 +10,7 @@ interface AuthContextValue {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (username: string, password: string) => Promise<boolean>;
+  loginWithCode: (code: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
@@ -26,8 +26,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const login = useCallback(async (username: string, password: string) => {
-    const ok = await loginApi(username, password);
+  const loginWithCode = useCallback(async (code: string) => {
+    const ok = await loginSsoApi(code);
     if (ok) {
       const me = await getMe();
       setUser(me);
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         isAuthenticated: !!user,
         isLoading,
-        login,
+        loginWithCode,
         logout,
       }}
     >

@@ -1,18 +1,14 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   Res,
   Req,
-  UseGuards,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { Throttle } from '@nestjs/throttler';
 import type { Request, Response } from 'express';
 import { AuthService } from './auth.service.js';
-import type { GoogleProfile } from './google.strategy.js';
 
 const COOKIE_DOMAIN = '.maf.run';
 const IS_PROD = process.env.NODE_ENV === 'production';
@@ -49,7 +45,11 @@ export class AuthController {
     );
 
     res.cookie('maf_access', accessToken, cookieOptions(15 * 60 * 1000));
-    res.cookie('maf_refresh', refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000, '/auth/refresh'));
+    res.cookie(
+      'maf_refresh',
+      refreshToken,
+      cookieOptions(7 * 24 * 60 * 60 * 1000, '/auth/refresh'),
+    );
 
     res.json({ ok: true });
   }
@@ -65,7 +65,11 @@ export class AuthController {
       await this.authService.refreshToken(oldRefreshToken);
 
     res.cookie('maf_access', accessToken, cookieOptions(15 * 60 * 1000));
-    res.cookie('maf_refresh', refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000, '/auth/refresh'));
+    res.cookie(
+      'maf_refresh',
+      refreshToken,
+      cookieOptions(7 * 24 * 60 * 60 * 1000, '/auth/refresh'),
+    );
 
     res.json({ ok: true });
   }
@@ -83,26 +87,27 @@ export class AuthController {
     res.json({ ok: true });
   }
 
-  /** Redirect to Google consent screen */
-  @Get('google')
-  @UseGuards(AuthGuard('google'))
-  googleLogin() {
-    // Guard redirects to Google automatically
-  }
+  /** WordPress SSO — exchange one-time code for JWT cookies */
+  @Post('wp-sso')
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
+  async wpSso(
+    @Body() body: { code: string },
+    @Res() res: Response,
+  ) {
+    if (!body.code) {
+      throw new UnauthorizedException('Missing SSO code');
+    }
 
-  /** Google OAuth callback — issue cookies and redirect to app */
-  @Get('google/callback')
-  @UseGuards(AuthGuard('google'))
-  async googleCallback(@Req() req: Request, @Res() res: Response) {
-    const profile = req.user as GoogleProfile;
     const { accessToken, refreshToken } =
-      await this.authService.loginWithGoogle(profile);
+      await this.authService.loginWithWpSso(body.code);
 
     res.cookie('maf_access', accessToken, cookieOptions(15 * 60 * 1000));
-    res.cookie('maf_refresh', refreshToken, cookieOptions(7 * 24 * 60 * 60 * 1000, '/auth/refresh'));
+    res.cookie(
+      'maf_refresh',
+      refreshToken,
+      cookieOptions(7 * 24 * 60 * 60 * 1000, '/auth/refresh'),
+    );
 
-    // Redirect to the frontend app after successful Google login
-    const frontendUrl = IS_PROD ? 'https://app.maf.run' : 'http://localhost:5173';
-    res.redirect(`${frontendUrl}/dashboard`);
+    res.json({ ok: true });
   }
 }

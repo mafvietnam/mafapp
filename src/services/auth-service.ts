@@ -8,10 +8,10 @@ export interface AuthUser {
   role: string; // 'USER' | 'COACH' | 'ADMIN'
 }
 
-/** Login with WordPress credentials */
-export async function login(username: string, password: string): Promise<boolean> {
+/** Exchange WordPress SSO one-time code for JWT session */
+export async function loginWithSsoCode(code: string): Promise<boolean> {
   try {
-    const res = await api.post('/auth/login', { username, password });
+    const res = await api.post('/auth/wp-sso', { code });
     return res.ok;
   } catch {
     return false;

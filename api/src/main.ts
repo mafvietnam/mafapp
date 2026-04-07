@@ -10,9 +10,10 @@ async function bootstrap() {
 
   // CORS — allow configured frontend origin only
   const corsOrigin = process.env.CORS_ORIGIN || 'https://app.maf.run';
-  const origins = process.env.NODE_ENV === 'production'
-    ? [corsOrigin]
-    : [corsOrigin, 'http://localhost:5173'];
+  const origins =
+    process.env.NODE_ENV === 'production'
+      ? [corsOrigin]
+      : [corsOrigin, 'http://localhost:5173'];
   app.enableCors({ origin: origins, credentials: true });
 
   // Cookie parser for httpOnly JWT cookies

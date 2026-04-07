@@ -5,7 +5,6 @@ import * as crypto from 'crypto';
 import { RedisService } from '../shared/redis.service.js';
 import { UserService } from '../user/user.service.js';
 import type { TokenPayload, WpUserInfo } from './auth.types.js';
-import type { GoogleProfile } from './google.strategy.js';
 
 @Injectable()
 export class AuthService {
@@ -44,18 +43,36 @@ export class AuthService {
     const user = await this.userService.findOrCreateFromWp(wpUser);
 
     // Generate JWT + refresh token
-    const accessToken = await this.generateAccessToken(user.id, user.email, user.role);
+    const accessToken = await this.generateAccessToken(
+      user.id,
+      user.email,
+      user.role,
+    );
     const refreshToken = await this.generateRefreshToken(user.id);
 
     return { accessToken, refreshToken };
   }
 
-  /** Login via Google OAuth — find or create user, return tokens */
-  async loginWithGoogle(
-    profile: GoogleProfile,
+  /** Login via WordPress SSO — exchange one-time code for user info */
+  async loginWithWpSso(
+    code: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userService.findOrCreateFromGoogle(profile);
-    const accessToken = await this.generateAccessToken(user.id, user.email, user.role);
+    const wpRes = await fetch(
+      `${this.wpUrl}/wp-json/maf/v1/sso/verify?code=${encodeURIComponent(code)}`,
+    );
+
+    if (!wpRes.ok) {
+      this.logger.warn('WP SSO code verification failed');
+      throw new UnauthorizedException('Invalid or expired SSO code');
+    }
+
+    const wpUser: WpUserInfo = await wpRes.json();
+    const user = await this.userService.findOrCreateFromWp(wpUser);
+    const accessToken = await this.generateAccessToken(
+      user.id,
+      user.email,
+      user.role,
+    );
     const refreshToken = await this.generateRefreshToken(user.id);
     return { accessToken, refreshToken };
   }
@@ -86,7 +103,11 @@ export class AuthService {
     const user = await this.userService.findById(userId);
     if (!user) throw new UnauthorizedException('User not found');
 
-    const accessToken = await this.generateAccessToken(user.id, user.email, user.role);
+    const accessToken = await this.generateAccessToken(
+      user.id,
+      user.email,
+      user.role,
+    );
     const refreshToken = await this.generateRefreshToken(user.id);
 
     // Store grace period (60s) for race condition mitigation
@@ -105,7 +126,11 @@ export class AuthService {
     await this.redis.del(`refresh:${refreshToken}`);
   }
 
-  private async generateAccessToken(userId: string, email: string, role: string): Promise<string> {
+  private async generateAccessToken(
+    userId: string,
+    email: string,
+    role: string,
+  ): Promise<string> {
     const payload: TokenPayload = { sub: userId, email, role };
     return this.jwt.signAsync(payload, { expiresIn: '15m' });
   }
