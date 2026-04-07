@@ -29,11 +29,17 @@ export async function getMe(): Promise<AuthUser | null> {
   }
 }
 
-/** Logout — clear app JWT cookies, then redirect to WP to destroy WP session */
-export async function logout(): Promise<void> {
-  console.error('[MAF AUTH] logout() called', new Error().stack);
+/**
+ * Logout — clear app JWT cookies and redirect to WP to destroy WP session.
+ * Two modes:
+ * - fullLogout=true (default): clears both app JWT + WP session (user must re-login everywhere)
+ * - fullLogout=false: clears only app JWT (WP session preserved for SSO re-login)
+ */
+export async function logout(fullLogout = true): Promise<void> {
   await api.post('/auth/logout');
-  // Redirect to WP logout endpoint which destroys WP session then goes to maf.run homepage
-  const wpBase = import.meta.env.VITE_WP_URL || 'https://maf.run';
-  window.location.href = `${wpBase}/?maf_sso_logout=${encodeURIComponent(wpBase)}`;
+  if (fullLogout) {
+    // Full logout: destroy WP session too so user can't auto-re-login via SSO
+    const wpBase = import.meta.env.VITE_WP_URL || 'https://maf.run';
+    window.location.href = `${wpBase}/?maf_sso_logout=${encodeURIComponent(wpBase)}`;
+  }
 }

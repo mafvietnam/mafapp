@@ -36,8 +36,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    await logoutApi();
     setUser(null);
+    await logoutApi(true); // full logout: clear JWT + WP session
   }, []);
 
   return (
