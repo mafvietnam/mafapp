@@ -1,503 +1,3 @@
-{"ts":"2026-04-07T09:18:14.969Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:30.820Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:30.822Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.service.ts\""}
-{"ts":"2026-04-07T09:18:30.823Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:30.989Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:30.993Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:31.529Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"fetched","dur":540,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:51.587Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:51.599Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:18:51.596Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:51.732Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:51.740Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:51.736Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:57.703Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:57.709Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-sync.service.ts\""}
-{"ts":"2026-04-07T09:18:57.704Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:57.851Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:57.852Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:18:57.856Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:02.531Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:02.534Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:02.537Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.module.ts\""}
-{"ts":"2026-04-07T09:19:02.672Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:02.675Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:02.673Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:06.865Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:06.868Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/app.module.ts\""}
-{"ts":"2026-04-07T09:19:06.994Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:07.000Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:06.997Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:13.760Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:13.763Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:13.766Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/services/strava-service.ts\""}
-{"ts":"2026-04-07T09:19:13.897Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:13.900Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:13.897Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:17.523Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:17.526Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/services/api-client.ts\""}
-{"ts":"2026-04-07T09:19:26.564Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:26.568Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/pages/profile-page.tsx\""}
-{"ts":"2026-04-07T09:19:48.392Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:48.396Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/strava-connect-card.tsx\""}
-{"ts":"2026-04-07T09:19:48.395Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:48.549Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:48.549Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:48.553Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:51.587Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:51.590Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/pages/profile-page.tsx\""}
-{"ts":"2026-04-07T09:19:51.731Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:51.733Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:51.731Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:54.528Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:54.532Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/pages/profile-page.tsx\""}
-{"ts":"2026-04-07T09:19:54.661Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:54.664Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:54.662Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:57.641Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:19:57.645Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api\""}
-{"ts":"2026-04-07T09:19:59.954Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:20:02.443Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:20:02.449Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:20:08.073Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:20:08.077Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:25:54.531Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"fetched","dur":447,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:25:59.070Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:25:59.075Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:26:01.389Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:04.692Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:04.696Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/node_modules/.bin/vite\""}
-{"ts":"2026-04-07T09:26:04.957Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:08.657Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:08.660Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:26:08.918Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:11.945Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:11.950Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:26:20.261Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:24.129Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:24.132Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:26:33.488Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:36.060Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:26:36.065Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:26:54.522Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:27:57.708Z","hook":"session-init","event":"SessionStart","tool":"","target":"","note":"clear","dur":195,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:10.591Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":66,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:10.959Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":434,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:15.443Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:15.446Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/plan.md\""}
-{"ts":"2026-04-07T09:28:19.166Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:19.170Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/phase-03-webhook-and-sync-engine.md\""}
-{"ts":"2026-04-07T09:28:24.442Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:24.446Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava\""}
-{"ts":"2026-04-07T09:28:28.775Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:28.778Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:28:31.729Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:31.732Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-sync.service.ts\""}
-{"ts":"2026-04-07T09:28:32.157Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:32.160Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:28:32.209Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.module.ts\""}
-{"ts":"2026-04-07T09:28:32.210Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:35.667Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:35.670Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-token.service.ts\""}
-{"ts":"2026-04-07T09:28:35.790Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:35.793Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-cron.service.ts\""}
-{"ts":"2026-04-07T09:28:38.841Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:38.843Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-auth.service.ts\""}
-{"ts":"2026-04-07T09:28:38.947Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:38.949Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.service.ts\""}
-{"ts":"2026-04-07T09:28:43.644Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:43.649Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/schema.prisma\""}
-{"ts":"2026-04-07T09:28:43.867Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:44.390Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:44.393Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/shared/redis.service.ts\""}
-{"ts":"2026-04-07T09:28:48.471Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:48.473Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:28:51.195Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:51.199Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/shared/redis.service.ts\""}
-{"ts":"2026-04-07T09:28:53.935Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:53.940Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/schema.prisma\""}
-{"ts":"2026-04-07T09:28:54.157Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:56.781Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:28:56.785Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/schema.prisma\""}
-{"ts":"2026-04-07T09:29:32.297Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:29:35.713Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:29:35.717Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/schema.prisma\""}
-{"ts":"2026-04-07T09:29:38.306Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:29:44.566Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:29:44.570Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/migrations\""}
-{"ts":"2026-04-07T09:29:44.796Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:29:47.526Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:29:47.530Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/migrations/20260407_add_user_is_active/migration.sql\""}
-{"ts":"2026-04-07T09:29:58.191Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":7,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:29:58.194Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/garmin/garmin-sync.service.ts\""}
-{"ts":"2026-04-07T09:29:58.277Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:29:58.279Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-encryption.service.ts\""}
-{"ts":"2026-04-07T09:30:04.249Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:30:04.255Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/auth\""}
-{"ts":"2026-04-07T09:30:04.473Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:30:04.477Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/app.module.ts\""}
-{"ts":"2026-04-07T09:30:04.505Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:30:04.723Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:30:07.335Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:30:07.338Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/auth/auth.guard.ts\""}
-{"ts":"2026-04-07T09:31:18.564Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:31:18.569Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/garmin/garmin.module.ts\""}
-{"ts":"2026-04-07T09:31:18.781Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:31:18.838Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:31:18.844Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/shared/shared.module.ts\""}
-{"ts":"2026-04-07T09:31:19.063Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:31:23.206Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:31:23.211Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/garmin/garmin.module.ts\""}
-{"ts":"2026-04-07T09:31:23.441Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:31:27.285Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:31:27.288Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/shared/shared.module.ts\""}
-{"ts":"2026-04-07T09:32:30.166Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:30.168Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/schema.prisma\""}
-{"ts":"2026-04-07T09:32:34.235Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:34.239Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/schema.prisma\""}
-{"ts":"2026-04-07T09:32:34.379Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:34.380Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:34.382Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"reminder-injected","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:37.390Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:37.394Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/migrations/20260407_add_garmin_is_duplicate\""}
-{"ts":"2026-04-07T09:32:37.605Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:41.280Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:41.287Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/migrations/20260407_add_garmin_is_duplicate/migration.sql\""}
-{"ts":"2026-04-07T09:32:41.283Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:41.429Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:41.433Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:32:41.430Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:17.258Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:17.260Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:17.261Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-webhook.service.ts\""}
-{"ts":"2026-04-07T09:33:17.402Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:17.402Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:17.840Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"fetched","dur":439,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:51.797Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:51.802Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:51.805Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-sync.service.ts\""}
-{"ts":"2026-04-07T09:33:51.948Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:51.955Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:33:51.953Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:04.004Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:04.007Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:34:04.147Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:04.147Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:04.149Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:09.309Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:09.311Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:34:09.436Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:09.439Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:09.439Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":2,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:18.119Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:18.123Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:34:18.253Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:18.253Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:18.255Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:35.066Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:35.070Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.module.ts\""}
-{"ts":"2026-04-07T09:34:35.202Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:35.206Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:35.203Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:43.791Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:43.794Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api\""}
-{"ts":"2026-04-07T09:34:52.130Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:34:52.134Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api\""}
-{"ts":"2026-04-07T09:35:01.926Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:06.454Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:06.456Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api\""}
-{"ts":"2026-04-07T09:35:09.292Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:34.110Z","hook":"subagent-init","event":"SubagentStart","tool":"","target":"project-manager","note":"context-injected","dur":86,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:35.990Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:35.991Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration\""}
-{"ts":"2026-04-07T09:35:36.013Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:36.016Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs\""}
-{"ts":"2026-04-07T09:35:37.556Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:37.559Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/*.md\""}
-{"ts":"2026-04-07T09:35:37.661Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:37.663Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/*.md\""}
-{"ts":"2026-04-07T09:35:39.278Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:39.281Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/plan.md\""}
-{"ts":"2026-04-07T09:35:39.739Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:39.742Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/phase-03-webhook-and-sync-engine.md\""}
-{"ts":"2026-04-07T09:35:39.911Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:39.921Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/system-architecture.md\""}
-{"ts":"2026-04-07T09:35:39.942Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:39.945Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/codebase-summary.md\""}
-{"ts":"2026-04-07T09:35:42.545Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:42.548Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/development-roadmap.md\""}
-{"ts":"2026-04-07T09:35:42.644Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:42.646Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/project-changelog.md\""}
-{"ts":"2026-04-07T09:35:46.759Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:46.761Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/phase-03-webhook-and-sync-engine.md\""}
-{"ts":"2026-04-07T09:35:46.892Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:46.893Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:46.894Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:49.889Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:49.892Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/phase-03-webhook-and-sync-engine.md\""}
-{"ts":"2026-04-07T09:35:50.022Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:50.023Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:50.026Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:55.307Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:55.310Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/plan.md\""}
-{"ts":"2026-04-07T09:35:55.441Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:55.446Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:35:55.444Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":3,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:01.653Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:01.654Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/system-architecture.md\""}
-{"ts":"2026-04-07T09:36:01.774Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:01.774Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:01.776Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:06.384Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:06.387Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/system-architecture.md\""}
-{"ts":"2026-04-07T09:36:06.525Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:06.525Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:06.529Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:13.943Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:13.950Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/system-architecture.md\""}
-{"ts":"2026-04-07T09:36:14.098Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:14.098Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:14.101Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:16.634Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:16.637Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/system-architecture.md\""}
-{"ts":"2026-04-07T09:36:19.132Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:19.135Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/system-architecture.md\""}
-{"ts":"2026-04-07T09:36:19.266Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:19.268Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:19.266Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:22.246Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:22.248Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/system-architecture.md\""}
-{"ts":"2026-04-07T09:36:22.368Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:22.373Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:22.374Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:25.282Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:25.286Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/system-architecture.md\""}
-{"ts":"2026-04-07T09:36:25.403Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:25.407Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:25.409Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:27.750Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:27.752Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/codebase-summary.md\""}
-{"ts":"2026-04-07T09:36:35.434Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:35.437Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/codebase-summary.md\""}
-{"ts":"2026-04-07T09:36:40.930Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:40.933Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/codebase-summary.md\""}
-{"ts":"2026-04-07T09:36:41.064Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:41.066Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":2,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:41.068Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:43.775Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:43.778Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/codebase-summary.md\""}
-{"ts":"2026-04-07T09:36:45.733Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:45.734Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/codebase-summary.md\""}
-{"ts":"2026-04-07T09:36:48.804Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:48.806Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/codebase-summary.md\""}
-{"ts":"2026-04-07T09:36:48.932Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:48.938Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:48.935Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:59.467Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:59.469Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/development-roadmap.md\""}
-{"ts":"2026-04-07T09:36:59.590Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:59.592Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:36:59.591Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:03.202Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:03.204Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/development-roadmap.md\""}
-{"ts":"2026-04-07T09:37:03.326Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:03.329Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:03.326Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:05.227Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:05.230Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/development-roadmap.md\""}
-{"ts":"2026-04-07T09:37:05.364Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:05.365Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:05.367Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:20.552Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:20.554Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/project-changelog.md\""}
-{"ts":"2026-04-07T09:37:20.676Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:20.677Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:20.677Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:25.613Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:25.615Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/project-changelog.md\""}
-{"ts":"2026-04-07T09:37:25.735Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:25.737Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:37:25.734Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:02.217Z","hook":"session-init","event":"SessionStart","tool":"","target":"","note":"clear","dur":256,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:19.409Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":67,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:19.869Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":527,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:25.936Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:25.938Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:31.602Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:31.608Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:31.611Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/phase-04-cron-and-maf-lab-integration.md\""}
-{"ts":"2026-04-07T09:38:31.611Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/plans/260407-1549-strava-integration/plan.md\""}
-{"ts":"2026-04-07T09:38:35.563Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":6,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:35.566Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:35.935Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:35.936Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:39.450Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:39.454Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-cron.service.ts\""}
-{"ts":"2026-04-07T09:38:39.888Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:39.892Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:38:40.434Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:40.436Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/dto/strava-activity-query.dto.ts\""}
-{"ts":"2026-04-07T09:38:40.460Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:40.463Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/hooks/use-garmin-auto-fill.ts\""}
-{"ts":"2026-04-07T09:38:45.471Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:45.474Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.service.ts\""}
-{"ts":"2026-04-07T09:38:45.781Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:45.783Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.module.ts\""}
-{"ts":"2026-04-07T09:38:46.081Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":6,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:46.083Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-sync.service.ts\""}
-{"ts":"2026-04-07T09:38:49.941Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:49.942Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:50.262Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:50.265Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/services/strava-service.ts\""}
-{"ts":"2026-04-07T09:38:54.141Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:38:54.145Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab.tsx\""}
-{"ts":"2026-04-07T09:39:00.261Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:00.265Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab-step-data-entry.tsx\""}
-{"ts":"2026-04-07T09:39:00.991Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:01.003Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:00.993Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:01.004Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:04.052Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:04.053Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/garmin/garmin-cron.service.ts\""}
-{"ts":"2026-04-07T09:39:04.482Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:04.484Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:09.504Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:09.507Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/services/garmin-service.ts\""}
-{"ts":"2026-04-07T09:39:09.671Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:09.673Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:14.776Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:14.779Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/garmin/garmin-sync.service.ts\""}
-{"ts":"2026-04-07T09:39:14.932Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:14.934Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src\""}
-{"ts":"2026-04-07T09:39:37.996Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:37.998Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/schema.prisma\""}
-{"ts":"2026-04-07T09:39:41.738Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:41.742Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/prisma/schema.prisma\""}
-{"ts":"2026-04-07T09:39:47.869Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:47.871Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:48.046Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:48.047Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:54.422Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:54.432Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:39:54.424Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/garmin-auto-fill-banner.tsx\""}
-{"ts":"2026-04-07T09:39:54.433Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:40:38.813Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:40:38.816Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/strava-connect-card.tsx\""}
-{"ts":"2026-04-07T09:41:56.636Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:41:56.640Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava-cron.service.ts\""}
-{"ts":"2026-04-07T09:41:56.638Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:41:56.793Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:41:56.796Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:41:56.794Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:06.588Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:06.598Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/dto/strava-activity-query.dto.ts\""}
-{"ts":"2026-04-07T09:42:06.595Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:06.745Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:06.747Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:06.750Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:12.857Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:12.861Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.service.ts\""}
-{"ts":"2026-04-07T09:42:13.009Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:13.012Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:13.011Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:19.918Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:19.924Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.service.ts\""}
-{"ts":"2026-04-07T09:42:20.065Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:20.071Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:20.069Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:25.868Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:25.872Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:42:26.004Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:26.005Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:26.008Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:31.417Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:31.420Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:42:31.543Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:31.547Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:31.544Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":2,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:38.571Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:38.573Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:42:38.712Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"reminder-injected","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:38.713Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:38.712Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:50.444Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:50.447Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api/src/strava/strava.controller.ts\""}
-{"ts":"2026-04-07T09:42:50.574Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:50.578Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:42:50.574Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:00.980Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:00.984Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/services/strava-service.ts\""}
-{"ts":"2026-04-07T09:43:01.113Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:01.117Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:01.119Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:13.356Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:13.360Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:13.363Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/hooks/use-strava-auto-fill.ts\""}
-{"ts":"2026-04-07T09:43:13.504Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:13.515Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:13.511Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:26.399Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:26.402Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/garmin-auto-fill-banner.tsx\""}
-{"ts":"2026-04-07T09:43:26.530Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:26.537Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:27.087Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"fetched","dur":554,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:34.288Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:34.295Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab-step-data-entry.tsx\""}
-{"ts":"2026-04-07T09:43:34.427Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:34.427Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:34.431Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:39.420Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:39.422Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab-step-data-entry.tsx\""}
-{"ts":"2026-04-07T09:43:39.546Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:39.547Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:39.548Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:46.084Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:46.088Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab-step-data-entry.tsx\""}
-{"ts":"2026-04-07T09:43:46.219Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:46.220Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:46.223Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:52.667Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:52.670Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab.tsx\""}
-{"ts":"2026-04-07T09:43:52.804Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:52.810Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:43:52.812Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:04.391Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:04.394Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab.tsx\""}
-{"ts":"2026-04-07T09:44:04.521Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:04.526Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:04.523Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:10.559Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:10.562Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab.tsx\""}
-{"ts":"2026-04-07T09:44:10.688Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:10.688Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:10.692Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:18.108Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:18.111Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api\""}
-{"ts":"2026-04-07T09:44:20.619Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:27.664Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:27.668Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:44:45.505Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:45.509Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:44:49.920Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:57.104Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:44:57.109Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:44:57.345Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:45:01.500Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:45:01.505Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:45:02.580Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:45:07.861Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:45:07.864Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:45:15.730Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:45:19.002Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:45:19.006Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp\""}
-{"ts":"2026-04-07T09:45:58.569Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:46:04.080Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:46:04.085Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab.tsx\""}
-{"ts":"2026-04-07T09:46:04.327Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:46:09.158Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
-{"ts":"2026-04-07T09:46:09.163Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/src/components/maf-lab-step-data-entry.tsx\""}
-{"ts":"2026-04-07T09:46:09.435Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
-{"ts":"2026-04-07T09:46:13.580Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
 {"ts":"2026-04-07T09:46:13.584Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/api\""}
 {"ts":"2026-04-07T09:46:15.761Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
 {"ts":"2026-04-07T09:46:23.307Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
@@ -678,3 +178,406 @@
 {"ts":"2026-04-07T09:50:39.995Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
 {"ts":"2026-04-07T09:50:40.002Z","hook":"scout-block","event":"PreToolUse","tool":"","target":"","note":"","dur":0,"status":"crash","exit":0,"error":"path should be a `path.relative()`d string, but got \"D:/Repos/Side project/mafapp/docs/system-architecture.md\""}
 {"ts":"2026-04-07T09:50:40.217Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:16.173Z","hook":"session-init","event":"SessionStart","tool":"","target":"","note":"startup","dur":178,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:32.169Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":28,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:32.709Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":568,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:39.300Z","hook":"subagent-init","event":"SubagentStart","tool":"","target":"Explore","note":"context-injected","dur":27,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:41.651Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:41.652Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:42.020Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:42.021Z","hook":"scout-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:45.601Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:45.601Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:45.822Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:45.822Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:45.908Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:45.907Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:46.094Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:46.094Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:48.132Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:48.133Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:48.368Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:48.368Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:48.798Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:48.798Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:49.164Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:49.164Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:51.645Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:51.645Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:51.854Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:51.854Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:52.047Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:52.047Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:52.310Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:52.310Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:54.077Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:54.077Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:54.871Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:54.871Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:54.948Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:54.948Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:55.001Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:55.003Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":6,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:57.224Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:57.224Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:57.795Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:59.651Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:25:59.651Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:26:05.157Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:26:05.157Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:26:05.950Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:26:05.950Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:18.627Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":33,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:19.204Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":610,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:21.656Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:21.658Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:24.711Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":4,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:24.711Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:24.767Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:24.826Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:24.827Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:24.857Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:27.948Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:27.948Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:30.622Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:30.623Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":".env","note":"approval-required","dur":4,"status":"block","exit":2,"error":""}
+{"ts":"2026-04-08T11:36:43.075Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":4,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:43.076Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:43.124Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:46.822Z","hook":"scout-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:46.822Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":".env","note":"approval-required","dur":3,"status":"block","exit":2,"error":""}
+{"ts":"2026-04-08T11:36:55.047Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":3,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:55.047Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:36:59.994Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:37:04.655Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:37:04.655Z","hook":"scout-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:37:06.931Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:37:06.931Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:37:06.933Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:09.075Z","hook":"session-init","event":"SessionStart","tool":"","target":"","note":"startup","dur":167,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:28.393Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":28,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:28.881Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":516,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:33.558Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:33.559Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:33.793Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:33.793Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:34.142Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:39.398Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:39.398Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:39.947Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":0,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:39.949Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:42.934Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:53.228Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:53.229Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:58.679Z","hook":"scout-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:47:58.679Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:48:01.334Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:48:01.334Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:48:01.334Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T11:48:03.567Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":0,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:48:03.567Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T11:48:07.369Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:38:57.770Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":51,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:38:58.313Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":595,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:03.377Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:03.379Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:03.421Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:04.355Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:04.355Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:04.406Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:07.519Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":3,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:07.520Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:07.570Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:08.438Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:08.439Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:08.487Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:08.517Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":0,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:08.519Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:21.818Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:30.922Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:30.923Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:30.957Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:40.484Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:40.486Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:54.246Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:57.399Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:39:57.401Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:04.236Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:08.233Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:08.232Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":3,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:08.278Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:12.010Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":3,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:12.011Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:20.965Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:23.585Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:23.586Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:37.500Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:37.500Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:40:37.538Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:41:02.724Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:41:02.725Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:41:06.821Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:41:12.043Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:41:12.043Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:41:22.919Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:41:26.637Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:41:26.638Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:18.217Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:18.219Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:18.256Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:18.812Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:18.813Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:18.861Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:30.829Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":0,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:30.830Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:35.665Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:39.454Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:42:39.456Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:43:10.831Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:43:10.831Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:43:15.165Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:43:19.339Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:43:19.340Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:44:45.105Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"fetched","dur":532,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:21.133Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:21.165Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":31,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:25.378Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":0,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:25.379Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:32.910Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:36.530Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:36.530Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:40.748Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:47.161Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":3,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:47.162Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:47.198Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:52.159Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":4,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:52.159Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:45:57.844Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:46:41.025Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":31,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:46:41.526Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":532,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:50:28.319Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":34,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:50:28.847Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":563,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:50:46.665Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:50:46.666Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:50:49.104Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:50:51.755Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:50:51.756Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:50:51.790Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:51:38.912Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:51:38.914Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:51:38.915Z","hook":"scout-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:51:38.945Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:51:38.946Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:51:38.945Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:57:35.165Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":39,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:57:35.691Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":565,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:59:04.938Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":42,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:59:05.451Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":555,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:59:17.434Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:59:17.437Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:59:17.479Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T13:59:37.181Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T13:59:37.181Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:24.742Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:30.712Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:30.714Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:33.966Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:53.335Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:53.337Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:53.338Z","hook":"scout-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:53.366Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:53.368Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:53.366Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:57.301Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:00:57.303Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:01:04.503Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:01:07.413Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":0,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:01:07.415Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:01:10.045Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:01:36.221Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":40,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:01:37.223Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":1042,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:01:42.281Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":0,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:01:42.282Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:01:53.162Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:02:16.220Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:02:16.253Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":32,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:02:20.370Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:02:20.372Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:02:29.440Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:02:29.441Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:02:32.972Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:03:39.585Z","hook":"session-init","event":"SessionStart","tool":"","target":"","note":"clear","dur":220,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:37.946Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":27,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:38.474Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":554,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:45.223Z","hook":"subagent-init","event":"SubagentStart","tool":"","target":"Explore","note":"context-injected","dur":28,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:47.217Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:47.218Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:47.344Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:47.344Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:47.559Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:47.559Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:47.787Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:47.788Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:49.823Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:49.823Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:50.083Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:50.083Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:50.233Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:50.233Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:50.523Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:50.523Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":".env","note":"approval-required","dur":3,"status":"block","exit":2,"error":""}
+{"ts":"2026-04-08T14:06:50.585Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:50.585Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:53.438Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:53.438Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:53.622Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:53.621Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:54.190Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:54.190Z","hook":"scout-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:56.298Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:56.298Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:56.322Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:56.322Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:57.016Z","hook":"scout-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:57.016Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:59.211Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:59.211Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:59.580Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:59.581Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:06:59.625Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:07:02.013Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:07:02.014Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:36.820Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":40,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:37.363Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":583,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:39.956Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:39.957Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:42.019Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:42.019Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:44.851Z","hook":"scout-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:44.851Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:47.204Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:47.204Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:53.395Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:08:53.395Z","hook":"scout-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:09:21.083Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:09:21.087Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:09:21.084Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:09:24.334Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:09:24.335Z","hook":"scout-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:09:29.841Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:09:29.844Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:09:29.844Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:11:57.965Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":31,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:11:58.691Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":757,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:03.081Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:03.083Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:03.154Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:03.299Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:03.299Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:06.281Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:06.282Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:53.199Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:56.174Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":4,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T14:12:56.176Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:03.003Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:05.580Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:05.583Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:10.302Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:10.303Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:18.171Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:18.171Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:23.071Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:23.072Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:25.946Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:28.313Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:28.313Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:31.225Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:31.252Z","hook":"privacy-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:31.252Z","hook":"scout-block","event":"PreToolUse","tool":"Glob","target":"","note":"","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:36.110Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:36.111Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:36.145Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:39.718Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:39.719Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:43.549Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:45.883Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:45.883Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":3,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:45.932Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:47.513Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:13:47.514Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":".env","note":"approval-required","dur":4,"status":"block","exit":2,"error":""}
+{"ts":"2026-04-08T14:14:01.505Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":4,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T14:14:01.506Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:14:01.542Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:14:04.410Z","hook":"scout-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:14:04.410Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":".env","note":"approval-required","dur":3,"status":"block","exit":2,"error":""}
+{"ts":"2026-04-08T14:14:24.255Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:14:24.256Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":".env","note":"bash-sensitive-file","dur":5,"status":"warn","exit":0,"error":""}
+{"ts":"2026-04-08T14:15:04.079Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:17:41.143Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":29,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:17:41.615Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":502,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:17:45.736Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:17:45.737Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:17:45.774Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:03.542Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":29,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:04.036Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":524,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:12.565Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:12.564Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:18.375Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:25.873Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:25.877Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"./node_modules/@prisma/client/index.js","note":"node_modules","dur":5,"status":"block","exit":2,"error":""}
+{"ts":"2026-04-08T14:38:29.068Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:29.069Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:31.233Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:35.916Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:35.917Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:47.446Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":5,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:47.448Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"/Users/admin/Repo/mafapp/api/node_modules/@prisma/client/index.js","note":"node_modules","dur":7,"status":"block","exit":2,"error":""}
+{"ts":"2026-04-08T14:38:52.820Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":1,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:52.821Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:55.503Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:58.225Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:38:58.225Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:00.854Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:08.559Z","hook":"descriptive-name","event":"PreToolUse","tool":"Write","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:08.559Z","hook":"privacy-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:08.559Z","hook":"scout-block","event":"PreToolUse","tool":"Write","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:08.598Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Write","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:08.600Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Write","target":"","note":"reminder-injected","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:08.598Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Write","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:14.629Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"allowed-command","dur":0,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:14.631Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:17.861Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:28.040Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:39:28.040Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:40:27.997Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:42:59.168Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":30,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:42:59.628Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":490,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:04.578Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:04.579Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:04.891Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:04.891Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:19.446Z","hook":"privacy-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:19.447Z","hook":"scout-block","event":"PreToolUse","tool":"Read","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:23.022Z","hook":"scout-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:23.022Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:27.818Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:27.819Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:48.170Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:51.454Z","hook":"privacy-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:51.456Z","hook":"scout-block","event":"PreToolUse","tool":"Bash","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:51.493Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Bash","target":"","note":"throttled","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:54.496Z","hook":"scout-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:54.496Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:58.531Z","hook":"privacy-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:43:58.531Z","hook":"scout-block","event":"PreToolUse","tool":"Edit","target":"","note":"","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:44:13.909Z","hook":"usage-context-awareness","event":"PostToolUse","tool":"Edit","target":"","note":"throttled","dur":1,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:44:13.909Z","hook":"post-edit-simplify-reminder","event":"PostToolUse","tool":"Edit","target":"","note":"tracked-edit","dur":2,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:44:13.909Z","hook":"plan-format-kanban","event":"PostToolUse","tool":"Edit","target":"","note":"non-plan-file","dur":0,"status":"skip","exit":0,"error":""}
+{"ts":"2026-04-08T14:50:39.314Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":32,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:50:39.847Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":565,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:50:50.040Z","hook":"scout-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":3,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:50:50.040Z","hook":"privacy-block","event":"PreToolUse","tool":"Grep","target":"","note":"","dur":4,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:52:46.699Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":32,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:52:47.242Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":575,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:54:35.887Z","hook":"dev-rules-reminder","event":"UserPromptSubmit","tool":"","target":"","note":"context-injected","dur":39,"status":"ok","exit":0,"error":""}
+{"ts":"2026-04-08T14:54:36.419Z","hook":"usage-context-awareness","event":"UserPromptSubmit","tool":"","target":"","note":"fetched","dur":572,"status":"ok","exit":0,"error":""}

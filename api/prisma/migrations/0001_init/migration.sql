@@ -59,6 +59,7 @@ CREATE TABLE "GarminActivity" (
     "calories" INTEGER,
     "vo2Max" DOUBLE PRECISION,
     "trainingEffect" DOUBLE PRECISION,
+    "isDuplicate" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "GarminActivity_pkey" PRIMARY KEY ("id")
@@ -83,6 +84,16 @@ CREATE TABLE "GarminDailySummary" (
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "GarminDailySummary_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "AppSetting" (
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "AppSetting_pkey" PRIMARY KEY ("key")
 );
 
 -- CreateTable

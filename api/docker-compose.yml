@@ -1,0 +1,60 @@
+# Local dev infrastructure: PostgreSQL + Redis + Prisma schema push
+# Usage:
+#   docker compose up -d          → start postgres + redis
+#   docker compose run --rm migrate → apply schema (prisma db push)
+#   docker compose up             → start infra AND run migrate
+#
+# Then start the app locally: npm run start:dev
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: maf-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: maf_user
+      POSTGRES_PASSWORD: changeme
+      POSTGRES_DB: maf
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U maf_user -d maf"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: maf-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  migrate:
+    image: node:20-alpine
+    container_name: maf-migrate
+    working_dir: /app
+    environment:
+      # Uses internal docker hostname "postgres" (not localhost)
+      DATABASE_URL: postgresql://maf_user:changeme@postgres:5432/maf
+    volumes:
+      - ./:/app
+      - migrate_node_modules:/app/node_modules
+    # npm ci installs deps into the named volume on first run (cached after)
+    command: sh -c "npm ci --quiet && npx prisma db push --skip-generate"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+volumes:
+  postgres_data:
+  migrate_node_modules:

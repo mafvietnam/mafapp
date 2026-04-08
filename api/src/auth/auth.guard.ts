@@ -12,6 +12,13 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    // Dev-only bypass: set DEV_USER_ID in .env to skip JWT validation locally
+    if (process.env.NODE_ENV !== 'production' && process.env.DEV_USER_ID) {
+      const req = context.switchToHttp().getRequest();
+      req.user = { id: process.env.DEV_USER_ID, email: 'dev@local', role: 'USER' };
+      return true;
+    }
+
     // Run Passport JWT validation first
     const isValid = await (super.canActivate(context) as Promise<boolean>);
     if (!isValid) return false;

@@ -22,7 +22,6 @@ import { StravaAuthService } from './strava-auth.service.js';
 import { StravaSyncService } from './strava-sync.service.js';
 import { StravaWebhookService, type StravaWebhookEvent } from './strava-webhook.service.js';
 import { JwtAuthGuard } from '../auth/auth.guard.js';
-import type { TokenPayload } from '../auth/auth.types.js';
 import { StravaActivityQueryDto } from './dto/strava-activity-query.dto.js';
 
 @Controller('strava')
@@ -77,7 +76,7 @@ export class StravaController {
   @Get('connect')
   @UseGuards(JwtAuthGuard)
   getConnectUrl(@Req() req: Request) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as { id: string }).id;
     const authUrl = this.authService.getAuthorizationUrl(userId);
     return { authUrl };
   }
@@ -123,7 +122,7 @@ export class StravaController {
   @Get('status')
   @UseGuards(JwtAuthGuard)
   async getStatus(@Req() req: Request) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as { id: string }).id;
     return this.stravaService.getStatus(userId);
   }
 
@@ -132,7 +131,7 @@ export class StravaController {
   @UseGuards(JwtAuthGuard)
   @Throttle({ default: { limit: 3, ttl: 60000 } })
   async disconnect(@Req() req: Request) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as { id: string }).id;
 
     const conn = await this.stravaService.findConnection(userId);
     if (!conn) throw new BadRequestException('No Strava connection found');
@@ -148,7 +147,7 @@ export class StravaController {
   @Get('activities')
   @UseGuards(JwtAuthGuard)
   async getActivities(@Req() req: Request, @Query() query: StravaActivityQueryDto) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as { id: string }).id;
     return this.stravaService.getActivities(userId, query);
   }
 
@@ -156,7 +155,7 @@ export class StravaController {
   @Get('activities/:id')
   @UseGuards(JwtAuthGuard)
   async getActivity(@Req() req: Request, @Param('id') id: string) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as { id: string }).id;
     const activity = await this.stravaService.getActivity(userId, id);
     if (!activity) throw new NotFoundException('Activity not found');
     return activity;
@@ -167,7 +166,7 @@ export class StravaController {
   @UseGuards(JwtAuthGuard)
   @Throttle({ default: { limit: 1, ttl: 300000 } })
   async triggerSync(@Req() req: Request) {
-    const userId = (req.user as TokenPayload).sub;
+    const userId = (req.user as { id: string }).id;
 
     const conn = await this.stravaService.findConnection(userId);
     if (!conn) throw new BadRequestException('No Strava connection found');
