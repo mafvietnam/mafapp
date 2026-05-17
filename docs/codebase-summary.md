@@ -358,6 +358,13 @@ api/
 │   │   ├── health.controller.ts — GET /health
 │   │   └── health.module.ts
 │   │
+│   ├── admin/ (Account management + Integration config, RBAC)
+│   │   ├── admin.controller.ts — user mgmt + GET/POST /admin/{garmin,strava}/settings + /admin/strava/sync
+│   │   ├── admin.service.ts — toggleActive, users query, stats, saveGarminSettings, saveStravaSettings
+│   │   ├── admin.guard.ts — @UseGuards(JwtAuthGuard, RolesGuard('ADMIN'))
+│   │   ├── admin-strava-settings.dto.ts — clientId, clientSecret, webhookVerifyToken, enabled
+│   │   └── admin.module.ts
+│   │
 │   ├── garmin/ (Garmin device sync — gated by FEATURE_GARMIN)
 │   │   ├── garmin.controller.ts — endpoints: connect, disconnect, status, sync, activities, daily-summary
 │   │   ├── garmin.service.ts — business logic, connection queries
@@ -368,19 +375,22 @@ api/
 │   │   ├── garmin-activity.dto.ts — activity query DTOs
 │   │   └── garmin.module.ts
 │   │
-│   ├── strava/ (Strava activity sync + webhook — gated by FEATURE_STRAVA)
-│   │   ├── strava.controller.ts — GET/POST /webhook, GET /activities, GET /activities/:id, connect, disconnect, sync
-│   │   ├── strava.service.ts — business logic, connection management, getActivities()
+│   ├── strava/ (Strava activity sync + webhook + OAuth state — gated by FEATURE_STRAVA)
+│   │   ├── strava.controller.ts — GET/POST /webhook, GET /activities/:id, connect, disconnect, sync, getStatus
+│   │   ├── strava.service.ts — business logic, connection mgmt, getActivities(), getStatus (includes featureEnabled)
+│   │   ├── strava-auth.service.ts — OAuth2 token exchange, state verification (Redis nonce + HMAC)
 │   │   ├── strava-sync.service.ts — sync engine (paginated fetch + upsert, dedup, rate-limit handling)
-│   │   ├── strava-webhook.service.ts — webhook subscription, event processing, challenge validation
+│   │   ├── strava-webhook.service.ts — webhook subscription, event processing, auto-resubscribe on credential save
 │   │   ├── strava-cron.service.ts — daily 3am cron fallback (25h threshold, Redis global lock)
-│   │   ├── strava-encryption.service.ts — AES-256 encrypt/decrypt OAuth2 tokens
+│   │   ├── strava-encryption.service.ts — AES-256 encrypt/decrypt OAuth2 tokens (user-scoped)
 │   │   ├── dto/strava-activity-query.dto.ts — page, limit, type, excludeDuplicates filters
 │   │   └── strava.module.ts
 │   │
 │   └── shared/
-│       ├── prisma.service.ts — PostgreSQL ORM (User, UserProfile, GarminConnection, GarminActivity, StravaConnection, StravaActivity)
-│       ├── redis.service.ts — Session + cache (PKCE state, JWT, profiles, sync locks)
+│       ├── app-settings.service.ts — DB-backed config for Garmin + Strava (30s TTL cache + env fallback)
+│       ├── garmin-encryption.service.ts — AES-256-GCM encrypt/decrypt (shared by Garmin + Strava)
+│       ├── prisma.service.ts — PostgreSQL ORM (User, UserProfile, GarminConnection, StravaConnection, etc.)
+│       ├── redis.service.ts — Session + cache (PKCE state, JWT, OAuth nonces, sync locks, settings cache)
 │       └── shared.module.ts
 │
 ├── prisma/

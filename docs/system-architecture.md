@@ -71,7 +71,16 @@ App (App.tsx)
 │   ├─ /admin → AdminPage (authenticated, ADMIN role)
 │   │  ├─ User management with isActive toggle
 │   │  ├─ Account status badges (Hoạt động/Đã khóa)
+│   │  ├─ Strava settings card: Client ID/Secret/Webhook config
+│   │  ├─ Admin sync trigger + sync history
 │   │  └─ Self-protection: cannot disable own account
+│   │
+│   ├─ /admin/strava → AdminStravaPage (authenticated, ADMIN role)
+│   │  ├─ Detailed Strava OAuth config management
+│   │  ├─ Client ID, Secret (masked), Webhook Verify Token
+│   │  ├─ Enable/disable toggle, save button
+│   │  ├─ Webhook resubscription status
+│   │  └─ Admin sync trigger + history
 │   │
 │   ├─ /app → AppPageWrapper (with nav)
 │   │  ├─ PLAN Tab ──────────────────────────
@@ -332,10 +341,11 @@ api/ (NestJS 10)
 │  │  ├─ user.service.ts (findOrCreateFromWp, CRUD operations)
 │  │  └─ user.module.ts
 │  │
-│  ├─ admin/ (Account management, RBAC)
-│  │  ├─ admin.controller.ts (GET users list, PATCH user status)
-│  │  ├─ admin.service.ts (toggle isActive, query users, stats)
+│  ├─ admin/ (Account management + Integration settings, RBAC)
+│  │  ├─ admin.controller.ts (GET users list, PATCH user status, Strava/Garmin settings endpoints)
+│  │  ├─ admin.service.ts (toggle isActive, query users, stats; saveStravaSettings, saveGarminSettings)
 │  │  ├─ admin.guard.ts (requires ADMIN role)
+│  │  ├─ admin-strava-settings.dto.ts (clientId, clientSecret, webhookVerifyToken, enabled)
 │  │  ├─ admin-stats.dto.ts, admin-user-query.dto.ts, admin-update-user.dto.ts
 │  │  └─ admin.module.ts
 │  │
@@ -369,8 +379,10 @@ api/ (NestJS 10)
 │  │  └─ types/ (TypeScript types for Strava API contracts)
 │  │
 │  ├─ shared/
+│  │  ├─ app-settings.service.ts (DB-backed config for Garmin + Strava; 30s TTL cache)
+│  │  ├─ garmin-encryption.service.ts (AES-256-GCM; shared by Garmin + Strava modules)
 │  │  ├─ prisma.service.ts (PostgreSQL ORM)
-│  │  ├─ redis.service.ts (session + cache + revocation management)
+│  │  ├─ redis.service.ts (session + cache + revocation management + OAuth nonce store)
 │  │  └─ shared.module.ts
 │  │
 │  └─ main.ts (entry point, bootstrap NestJS)
@@ -398,6 +410,12 @@ api/ (NestJS 10)
 | GET | `/admin/users/:id` | ✅ | ADMIN | Get user details with role + isActive |
 | PATCH | `/admin/users/:id` | ✅ | ADMIN | Toggle user isActive status (self-protection) |
 | GET | `/admin/stats` | ✅ | ADMIN | Dashboard stats: total users, new today, recent users |
+| GET | `/admin/garmin/settings` | ✅ | ADMIN | Retrieve masked Garmin OAuth config (Client ID only) |
+| POST | `/admin/garmin/settings` | ✅ | ADMIN | Save Garmin Client ID/Secret (auto-validates) |
+| GET | `/admin/strava/settings` | ✅ | ADMIN | Retrieve masked Strava OAuth config (Client ID only) |
+| POST | `/admin/strava/settings` | ✅ | ADMIN | Save Strava Client ID/Secret/Webhook Verify Token (auto-resubscribe) |
+| GET | `/admin/strava/status` | ✅ | ADMIN | Check Strava subscription + webhook status |
+| POST | `/admin/strava/sync` | ✅ | ADMIN | Trigger immediate Strava sync (all users, returns errors + duration) |
 | GET | `/strava/webhook` | ❌ | — | Strava webhook challenge validation (public) |
 | POST | `/strava/webhook` | ❌ | — | Strava webhook event push handler (public, async) |
 | POST | `/strava/connect` | ✅ | — | Initiate Strava OAuth2 connection flow |
@@ -464,6 +482,9 @@ model StravaConnection {
   expiresAt             DateTime?
   status                String   // CONNECTED|DISCONNECTED|TOKEN_EXPIRED|ERROR
   lastSyncAt            DateTime?
+  lastSyncStartedAt     DateTime?  // Admin sync tracking
+  lastSyncFinishedAt    DateTime?  // Admin sync tracking
+  lastSyncError         String?    // Audit + error history
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
   stravaActivities      StravaActivity[]
@@ -547,4 +568,34 @@ File: `api/src/admin/admin.service.ts`
 
 ---
 
-**Version:** 1.4.0 | **Last Updated:** April 7, 2026 (Strava Integration Phase 3 — Webhook & Sync Engine Complete)
+## Integration Settings Pattern (Admin-Managed Credentials)
+
+### AppSettingsService (Shared across Garmin & Strava)
+
+**Purpose:** Centralized DB-backed OAuth2 credential management with environment fallback and redis caching.
+
+**Key Features:**
+- **Lazy DB-backed config:** Admin can supply credentials via UI; env vars optional (fallback only)
+- **30s TTL cache:** Redis caches all reads (`getGarminRuntimeConfig()`, `getStravaRuntimeConfig()`)
+- **Cache invalidation:** `setMany()` clears cache for changed keys (prefix-based)
+- **Credential masking:** Admin GET endpoints return only first 4 chars of secrets (security)
+- **Encryption:** Secrets encrypted at rest via `GarminEncryptionService` (AES-256-GCM)
+- **Validation:** Joi schema enforces hex + length checks at boot
+
+**Usage:**
+- **Garmin Module:** `constructor(private appSettings: AppSettingsService)` → `getGarminRuntimeConfig()` for OAuth2 client ID/secret
+- **Strava Module:** Same pattern; `StravaService` uses `getStravaRuntimeConfig()` for API calls
+- **Admin Service:** `setGarminSettings()`, `setStravaSettings()` update DB + invalidate cache
+
+**Flow Example:**
+1. Admin saves Strava Client ID via `/admin/strava/settings`
+2. `AdminService.saveStravaSettings()` encrypts + stores in DB
+3. `AppSettingsService.setMany()` invalidates cache
+4. Next Strava API call reads fresh config from DB (not cache)
+5. `StravaWebhookService.refreshSubscription()` auto-triggered (returns result to UI)
+
+**Rationale:** Avoids container restart for credential rotation; decouples credential lifecycle from deployment.
+
+---
+
+**Version:** 1.6.0 | **Last Updated:** May 18, 2026 (Strava Integration Phase 5 — Admin UI & DB-backed Config Complete)

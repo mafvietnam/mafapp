@@ -253,6 +253,64 @@ docker-compose logs -f n8n
 
 ---
 
+## Strava OAuth Setup
+
+### Prerequisites
+
+- A Strava API app registered at https://www.strava.com/settings/api
+
+### Steps
+
+1. Create an app at https://www.strava.com/settings/api
+2. Set **Authorization Callback Domain** to `api.maf.run` (or your backend domain)
+3. Required OAuth scopes granted at user consent time: `read,activity:read_all`
+4. Copy **Client ID** and **Client Secret** into Admin → Cài đặt chung → Strava section
+5. Generate a webhook verify token (any random string, e.g. `openssl rand -hex 16`) and paste into the same form
+6. Toggle **Enabled** on and save — status should show "Strava OAuth đang hoạt động"
+7. Set the build-time flag so the MAF Lab auto-fill activates:
+   ```bash
+   # In .env (before docker compose build)
+   VITE_FEATURE_STRAVA=true
+   FEATURE_STRAVA=true
+   STRAVA_ENCRYPTION_KEY=$(openssl rand -hex 32)
+   ```
+8. Rebuild the frontend image after toggling the flag (Vite inlines it at build time):
+   ```bash
+   docker compose build maf-app
+   docker compose up -d maf-app
+   ```
+
+### Re-authorizing an Existing Connection (scope upgrade)
+
+If a previously connected athlete only granted `read` scope (not `activity:read_all`), activity sync calls will 401. To upgrade:
+
+1. Take a snapshot first:
+   ```sql
+   SELECT * FROM "StravaConnection" WHERE "userId" = '<athlete-user-id>';
+   ```
+2. Inform the athlete: "Re-connect required, expect ~5 min activity-import lag"
+3. Athlete clicks **Ngắt kết nối** on `/profile`, then **Kết nối Strava**
+4. Consent screen must show both scopes — click **Authorize**
+5. Verify in DB:
+   ```sql
+   SELECT "stravaAthleteId", status, "lastSyncAt" FROM "StravaConnection" WHERE "userId" = '<athlete-user-id>';
+   ```
+6. If activities are missing from the disconnect window, trigger a backfill via the admin sync endpoint or run `StravaSyncService.syncRecent(userId, daysBack=7)` from a REPL.
+
+### Webhook Verify Token Rotation
+
+Saving a new verify token, Client ID, or Client Secret in Admin → Strava settings automatically deletes the existing Strava webhook subscription and creates a new one using the new credential values. This ensures Strava always has the current verification token and API credentials.
+
+The result is surfaced inline in the admin UI after save:
+- `webhookResubscribed: true` → green success banner (webhook resubscribed successfully)
+- `webhookResubscribeError` with message → red error banner (resubscription failed; check logs)
+
+**No manual re-subscription step is needed.** The auto-resubscribe is synchronous and happens in the response path — admins see the result immediately.
+
+**First-time bootstrap:** If the admin UI has not been configured yet, `STRAVA_WEBHOOK_VERIFY_TOKEN` in `.env` is used to bootstrap the subscription at startup. Once admin UI supplies credentials, those take precedence and the env var is no longer consulted (AppSettingsService pattern: DB-backed config with env fallback).
+
+---
+
 ## Updates
 
 ### Update Frontend Code

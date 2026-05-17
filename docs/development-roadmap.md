@@ -110,6 +110,13 @@
   - GET /strava/activities/:id — single activity endpoint
   - useStravaAutoFill hook (mirrors Garmin, gated by VITE_FEATURE_STRAVA)
   - MAF Lab Strava auto-fill button (orange banner, wins over Garmin)
+- **Phase 13.5:** Admin UI & DB-backed Config ✅ COMPLETE
+  - AppSettingsService: unified DB-backed Garmin + Strava OAuth config (30s TTL cache)
+  - Admin endpoints: GET/POST /admin/strava/settings, GET /admin/strava/status, POST /admin/strava/sync
+  - Redis nonce store + HMAC-SHA256 OAuth state (single-use CSRF prevention)
+  - Automatic webhook resubscription on credential save (feedback in UI)
+  - Frontend admin page + settings card, gated by ADMIN role
+  - Hide Strava connect card when `featureEnabled=false` (reads from `AppSettingsService`)
 
 ---
 

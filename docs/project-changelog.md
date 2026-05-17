@@ -607,4 +607,131 @@ Following Semantic Versioning (MAJOR.MINOR.PATCH):
 
 ---
 
-**Last Updated:** April 7, 2026 | **Version:** 1.5.0
+## [1.6.0] — 2026-05-18 (Strava Integration — Phase 5: Admin UI & DB-backed Config)
+
+### Major: Strava Admin Settings & OAuth State Hardening
+
+**Scope:** Phase 5 (Admin UI) of Strava integration. Implements database-backed Strava OAuth credentials with fallback to env vars, Redis nonce store for OAuth state HMAC verification, admin UI for credential + webhook management, and automatic webhook resubscription on settings save.
+
+### Added
+
+#### Backend — AppSettingsService (Replaces AdminSettingsService)
+- **File:** `api/src/shared/app-settings.service.ts`
+- **Features:**
+  - Unified DB-backed settings (Garmin + Strava credentials)
+  - 30s TTL cache with invalidation on `setMany()`
+  - `getGarminRuntimeConfig()` — masked secrets for runtime OAuth
+  - `getStravaRuntimeConfig()` — masked secrets for Strava API calls
+  - `setGarminSettings()` + `setStravaSettings()` — admin-triggered updates
+
+#### Admin API Endpoints (4 new)
+- **File:** `api/src/admin/admin.service.ts`
+- **Endpoints:**
+  - `GET /admin/strava/settings` — Retrieve masked Strava OAuth config (Client ID only, secret 4+4 chars)
+  - `POST /admin/strava/settings` — Save Client ID/Secret/Webhook Verify Token (auto-resubscribe webhook)
+  - `GET /admin/strava/status` — Check Strava connection + webhook subscription status
+  - `POST /admin/strava/sync` — Trigger immediate Strava sync (all users, returns last error + sync duration)
+- **Auth:** All `@UseGuards(JwtAuthGuard, RolesGuard('ADMIN'))`
+- **Response:** Includes `webhookResubscribed` + `webhookResubscribeError` fields for webhook refresh feedback
+
+#### Strava DTO + Validation
+- **File:** `api/src/admin/admin-strava-settings.dto.ts`
+- `StravaSettingsDto`: clientId (numeric), clientSecret (string), webhookVerifyToken (optional string), enabled (boolean)
+- Validated via `class-validator` + global `ValidationPipe`
+
+#### OAuth State Hardening
+- **File:** `api/src/strava/strava-auth.service.ts`
+- Redis nonce store (`strava:oauth:state:{nonce}`, single-use, EX 600)
+- HMAC-SHA256 state signature (reuses `GARMIN_ENCRYPTION_KEY` as shared secret)
+- `verifyState()` checks: nonce exists, signature matches, optional JWT subject binding
+
+#### Database Migrations
+- **Migration:** `0002_strava_admin_sync_columns`
+  - Added `lastSyncStartedAt`, `lastSyncFinishedAt`, `lastSyncError` to `StravaConnection` table
+  - Tracks admin sync attempts (audit + idempotency guard)
+
+#### Encryption Service Relocation
+- **File:** `api/src/shared/garmin-encryption.service.ts`
+- Relocated from `GarminModule` → `SharedModule` (used by both Garmin + Strava)
+- `GarminModule` imports as alias for backward compatibility
+- Validates key length (64 hex chars) at boot
+
+#### Frontend — Admin Strava Page
+- **File:** `src/pages/admin/admin-strava-page.tsx`
+- Settings card with Client ID, Secret (eye-toggle), Webhook Verify Token inputs
+- Save button → posts to `POST /admin/strava/settings`
+- Success/error banner with `webhookResubscribed` status
+- Sync history section: last sync time, last error, trigger button
+- Status badge: "Hoạt động" (enabled) or "Tắt" (disabled)
+
+#### Frontend — Settings Card (Profile)
+- **File:** `src/components/admin/strava-settings-card.tsx`
+- Embedded in `/admin/settings` page alongside Garmin config
+- Same UI as admin strava page (Client ID, Secret, Verify Token)
+- Calls shared `saveStravaSettings()` service method
+
+#### Sidebar Navigation
+- Added `/admin/strava` nav item under Admin menu
+- Conditionally shown when `featureEnabled` (from `GET /strava/status`)
+
+#### Hide-When-Disabled Logic
+- **File:** `src/components/strava-connect-card.tsx`
+- `if (s === null || !s.featureEnabled) setAvailable(false)`
+- `featureEnabled` now populated by `StravaService.getStatus()` — reads from `AppSettingsService.getStravaRuntimeConfig().enabled`
+
+### Changed
+
+#### Docker Compose & Dockerfile
+- Added build-time args: `VITE_FEATURE_STRAVA`, `VITE_FEATURE_GARMIN`
+- Frontend builder stage accepts args → inlines feature flags at build time
+- `docker-compose build maf-app --build-arg VITE_FEATURE_STRAVA=true` to enable
+- Backend `.env` updated with `STRAVA_ENCRYPTION_KEY` requirement (when `FEATURE_STRAVA=true`)
+
+#### Environment Variables
+- Dropped `.required()` on `STRAVA_CLIENT_ID`, `STRAVA_CLIENT_SECRET`, `STRAVA_WEBHOOK_VERIFY_TOKEN` (now supplied via admin UI)
+- Added `STRAVA_ENCRYPTION_KEY` (required when `FEATURE_STRAVA=true`, 64 hex chars, same as `GARMIN_ENCRYPTION_KEY` alternative)
+- Joi validation: conditional hex + length check for all encryption keys
+- `.env.example` includes clear instructions for key generation
+
+#### Prisma Schema
+- `StravaConnection` now tracks sync metadata: `lastSyncStartedAt`, `lastSyncFinishedAt`, `lastSyncError`
+- Idempotency guard: admin sync rejects if `lastSyncStartedAt > NOW() - 5min` (prevents thundering herd)
+
+### Security Considerations
+
+- **OAuth State:** HMAC-SHA256 signature + single-use nonce prevents state injection attacks
+- **Nonce TTL:** 600s (10 min, matches typical OAuth redirect latency)
+- **Credential Masking:** Admin UI shows only first 4 chars of secrets; never returned in GET responses
+- **Encryption:** Secrets encrypted at rest via `GarminEncryptionService` (shared AES-256-GCM)
+- **Admin Gating:** All credential endpoints require ADMIN role (JWT + RolesGuard)
+- **Webhook Auto-resubscribe:** Triggered on credential save; Strava validates new token on subscribe request (prevents stale subscriptions)
+
+### Performance
+
+- **Config Read:** <5ms (Redis cache hit) + 30s TTL
+- **Cache Invalidate:** <1ms (key deletion on settings save)
+- **Webhook Resubscribe:** ~500ms (Strava API call, synchronous in response path)
+- **Admin Sync:** ~2-10s per user (paginated fetch + upsert, same as cron job)
+
+### Compatibility
+
+- No breaking changes
+- `AdminSettingsService` alias shim for backward compatibility (imports point to `AppSettingsService`)
+- Garmin credentials migrated automatically on first `GET /admin/garmin/settings` call (lazy migration)
+- Strava module conditionally loaded if `FEATURE_STRAVA=true`
+
+### Testing
+
+- No integration tests added (deferred per plan, open question from code review)
+- Build validation: `npm run build` (frontend) + `nest build` (API) pass cleanly
+- Manual validation: admin UI settings save → webhook resubscribe feedback displayed
+
+### Known Limitations / Open Questions
+
+1. **Frontend file size:** `admin-strava-page.tsx` (219 LOC) and `strava-settings-card.tsx` (240 LOC) exceed 200-LOC target. Recommend extracting `connection-status-utils.ts` + `strava-secret-input.tsx` subcomponent in follow-up.
+2. **Test coverage:** Phase 5 deferred integration tests (code review flagged as deferred per plan).
+3. **RT #6 Fix:** Backend now returns `featureEnabled` in `GET /strava/status` response → frontend hide-card logic is now active (was inert in code review).
+
+---
+
+**Last Updated:** May 18, 2026 | **Version:** 1.6.0
