@@ -1,36 +1,11 @@
 import { useState, useEffect } from 'react';
-import {
-  Watch,
-  RefreshCw,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Loader2,
-  Clock,
-} from 'lucide-react';
+import { Watch, RefreshCw, Loader2, Clock } from 'lucide-react';
 import {
   getAdminGarminOverview,
   triggerAdminGarminSync,
   type AdminGarminConnection,
 } from '../../services/admin-service';
-
-/** Status badge colors and labels */
-const statusConfig: Record<string, { bg: string; text: string; label: string; icon: typeof CheckCircle }> = {
-  CONNECTED: { bg: 'bg-emerald-500/10 border-emerald-500/20', text: 'text-emerald-400', label: 'Đã kết nối', icon: CheckCircle },
-  DISCONNECTED: { bg: 'bg-slate-800 border-white/10', text: 'text-slate-400', label: 'Đã ngắt', icon: XCircle },
-  TOKEN_EXPIRED: { bg: 'bg-yellow-500/10 border-yellow-500/20', text: 'text-yellow-400', label: 'Token hết hạn', icon: AlertTriangle },
-  ERROR: { bg: 'bg-red-500/10 border-red-500/20', text: 'text-red-400', label: 'Lỗi', icon: XCircle },
-};
-
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'Vừa xong';
-  if (mins < 60) return `${mins} phút trước`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours} giờ trước`;
-  return `${Math.floor(hours / 24)} ngày trước`;
-}
+import { connectionStatusConfig, timeAgo } from '../../components/admin/connection-status-utils';
 
 export default function AdminGarminPage() {
   const [connections, setConnections] = useState<AdminGarminConnection[]>([]);
@@ -133,7 +108,7 @@ export default function AdminGarminPage() {
               </thead>
               <tbody className="divide-y divide-white/5">
                 {connections.map((c) => {
-                  const cfg = statusConfig[c.status] ?? statusConfig.ERROR;
+                  const cfg = connectionStatusConfig[c.status] ?? connectionStatusConfig.ERROR;
                   const StatusIcon = cfg.icon;
                   return (
                     <tr key={c.userId} className="hover:bg-white/5 transition-colors">

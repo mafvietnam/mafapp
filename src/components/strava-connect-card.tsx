@@ -36,6 +36,10 @@ export default function StravaConnectCard() {
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState('');
   const [error, setError] = useState('');
+  // Precedence: FEATURE_STRAVA env (backend module load, boot-time) > strava.enabled DB (admin runtime toggle)
+  // If env is false, /strava/status returns 404 → s is null → available = false (card hidden).
+  // If env is true but DB toggle is off → s.featureEnabled = false → available = false (card hidden).
+  const [available, setAvailable] = useState(true);
 
   useEffect(() => {
     // Handle redirect-back params from OAuth callback
@@ -46,6 +50,8 @@ export default function StravaConnectCard() {
     else if (errParam) setError('Kết nối Strava thất bại. Vui lòng thử lại.');
 
     getStravaStatus().then((s) => {
+      // Hide card if backend module unavailable (null) OR admin toggled feature off
+      if (s === null || !s.featureEnabled) setAvailable(false);
       setStatus(s);
       setLoading(false);
     });
@@ -73,6 +79,9 @@ export default function StravaConnectCard() {
     setNotice(ok ? 'Đồng bộ đã bắt đầu...' : 'Không thể đồng bộ. Vui lòng thử lại.');
     setBusy(false);
   };
+
+  // Do not render card if feature is disabled (boot-time env or runtime DB toggle)
+  if (!loading && !available) return null;
 
   if (loading) {
     return (

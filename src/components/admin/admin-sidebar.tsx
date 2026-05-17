@@ -9,6 +9,7 @@ import {
   Settings,
   ShieldAlert,
   Watch,
+  Activity,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/auth-context';
 
@@ -33,6 +34,7 @@ const sections = [
     title: 'Tích hợp',
     items: [
       { to: '/admin/garmin', icon: Watch, label: 'Garmin Connect' },
+      { to: '/admin/strava', icon: Activity, label: 'Strava' },
     ],
   },
   {

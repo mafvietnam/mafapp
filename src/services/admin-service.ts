@@ -142,3 +142,89 @@ export async function saveGarminSettings(data: {
     return false;
   }
 }
+
+/* ── Strava Admin ── */
+
+export type StravaConnectionStatus = 'CONNECTED' | 'DISCONNECTED' | 'TOKEN_EXPIRED' | 'ERROR';
+
+export interface AdminStravaConnection {
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userAvatar: string | null;
+  stravaAthleteId: string | null;
+  status: StravaConnectionStatus;
+  lastSyncAt: string | null;
+  lastSyncStartedAt: string | null;
+  lastSyncError: string | null;
+  connectedAt: string;
+  activityCount: number;
+}
+
+export interface AdminStravaOverview {
+  featureEnabled: boolean;
+  totalConnections: number;
+  connections: AdminStravaConnection[];
+}
+
+export async function getAdminStravaOverview(): Promise<AdminStravaOverview | null> {
+  try {
+    const res = await api.get('/admin/strava');
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function triggerAdminStravaSync(userId: string): Promise<boolean> {
+  try {
+    const res = await api.post(`/admin/strava/${userId}/sync`);
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
+/* ── Strava Settings ── */
+
+export interface StravaSettingsData {
+  enabled: boolean;
+  clientId: string;
+  clientSecret: string;
+  hasClientSecret: boolean;
+  hasWebhookVerifyToken: boolean;
+  webhookCallbackUrl: string;
+}
+
+export interface SaveStravaSettingsResult {
+  ok: boolean;
+  webhookResubscribed?: boolean;
+  webhookResubscribeError?: string;
+}
+
+export async function getStravaSettings(): Promise<StravaSettingsData | null> {
+  try {
+    const res = await api.get('/admin/settings/strava');
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function saveStravaSettings(data: {
+  clientId?: string;
+  clientSecret?: string;
+  webhookVerifyToken?: string;
+  enabled?: boolean;
+}): Promise<SaveStravaSettingsResult> {
+  try {
+    const res = await api.post('/admin/settings/strava', data);
+    if (!res.ok) return { ok: false };
+    const body = await res.json();
+    return { ...body, ok: true };
+  } catch {
+    return { ok: false };
+  }
+}

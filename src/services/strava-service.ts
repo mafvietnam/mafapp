@@ -8,6 +8,8 @@ export interface StravaStatus {
   stravaAthleteId: string | null;
   lastSyncAt: string | null;
   connectedAt: string | null;
+  /** Reflects strava.enabled DB flag set by admin at runtime. Backend returns this from /strava/status. */
+  featureEnabled: boolean;
 }
 
 // -- API functions --
