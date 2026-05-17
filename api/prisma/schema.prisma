@@ -123,6 +123,9 @@ model StravaConnection {
   webhookSubscriptionId Int?                   // Strava webhook subscription ID
   status                StravaConnectionStatus @default(CONNECTED)
   lastSyncAt            DateTime?
+  lastSyncStartedAt     DateTime?              // Set when admin-triggered sync begins
+  lastSyncFinishedAt    DateTime?              // Set when sync completes (success or error)
+  lastSyncError         String?                // Last sync error message (max 500 chars)
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   user                  User                   @relation(fields: [userId], references: [id], onDelete: Cascade)

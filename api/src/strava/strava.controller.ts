@@ -44,12 +44,13 @@ export class StravaController {
    * Public — no JWT guard. Strava sends: hub.mode, hub.verify_token, hub.challenge.
    */
   @Get('webhook')
-  handleWebhookChallenge(
+  async handleWebhookChallenge(
     @Query('hub.mode') mode: string,
     @Query('hub.verify_token') verifyToken: string,
     @Query('hub.challenge') challenge: string,
   ) {
-    if (!this.webhookService.isValidVerifyToken(verifyToken) || mode !== 'subscribe') {
+    const valid = await this.webhookService.isValidVerifyToken(verifyToken);
+    if (!valid || mode !== 'subscribe') {
       throw new BadRequestException('Invalid webhook verification');
     }
     return { 'hub.challenge': challenge };
@@ -75,9 +76,9 @@ export class StravaController {
   /** Return Strava OAuth authorization URL — frontend navigates to it */
   @Get('connect')
   @UseGuards(JwtAuthGuard)
-  getConnectUrl(@Req() req: Request) {
+  async getConnectUrl(@Req() req: Request) {
     const userId = (req.user as { id: string }).id;
-    const authUrl = this.authService.getAuthorizationUrl(userId);
+    const authUrl = await this.authService.getAuthorizationUrl(userId);
     return { authUrl };
   }
 
@@ -106,7 +107,7 @@ export class StravaController {
     }
 
     try {
-      const userId = this.authService.verifyState(state);
+      const userId = await this.authService.verifyState(state);
       const tokens = await this.authService.exchangeCodeForTokens(code);
       await this.stravaService.saveTokensFromCallback(userId, tokens);
       this.logger.log(`Strava connected for user ${userId}`);

@@ -28,21 +28,20 @@ const isStravaEnabled = process.env.FEATURE_STRAVA === 'true';
         GOOGLE_CLIENT_SECRET: Joi.string().default(''),
         CORS_ORIGIN: Joi.string().default('https://app.maf.run'),
         PORT: Joi.number().default(3001),
-        GARMIN_ENCRYPTION_KEY: Joi.string().default(''),
+        // Required for AES-256-GCM encryption of secrets + Strava OAuth state HMAC signing
+        GARMIN_ENCRYPTION_KEY: Joi.string().hex().length(64).required(),
         BACKEND_URL: Joi.string().default('http://localhost:3001'),
         FEATURE_STRAVA: Joi.string().default('false'),
-        STRAVA_ENCRYPTION_KEY: isStravaEnabled
-          ? Joi.string().hex().length(64).required()
-          : Joi.string().default(''),
-        STRAVA_CLIENT_ID: isStravaEnabled
-          ? Joi.string().required()
-          : Joi.string().default(''),
-        STRAVA_CLIENT_SECRET: isStravaEnabled
-          ? Joi.string().required()
-          : Joi.string().default(''),
-        STRAVA_WEBHOOK_VERIFY_TOKEN: isStravaEnabled
-          ? Joi.string().required()
-          : Joi.string().default(''),
+        // Strava credentials are optional in env — admin UI DB values take precedence at runtime
+        STRAVA_CLIENT_ID: Joi.string().default(''),
+        STRAVA_CLIENT_SECRET: Joi.string().default(''),
+        STRAVA_WEBHOOK_VERIFY_TOKEN: Joi.string().default(''),
+        // Required when FEATURE_STRAVA=true for AES-256-GCM encryption of user tokens at rest
+        STRAVA_ENCRYPTION_KEY: Joi.alternatives().conditional('FEATURE_STRAVA', {
+          is: 'true',
+          then: Joi.string().hex().length(64).required(),
+          otherwise: Joi.string().default(''),
+        }),
       }),
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),

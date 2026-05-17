@@ -2,6 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as https from 'https';
 import { PrismaService } from '../shared/prisma.service.js';
+import { AppSettingsService } from '../shared/app-settings.service.js';
 import { StravaTokenService } from './strava-token.service.js';
 import { StravaSyncService } from './strava-sync.service.js';
 
@@ -21,27 +22,35 @@ const RUN_TYPES = new Set(['Run', 'TrailRun', 'VirtualRun']);
 @Injectable()
 export class StravaWebhookService implements OnModuleInit {
   private readonly logger = new Logger(StravaWebhookService.name);
-  private readonly verifyToken: string;
-  private readonly clientId: string;
-  private readonly clientSecret: string;
+
+  // Boot-time env values — used only for onModuleInit subscription registration
+  private readonly verifyTokenEnv: string;
+  private readonly clientIdEnv: string;
+  private readonly clientSecretEnv: string;
   private readonly backendUrl: string;
   private readonly isEnabled: boolean;
 
   constructor(
     private readonly prisma: PrismaService,
+    private readonly appSettings: AppSettingsService,
     private readonly tokenService: StravaTokenService,
     private readonly syncService: StravaSyncService,
     config: ConfigService,
   ) {
-    this.verifyToken = config.get<string>('STRAVA_WEBHOOK_VERIFY_TOKEN', '');
-    this.clientId = config.get<string>('STRAVA_CLIENT_ID', '');
-    this.clientSecret = config.get<string>('STRAVA_CLIENT_SECRET', '');
+    // Boot-time values — used in onModuleInit only; runtime calls use getStravaRuntimeConfig()
+    this.verifyTokenEnv = config.get<string>('STRAVA_WEBHOOK_VERIFY_TOKEN', '');
+    this.clientIdEnv = config.get<string>('STRAVA_CLIENT_ID', '');
+    this.clientSecretEnv = config.get<string>('STRAVA_CLIENT_SECRET', '');
     this.backendUrl = config.get<string>('BACKEND_URL', 'http://localhost:3001');
     this.isEnabled = config.get<string>('FEATURE_STRAVA', 'false') === 'true';
   }
 
   async onModuleInit() {
     if (!this.isEnabled) return;
+    if (!this.verifyTokenEnv || !this.clientIdEnv || !this.clientSecretEnv) {
+      this.logger.warn('Strava webhook env vars missing — skipping subscription registration at boot');
+      return;
+    }
     try {
       await this.registerWebhookSubscription();
     } catch (err: unknown) {
@@ -51,9 +60,31 @@ export class StravaWebhookService implements OnModuleInit {
     }
   }
 
-  /** Validate Strava webhook challenge GET request */
-  isValidVerifyToken(token: string): boolean {
-    return token === this.verifyToken;
+  /**
+   * Validate Strava webhook challenge GET request.
+   * Reads token lazily from DB (with env fallback) — supports DB-backed token rotation.
+   */
+  async isValidVerifyToken(token: string): Promise<boolean> {
+    const cfg = await this.appSettings.getStravaRuntimeConfig();
+    return token === cfg.webhookVerifyToken;
+  }
+
+  /**
+   * Re-subscribe webhook with current DB-backed credentials.
+   * Called by AdminService.saveStravaSettings when token or credentials change.
+   */
+  async refreshSubscription(): Promise<void> {
+    const cfg = await this.appSettings.getStravaRuntimeConfig();
+    const callbackUrl = `${this.backendUrl}/strava/webhook`;
+
+    const existing = await this.getExistingSubscription(cfg.clientId, cfg.clientSecret);
+    if (existing) {
+      this.logger.log(`Deleting existing webhook subscription ${existing.id} before refresh`);
+      await this.deleteSubscription(existing.id, cfg.clientId, cfg.clientSecret);
+    }
+
+    await this.createSubscription(callbackUrl, cfg.clientId, cfg.clientSecret, cfg.webhookVerifyToken);
+    this.logger.log('Webhook subscription refreshed successfully');
   }
 
   /**
@@ -100,9 +131,9 @@ export class StravaWebhookService implements OnModuleInit {
   }
 
   /** Register webhook subscription with Strava — idempotent, safe to call on every startup */
-  async registerWebhookSubscription(): Promise<void> {
+  private async registerWebhookSubscription(): Promise<void> {
     const callbackUrl = `${this.backendUrl}/strava/webhook`;
-    const existing = await this.getExistingSubscription();
+    const existing = await this.getExistingSubscription(this.clientIdEnv, this.clientSecretEnv);
 
     if (existing) {
       if (existing.callback_url === callbackUrl) {
@@ -111,10 +142,10 @@ export class StravaWebhookService implements OnModuleInit {
       }
       // URL changed (e.g. backend URL updated) — delete and re-register
       this.logger.log(`Webhook callback URL changed, re-registering subscription`);
-      await this.deleteSubscription(existing.id);
+      await this.deleteSubscription(existing.id, this.clientIdEnv, this.clientSecretEnv);
     }
 
-    await this.createSubscription(callbackUrl);
+    await this.createSubscription(callbackUrl, this.clientIdEnv, this.clientSecretEnv, this.verifyTokenEnv);
   }
 
   /** Fetch a single Strava activity by ID */
@@ -148,12 +179,12 @@ export class StravaWebhookService implements OnModuleInit {
     });
   }
 
-  private getExistingSubscription(): Promise<{ id: number; callback_url: string } | null> {
+  private getExistingSubscription(
+    clientId: string,
+    clientSecret: string,
+  ): Promise<{ id: number; callback_url: string } | null> {
     return new Promise((resolve) => {
-      const params = new URLSearchParams({
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-      });
+      const params = new URLSearchParams({ client_id: clientId, client_secret: clientSecret });
       const req = https.request(
         {
           hostname: STRAVA_API_HOST,
@@ -178,12 +209,9 @@ export class StravaWebhookService implements OnModuleInit {
     });
   }
 
-  private deleteSubscription(id: number): Promise<void> {
+  private deleteSubscription(id: number, clientId: string, clientSecret: string): Promise<void> {
     return new Promise((resolve) => {
-      const params = new URLSearchParams({
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-      });
+      const params = new URLSearchParams({ client_id: clientId, client_secret: clientSecret });
       const req = https.request(
         {
           hostname: STRAVA_API_HOST,
@@ -200,13 +228,18 @@ export class StravaWebhookService implements OnModuleInit {
     });
   }
 
-  private createSubscription(callbackUrl: string): Promise<void> {
+  private createSubscription(
+    callbackUrl: string,
+    clientId: string,
+    clientSecret: string,
+    verifyToken: string,
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       const payload = new URLSearchParams({
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
+        client_id: clientId,
+        client_secret: clientSecret,
         callback_url: callbackUrl,
-        verify_token: this.verifyToken,
+        verify_token: verifyToken,
       }).toString();
 
       const req = https.request(

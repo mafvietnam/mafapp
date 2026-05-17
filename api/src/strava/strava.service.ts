@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../shared/prisma.service.js';
 import { RedisService } from '../shared/redis.service.js';
 import { StravaEncryptionService } from './strava-encryption.service.js';
+import { AppSettingsService } from '../shared/app-settings.service.js';
 import type { StravaTokenResponse } from './strava-auth.service.js';
 import type { StravaActivityQueryDto } from './dto/strava-activity-query.dto.js';
 
@@ -13,6 +14,7 @@ export class StravaService {
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
     private readonly encryption: StravaEncryptionService,
+    private readonly appSettings: AppSettingsService,
   ) {}
 
   /** Find Strava connection for a user */
@@ -50,6 +52,9 @@ export class StravaService {
 
   /** Get connection status — never returns tokens */
   async getStatus(userId: string) {
+    // 30s TTL cache in AppSettingsService covers the extra read cost
+    const cfg = await this.appSettings.getStravaRuntimeConfig();
+
     const conn = await this.prisma.stravaConnection.findUnique({
       where: { userId },
       select: {
@@ -67,6 +72,7 @@ export class StravaService {
         stravaAthleteId: null,
         lastSyncAt: null,
         connectedAt: null,
+        featureEnabled: cfg.enabled,
       };
     }
 
@@ -76,6 +82,7 @@ export class StravaService {
       stravaAthleteId: conn.stravaAthleteId,
       lastSyncAt: conn.lastSyncAt?.toISOString() ?? null,
       connectedAt: conn.createdAt.toISOString(),
+      featureEnabled: cfg.enabled,
     };
   }
 

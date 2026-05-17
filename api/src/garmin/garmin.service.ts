@@ -7,7 +7,7 @@ import {
 import { GarminConnect } from '@gooin/garmin-connect';
 import { PrismaService } from '../shared/prisma.service.js';
 import { RedisService } from '../shared/redis.service.js';
-import { GarminEncryptionService } from './garmin-encryption.service.js';
+import { GarminEncryptionService } from '../shared/garmin-encryption.service.js';
 
 @Injectable()
 export class GarminService {

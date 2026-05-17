@@ -19,6 +19,6 @@ import { StravaWebhookService } from './strava-webhook.service.js';
     StravaCronService,
     StravaWebhookService,
   ],
-  exports: [StravaService, StravaTokenService],
+  exports: [StravaService, StravaTokenService, StravaSyncService, StravaWebhookService],
 })
 export class StravaModule {}

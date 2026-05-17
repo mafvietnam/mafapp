@@ -1,11 +1,22 @@
-import { Injectable, Optional, Inject, NotFoundException, ForbiddenException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Optional,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+  Logger,
+} from '@nestjs/common';
 import { PrismaService } from '../shared/prisma.service.js';
 import { RedisService } from '../shared/redis.service.js';
+import { AppSettingsService } from '../shared/app-settings.service.js';
 import { GarminSyncService } from '../garmin/garmin-sync.service.js';
+import { StravaSyncService } from '../strava/strava-sync.service.js';
+import { StravaWebhookService } from '../strava/strava-webhook.service.js';
 import { REVOKED_USER_KEY } from '../auth/auth.guard.js';
 import type { AdminStatsResponse } from './admin-stats.dto.js';
 import type { AdminUserQueryDto } from './admin-user-query.dto.js';
 import type { AdminUpdateUserDto } from './admin-update-user.dto.js';
+import type { StravaSettingsDto } from './dto/strava-settings.dto.js';
 import type { Role } from '@prisma/client';
 
 @Injectable()
@@ -15,7 +26,10 @@ export class AdminService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
+    private readonly appSettings: AppSettingsService,
     @Optional() @Inject(GarminSyncService) private readonly garminSync?: GarminSyncService,
+    @Optional() @Inject(StravaSyncService) private readonly stravaSync?: StravaSyncService,
+    @Optional() @Inject(StravaWebhookService) private readonly stravaWebhook?: StravaWebhookService,
   ) {}
 
   async getStats(): Promise<AdminStatsResponse> {
@@ -179,6 +193,121 @@ export class AdminService {
     });
 
     return { ok: true, message: 'Sync triggered' };
+  }
+
+  /** Admin overview of all Strava connections with user info and activity counts */
+  async getStravaOverview() {
+    const isEnabled = process.env.FEATURE_STRAVA === 'true';
+
+    const connections = await this.prisma.stravaConnection.findMany({
+      orderBy: { updatedAt: 'desc' },
+      include: {
+        user: { select: { id: true, name: true, email: true, avatar: true } },
+      },
+    });
+
+    const activityCounts = await this.prisma.stravaActivity.groupBy({
+      by: ['userId'],
+      _count: { id: true },
+    });
+    const countMap = new Map(activityCounts.map((c) => [c.userId, c._count.id]));
+
+    return {
+      featureEnabled: isEnabled,
+      totalConnections: connections.length,
+      connections: connections.map((c) => ({
+        userId: c.userId,
+        userName: c.user.name,
+        userEmail: c.user.email,
+        userAvatar: c.user.avatar,
+        stravaAthleteId: c.stravaAthleteId,
+        status: c.status,
+        lastSyncAt: c.lastSyncAt?.toISOString() ?? null,
+        lastSyncStartedAt: c.lastSyncStartedAt?.toISOString() ?? null,
+        lastSyncFinishedAt: c.lastSyncFinishedAt?.toISOString() ?? null,
+        lastSyncError: c.lastSyncError ?? null,
+        connectedAt: c.createdAt.toISOString(),
+        activityCount: countMap.get(c.userId) ?? 0,
+      })),
+    };
+  }
+
+  /** Trigger a manual Strava sync for a specific user (admin-initiated) */
+  async triggerStravaSync(userId: string, adminUserId: string) {
+    if (!this.stravaSync) {
+      return { ok: false, message: 'Strava feature is disabled' };
+    }
+
+    const conn = await this.prisma.stravaConnection.findUnique({ where: { userId } });
+    if (!conn) throw new NotFoundException('Strava connection not found');
+
+    // Idempotency guard: refuse if a sync started < 5 min ago and hasn't finished
+    if (
+      conn.lastSyncStartedAt &&
+      Date.now() - conn.lastSyncStartedAt.getTime() < 5 * 60_000 &&
+      (!conn.lastSyncFinishedAt || conn.lastSyncFinishedAt < conn.lastSyncStartedAt)
+    ) {
+      return { ok: false, message: 'Sync already in progress' };
+    }
+
+    await this.prisma.stravaConnection.update({
+      where: { userId },
+      data: { lastSyncStartedAt: new Date(), lastSyncError: null },
+    });
+
+    this.logger.log(`Admin ${adminUserId} triggered Strava sync for user ${userId}`);
+
+    // Fire async — persist completion/error back to DB
+    this.stravaSync
+      .syncUser(userId)
+      .then(() =>
+        this.prisma.stravaConnection.update({
+          where: { userId },
+          data: { lastSyncFinishedAt: new Date() },
+        }),
+      )
+      .catch(async (err: unknown) => {
+        const msg = err instanceof Error ? err.message : 'Unknown';
+        this.logger.error(`Admin-triggered Strava sync failed for user ${userId}: ${msg}`);
+        await this.prisma.stravaConnection
+          .update({
+            where: { userId },
+            data: { lastSyncFinishedAt: new Date(), lastSyncError: msg.slice(0, 500) },
+          })
+          .catch(() => {});
+      });
+
+    return { ok: true, message: 'Sync triggered' };
+  }
+
+  /**
+   * Persist Strava settings and synchronously resubscribe webhook if credentials changed.
+   * Returns setMany result plus optional webhookResubscribed / webhookResubscribeError fields.
+   */
+  async saveStravaSettings(body: StravaSettingsDto) {
+    const settings: Record<string, string> = {};
+    if (body.clientId !== undefined) settings['strava.clientId'] = body.clientId.trim();
+    if (body.clientSecret !== undefined) settings['strava.clientSecret'] = body.clientSecret.trim();
+    if (body.webhookVerifyToken !== undefined) settings['strava.webhookVerifyToken'] = body.webhookVerifyToken.trim();
+    if (body.enabled !== undefined) settings['strava.enabled'] = body.enabled === true ? 'true' : 'false';
+
+    await this.appSettings.setMany(settings);
+
+    const tokenChanged = body.webhookVerifyToken !== undefined;
+    const credsChanged = body.clientId !== undefined || body.clientSecret !== undefined;
+    const result: { ok: boolean; webhookResubscribed?: boolean; webhookResubscribeError?: string } = { ok: true };
+
+    if ((tokenChanged || credsChanged) && this.stravaWebhook) {
+      try {
+        await this.stravaWebhook.refreshSubscription();
+        result.webhookResubscribed = true;
+      } catch (err: unknown) {
+        result.webhookResubscribeError = err instanceof Error ? err.message : 'Unknown';
+        this.logger.warn(`Webhook resubscribe failed after settings save: ${result.webhookResubscribeError}`);
+      }
+    }
+
+    return result;
   }
 
   private async ensureUserExists(id: string) {
