@@ -18,6 +18,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        VITE_FEATURE_STRAVA: ${VITE_FEATURE_STRAVA:-false}
+        VITE_FEATURE_GARMIN: ${VITE_FEATURE_GARMIN:-false}
     image: maf-app:latest
     restart: unless-stopped
 

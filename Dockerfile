@@ -41,6 +41,13 @@ COPY index.html ./
 # All source code lives under src/
 COPY src/ ./src/
 
+# Feature flags — must be declared as ARG before ENV so Vite can inline them at build time
+# (ARGs in wrong stage = silent no-op; these MUST stay in the builder stage, not production)
+ARG VITE_FEATURE_STRAVA=false
+ENV VITE_FEATURE_STRAVA=$VITE_FEATURE_STRAVA
+ARG VITE_FEATURE_GARMIN=false
+ENV VITE_FEATURE_GARMIN=$VITE_FEATURE_GARMIN
+
 # Build application with optimizations
 ENV NODE_ENV=production
 RUN npm run build && \
