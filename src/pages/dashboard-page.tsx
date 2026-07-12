@@ -2,6 +2,7 @@ import { Plus } from 'lucide-react';
 import { useAuth } from '../contexts/auth-context';
 import { useUserProfile } from '../hooks/use-user-profile';
 import { useMafCalculator } from '../hooks/use-maf-calculator';
+import { useStravaActivities } from '../hooks/use-strava-activities';
 import MafZoneCard from '../components/dashboard/maf-zone-card';
 import MafAssistantCard from '../components/dashboard/maf-assistant-card';
 import EcosystemSection from '../components/dashboard/ecosystem-section';
@@ -15,6 +16,9 @@ export default function DashboardPage() {
   const { userProfile, ageNum } = useUserProfile();
   const { calculateRawMaf } = useMafCalculator();
   const mafHr = calculateRawMaf(userProfile);
+  // Fetched ONCE here — both ActivitySection mounts below (mobile + desktop) share
+  // this single result via props (CSS-only visibility toggle, both are always mounted).
+  const { activities, loading: activitiesLoading, error: activitiesError } = useStravaActivities();
 
   return (
     <>
@@ -55,7 +59,12 @@ export default function DashboardPage() {
           {mafHr > 0 && ageNum > 0 && <MafZoneCard mafHr={mafHr} age={ageNum} />}
           <MafAssistantCard />
           <EcosystemSection />
-          <ActivitySection />
+          <ActivitySection
+            activities={activities}
+            loading={activitiesLoading}
+            error={activitiesError}
+            mafHr={mafHr}
+          />
         </main>
       </div>
 
@@ -87,7 +96,12 @@ export default function DashboardPage() {
             <div className="col-span-8 flex flex-col gap-8">
               <DesktopStatsRow mafHr={mafHr} />
               <ChartPlaceholder />
-              <ActivitySection />
+              <ActivitySection
+                activities={activities}
+                loading={activitiesLoading}
+                error={activitiesError}
+                mafHr={mafHr}
+              />
             </div>
 
             {/* Right column 4/12 */}

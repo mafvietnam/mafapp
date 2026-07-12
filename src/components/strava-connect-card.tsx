@@ -48,6 +48,8 @@ export default function StravaConnectCard() {
     const errParam = consumeQueryParam('strava_error');
     if (connected) setNotice('Strava đã kết nối thành công!');
     if (errParam === 'denied') setError('Bạn đã từ chối kết nối Strava.');
+    else if (errParam === 'full') setError('Đã đạt giới hạn người dùng Strava (hết slot). Vui lòng thử lại sau.');
+    else if (errParam === 'invalid') setError('Liên kết không hợp lệ hoặc đã hết hạn.');
     else if (errParam) setError('Kết nối Strava thất bại. Vui lòng thử lại.');
 
     getStravaStatus().then((s) => {
@@ -61,7 +63,10 @@ export default function StravaConnectCard() {
   const handleConnect = async () => {
     setError('');
     setBusy(true);
-    await connectStrava(); // redirects browser to Strava — may not return
+    const r = await connectStrava(); // on success, redirects browser to Strava — may not return
+    if (!r.ok) {
+      setError(r.error === 'full' ? 'Đã đạt giới hạn người dùng Strava (hết slot). Vui lòng thử lại sau.' : 'Không thể kết nối Strava. Vui lòng thử lại.');
+    }
     setBusy(false);
   };
 
@@ -96,6 +101,7 @@ export default function StravaConnectCard() {
   }
 
   const isConnected = status?.connected;
+  const capReached = status?.connectionLimitReached === true;
 
   return (
     <div className="desktop-card p-6">
@@ -161,18 +167,24 @@ export default function StravaConnectCard() {
 
           <button
             onClick={handleConnect}
-            disabled={busy}
+            disabled={busy || capReached}
             className="w-full py-2.5 rounded-lg font-bold text-sm text-white bg-gradient-to-r from-orange-500 to-orange-600 hover:opacity-90 transition-opacity disabled:opacity-50"
           >
             {busy ? (
               <Loader2 className="w-4 h-4 animate-spin inline mr-2" />
             ) : null}
-            {busy ? 'Đang chuyển hướng...' : 'Kết nối Strava'}
+            {capReached ? 'Hết slot Strava' : busy ? 'Đang chuyển hướng...' : 'Kết nối Strava'}
           </button>
 
-          <p className="text-white/30 text-xs">
-            Yêu cầu quyền đọc hoạt động. Không lưu mật khẩu Strava.
-          </p>
+          {capReached ? (
+            <p className="text-amber-400 text-xs">
+              Ứng dụng đã đủ người dùng Strava. Vui lòng quay lại sau.
+            </p>
+          ) : (
+            <p className="text-white/30 text-xs">
+              Yêu cầu quyền đọc hoạt động. Không lưu mật khẩu Strava.
+            </p>
+          )}
         </div>
       )}
 

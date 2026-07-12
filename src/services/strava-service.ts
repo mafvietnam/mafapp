@@ -10,6 +10,8 @@ export interface StravaStatus {
   connectedAt: string | null;
   /** Reflects strava.enabled DB flag set by admin at runtime. Backend returns this from /strava/status. */
   featureEnabled: boolean;
+  /** True when the app has hit its global Strava-connected-user cap (no numeric count exposed to the client). */
+  connectionLimitReached: boolean;
 }
 
 // -- API functions --
@@ -24,15 +26,22 @@ export async function getStravaStatus(): Promise<StravaStatus | null> {
   }
 }
 
-/** Redirect browser to Strava OAuth — backend returns { authUrl } */
-export async function connectStrava(): Promise<void> {
+export interface ConnectStravaResult {
+  ok: boolean;
+  error?: 'full' | 'unknown';
+}
+
+/** Redirect browser to Strava OAuth — backend returns { authUrl }. 409 = connection cap reached. */
+export async function connectStrava(): Promise<ConnectStravaResult> {
   try {
     const res = await api.get('/strava/connect');
-    if (!res.ok) return;
+    if (res.status === 409) return { ok: false, error: 'full' };
+    if (!res.ok) return { ok: false, error: 'unknown' };
     const { authUrl } = (await res.json()) as { authUrl: string };
     if (authUrl) window.location.href = authUrl;
+    return { ok: true };
   } catch {
-    // ignore — user stays on page
+    return { ok: false, error: 'unknown' };
   }
 }
 
