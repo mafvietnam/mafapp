@@ -1,13 +1,17 @@
 ---
 title: "Strava OAuth2 Integration — Activity Sync + MAF Lab"
 description: "Connect Strava via OAuth2, sync running activities via webhook+cron, mirror Garmin integration pattern"
-status: in-progress
+status: completed
 priority: P1
 effort: 8d
 branch: dev
 tags: [strava, oauth2, webhook, sync, maf-lab]
 created: 2026-04-07
+completed: 2026-07-12
+related: [260517-2232-strava-admin-ui, 260712-2249-strava-production-completion]
 ---
+
+> **Note (2026-07-12):** All code phases shipped (Phase 2 OAuth flow delivered via 260517-2232-strava-admin-ui). Production enablement + E2E verification moved to `260712-2249-strava-production-completion`.
 
 # Strava Integration Plan
 
@@ -32,7 +36,7 @@ Frontend <-- REST API <-- StravaController <-- StravaService <-- PostgreSQL
 | # | Phase | Key Deliverable | Effort | Status |
 |---|-------|-----------------|--------|--------|
 | 1 | [Foundation & Prisma Models](phase-01-foundation-and-prisma-models.md) | DB schema, StravaModule skeleton, encryption, feature flag | 1d | Complete (migration pending) |
-| 2 | [OAuth2 Connection Flow](phase-02-oauth2-connection-flow.md) | Connect/disconnect endpoints, token exchange, frontend card | 2d | Pending |
+| 2 | [OAuth2 Connection Flow](phase-02-oauth2-connection-flow.md) | Connect/disconnect endpoints, token exchange, frontend card | 2d | Complete (shipped via 260517-2232-strava-admin-ui) |
 | 3 | [Webhook & Sync Engine](phase-03-webhook-and-sync-engine.md) | Webhook subscription, event handler, sync service, dedup | 3d | Complete |
 | 4 | [Cron Fallback & MAF Lab](phase-04-cron-and-maf-lab-integration.md) | Daily cron, activity list endpoint, MAF Lab auto-fill hook | 2d | Complete |
 
