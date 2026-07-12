@@ -41,3 +41,8 @@ api/node_modules
 .cline/
 .opencode/
 release-manifest.json
+
+# Claude session artifacts (command transcripts may contain sensitive values)
+.claude/hooks/.logs/
+.claude/session-state/
+.playwright-mcp/
