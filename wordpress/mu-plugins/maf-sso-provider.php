@@ -151,6 +151,8 @@ add_action('template_redirect', function () {
         return; // Not a logout request
     }
 
+    maf_sso_send_nocache_headers();
+
     error_log("[MAF SSO] LOGOUT: redirect_to=$redirect_to logged_in=" . (is_user_logged_in() ? 'YES' : 'NO'));
 
     // Validate origin — only allow redirect to whitelisted domains
@@ -194,6 +196,11 @@ add_action('template_redirect', function () {
         return;
     }
 
+    // CRITICAL: prevent caching of SSO gateway responses. Without this, Cloudflare/browsers
+    // cache the unauthenticated response and serve it even after the user logs in, breaking
+    // the SSO redirect-back flow.
+    maf_sso_send_nocache_headers();
+
     error_log("[MAF SSO] GATEWAY: redirect_to=$redirect_to logged_in=" . (is_user_logged_in() ? 'YES' : 'NO') . " user_id=" . get_current_user_id());
 
     // User already logged in — generate code and redirect immediately
@@ -215,9 +222,57 @@ add_action('template_redirect', function () {
         'samesite' => 'Lax',
     ]);
 
-    // Stay on the current page — the custom login modal opens from the nav bar
-    // No redirect needed; the page loads normally with the login modal available
+    // Mark the request so wp_footer can inject the auto-open-modal script.
+    // Stay on the current page; the theme's login modal will be triggered open client-side.
+    $GLOBALS['maf_sso_show_login_modal'] = true;
 });
+
+/**
+ * Auto-open the theme's login modal when the user arrived via an SSO gateway redirect
+ * and is not logged in. Without this, the user sees the homepage with no obvious next step.
+ */
+add_action('wp_footer', function () {
+    if (empty($GLOBALS['maf_sso_show_login_modal'])) {
+        return;
+    }
+    ?>
+    <script>
+    (function () {
+      function openLoginModalNow() {
+        var trigger = document.querySelector('[data-open-login]');
+        if (trigger) { trigger.click(); return true; }
+        var modal = document.getElementById('login-modal');
+        if (modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; return true; }
+        return false;
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { setTimeout(openLoginModalNow, 50); });
+      } else {
+        setTimeout(openLoginModalNow, 50);
+      }
+    })();
+    </script>
+    <?php
+}, 99);
+
+/**
+ * Send strict no-cache headers so SSO gateway/logout responses are never cached
+ * by browsers or upstream CDNs (Cloudflare). Required for the redirect-back flow
+ * to work correctly after the user authenticates.
+ */
+function maf_sso_send_nocache_headers(): void {
+    if (headers_sent()) {
+        return;
+    }
+    // Use WP's helper, then override with stronger directives for CDN bypass.
+    nocache_headers();
+    header('Cache-Control: no-store, no-cache, must-revalidate, private, max-age=0', true);
+    header('Pragma: no-cache', true);
+    header('Expires: 0', true);
+    // Cloudflare-specific: bypass cache regardless of page rules.
+    header('CDN-Cache-Control: no-store', true);
+    header('Cloudflare-CDN-Cache-Control: no-store', true);
+}
 
 /**
  * After any WP login (wp-login.php or custom AJAX modal), check for pending SSO redirect.
