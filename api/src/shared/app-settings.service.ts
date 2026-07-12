@@ -20,6 +20,8 @@ const DEFAULTS: Record<string, string> = {
   'strava.clientId': '',
   'strava.clientSecret': '',
   'strava.webhookVerifyToken': '',
+  'strava.maxAthletes': '10',
+  'strava.webhookSubscriptionId': '',
 };
 
 export interface StravaRuntimeConfig {
@@ -27,12 +29,19 @@ export interface StravaRuntimeConfig {
   clientId: string;
   clientSecret: string;
   webhookVerifyToken: string;
+  /** Max concurrent Strava authorizations the app is allowed to hold. 0 = pause new connections. */
+  maxAthletes: number;
+  /** Trusted Strava push-subscription id — gates the destructive athlete-deauth webhook branch. Empty until first (re)subscribe. */
+  webhookSubscriptionId: string;
 }
 
 @Injectable()
 export class AppSettingsService {
   /** 30-second TTL cache for Strava runtime config — invalidated on setMany writes to strava.* keys */
-  private stravaCfgCache: { data: StravaRuntimeConfig; expiresAt: number } | null = null;
+  private stravaCfgCache: {
+    data: StravaRuntimeConfig;
+    expiresAt: number;
+  } | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -98,8 +107,9 @@ export class AppSettingsService {
       enabled: settings['garmin.enabled'] === 'true',
       clientId: settings['garmin.clientId'] || '',
       clientSecret: this.mask(settings['garmin.clientSecret'] || ''),
-      callbackUrl: settings['garmin.callbackUrl'] || DEFAULTS['garmin.callbackUrl'],
-      hasClientSecret: !!(settings['garmin.clientSecret']),
+      callbackUrl:
+        settings['garmin.callbackUrl'] || DEFAULTS['garmin.callbackUrl'],
+      hasClientSecret: !!settings['garmin.clientSecret'],
     };
   }
 
@@ -110,8 +120,8 @@ export class AppSettingsService {
       enabled: s['strava.enabled'] === 'true',
       clientId: s['strava.clientId'] || '',
       clientSecret: this.mask(s['strava.clientSecret'] || ''),
-      hasClientSecret: !!(s['strava.clientSecret']),
-      hasWebhookVerifyToken: !!(s['strava.webhookVerifyToken']),
+      hasClientSecret: !!s['strava.clientSecret'],
+      hasWebhookVerifyToken: !!s['strava.webhookVerifyToken'],
       webhookCallbackUrl: `${process.env.BACKEND_URL ?? 'http://localhost:3001'}/strava/webhook`,
     };
   }
@@ -129,11 +139,20 @@ export class AppSettingsService {
     }
 
     const s = await this.getByPrefix('strava');
+    // 0 is a valid cap (pause new connections) — only fall back to the default 10 on NaN/negative.
+    const parsedMax = parseInt(s['strava.maxAthletes'] ?? '', 10);
     const data: StravaRuntimeConfig = {
       enabled: s['strava.enabled'] === 'true',
       clientId: s['strava.clientId'] || process.env.STRAVA_CLIENT_ID || '',
-      clientSecret: s['strava.clientSecret'] || process.env.STRAVA_CLIENT_SECRET || '',
-      webhookVerifyToken: s['strava.webhookVerifyToken'] || process.env.STRAVA_WEBHOOK_VERIFY_TOKEN || '',
+      clientSecret:
+        s['strava.clientSecret'] || process.env.STRAVA_CLIENT_SECRET || '',
+      webhookVerifyToken:
+        s['strava.webhookVerifyToken'] ||
+        process.env.STRAVA_WEBHOOK_VERIFY_TOKEN ||
+        '',
+      maxAthletes:
+        Number.isFinite(parsedMax) && parsedMax >= 0 ? parsedMax : 10,
+      webhookSubscriptionId: s['strava.webhookSubscriptionId'] || '',
     };
 
     this.stravaCfgCache = { data, expiresAt: now + 30_000 };

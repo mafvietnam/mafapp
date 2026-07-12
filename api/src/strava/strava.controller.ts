@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Body,
   Req,
   Query,
   Param,
@@ -10,9 +9,9 @@ import {
   Res,
   Logger,
   BadRequestException,
+  ConflictException,
   NotFoundException,
   UnauthorizedException,
-  HttpCode,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
@@ -20,10 +19,11 @@ import type { Request, Response } from 'express';
 import { StravaService } from './strava.service.js';
 import { StravaAuthService } from './strava-auth.service.js';
 import { StravaSyncService } from './strava-sync.service.js';
-import { StravaWebhookService, type StravaWebhookEvent } from './strava-webhook.service.js';
 import { JwtAuthGuard } from '../auth/auth.guard.js';
 import { StravaActivityQueryDto } from './dto/strava-activity-query.dto.js';
+import { mapStravaCallbackError } from './strava-callback-error.util.js';
 
+/** Webhook GET/POST endpoints live in StravaWebhookController (kept separate to stay under 200 LOC). */
 @Controller('strava')
 export class StravaController {
   private readonly logger = new Logger(StravaController.name);
@@ -33,51 +33,24 @@ export class StravaController {
     private readonly stravaService: StravaService,
     private readonly authService: StravaAuthService,
     private readonly syncService: StravaSyncService,
-    private readonly webhookService: StravaWebhookService,
     private readonly config: ConfigService,
   ) {
-    this.frontendUrl = config.get<string>('CORS_ORIGIN', 'http://localhost:5173');
+    this.frontendUrl = config.get<string>(
+      'CORS_ORIGIN',
+      'http://localhost:5173',
+    );
   }
 
-  /**
-   * Strava webhook challenge validation (GET) — called once during subscription setup.
-   * Public — no JWT guard. Strava sends: hub.mode, hub.verify_token, hub.challenge.
-   */
-  @Get('webhook')
-  async handleWebhookChallenge(
-    @Query('hub.mode') mode: string,
-    @Query('hub.verify_token') verifyToken: string,
-    @Query('hub.challenge') challenge: string,
-  ) {
-    const valid = await this.webhookService.isValidVerifyToken(verifyToken);
-    if (!valid || mode !== 'subscribe') {
-      throw new BadRequestException('Invalid webhook verification');
-    }
-    return { 'hub.challenge': challenge };
-  }
-
-  /**
-   * Strava webhook event push (POST) — called on each new activity, update, or delete.
-   * Public — no JWT guard. Must respond 200 within 2s; processing is async.
-   */
-  @Post('webhook')
-  @HttpCode(200)
-  handleWebhookEvent(@Body() event: StravaWebhookEvent) {
-    // Respond immediately, process asynchronously
-    setImmediate(() => {
-      this.webhookService.processEvent(event).catch((err: unknown) => {
-        const msg = err instanceof Error ? err.message : 'Unknown';
-        this.logger.error(`Webhook event processing error: ${msg}`);
-      });
-    });
-    return { ok: true };
-  }
-
-  /** Return Strava OAuth authorization URL — frontend navigates to it */
+  /** Strava OAuth authorization URL — 409 for genuinely new connections once the slot cap is reached (H6); reconnects exempt */
   @Get('connect')
   @UseGuards(JwtAuthGuard)
   async getConnectUrl(@Req() req: Request) {
     const userId = (req.user as { id: string }).id;
+    if (await this.stravaService.isNewConnectionBlocked(userId)) {
+      throw new ConflictException(
+        'Đã đạt giới hạn số người dùng Strava (hết slot). Vui lòng thử lại sau.',
+      );
+    }
     const authUrl = await this.authService.getAuthorizationUrl(userId);
     return { authUrl };
   }
@@ -108,6 +81,16 @@ export class StravaController {
 
     try {
       const userId = await this.authService.verifyState(state);
+
+      // Race guard (H6d): another new user may have filled the last slot between
+      // the frontend's /connect check and this callback. Reconnects are exempt.
+      if (await this.stravaService.isNewConnectionBlocked(userId)) {
+        this.logger.warn(
+          `Strava slot cap reached during callback for user ${userId}`,
+        );
+        return res.redirect(`${profileUrl}?strava_error=full`);
+      }
+
       const tokens = await this.authService.exchangeCodeForTokens(code);
       await this.stravaService.saveTokensFromCallback(userId, tokens);
       this.logger.log(`Strava connected for user ${userId}`);
@@ -115,7 +98,9 @@ export class StravaController {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Unknown error';
       this.logger.error(`Strava callback failed: ${msg}`);
-      return res.redirect(`${profileUrl}?strava_error=1`);
+      return res.redirect(
+        `${profileUrl}?strava_error=${mapStravaCallbackError(msg)}`,
+      );
     }
   }
 
@@ -147,7 +132,10 @@ export class StravaController {
   /** Paginated list of the user's synced running activities */
   @Get('activities')
   @UseGuards(JwtAuthGuard)
-  async getActivities(@Req() req: Request, @Query() query: StravaActivityQueryDto) {
+  async getActivities(
+    @Req() req: Request,
+    @Query() query: StravaActivityQueryDto,
+  ) {
     const userId = (req.user as { id: string }).id;
     return this.stravaService.getActivities(userId, query);
   }
