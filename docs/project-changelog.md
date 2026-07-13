@@ -4,6 +4,15 @@ All notable changes to MAF Running Coach are documented here.
 
 ---
 
+## [1.7.1] — 2026-07-13 (Fix: MAF trend chart axis labels)
+
+### Fixed — `src/components/journal/maf-trend-chart.tsx`
+- **Efficiency Y-axis showed raw floats** (`1.4500000000000002`, `0.8300000000000001`) — the `['dataMin - 0.1', 'dataMax + 0.1']` domain padding produced unrounded tick values with no formatter. Added `effTick` (`toFixed(2)`). Severity: low (cosmetic), impact: chart looked broken/untrustworthy ("chưa khả dụng").
+- **X-axis week labels verbose** (`20/4 – 26/4`) and prone to overlap on narrow charts. Compacted to the week's start date (`20/4`) via `weekTick`; the full range stays on week-group headers. Added `minTickGap`.
+- **Verified on prod** with 12 weeks of synthetic in-zone activities (both `Pace@MAF` + efficiency lines render cleanly, all axis labels rounded), then test data removed. Pure presentational change — analytics untouched, 257 frontend tests still pass. Frontend-only deploy.
+
+---
+
 ## [1.7.0] — 2026-07-13 (Running Journal — `/journal`)
 
 ### Major: Full run-history journal with long-term MAF trend
