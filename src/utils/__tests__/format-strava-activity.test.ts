@@ -37,9 +37,14 @@ describe('formatDistanceKm', () => {
 });
 
 describe('formatPace', () => {
-  it('prefers explicit avgPace (sec/km) when present', () => {
-    // 285 sec/km = 4:45 /km
-    expect(formatPace({ avgPace: 285, movingTime: 0, distance: 0 })).toBe('4:45 /km');
+  it('prefers explicit avgPace (min/km) when present', () => {
+    // 4.75 min/km = 4:45 /km
+    expect(formatPace({ avgPace: 4.75, movingTime: 0, distance: 0 })).toBe('4:45 /km');
+  });
+
+  it('formats a whole-number avgPace (min/km) correctly', () => {
+    // 7.0 min/km = 7:00 /km (regression: was mis-read as 7 sec/km => 0:07)
+    expect(formatPace({ avgPace: 7.0, movingTime: 0, distance: 0 })).toBe('7:00 /km');
   });
 
   it('derives pace from movingTime/distance when avgPace missing', () => {
@@ -60,8 +65,8 @@ describe('formatPace', () => {
   });
 
   it('pads seconds under 10 with a leading zero', () => {
-    // 305 sec/km = 5:05 /km
-    expect(formatPace({ avgPace: 305, movingTime: 0, distance: 0 })).toBe('5:05 /km');
+    // 6.1 min/km = 366 sec/km = 6:06 /km
+    expect(formatPace({ avgPace: 6.1, movingTime: 0, distance: 0 })).toBe('6:06 /km');
   });
 });
 

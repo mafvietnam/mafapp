@@ -19,14 +19,15 @@ export function formatDistanceKm(meters: number): string {
 }
 
 /**
- * Prefer explicit `avgPace` (sec/km) from the API; otherwise derive from
+ * Prefer explicit `avgPace` from the API (stored as MIN/km — see Prisma schema
+ * and StravaSyncService: movingTime/60 / km); otherwise derive sec/km from
  * movingTime / (distance in km). Guards divide-by-zero and unknown values.
  */
 export function formatPace(activity: Pick<StravaActivity, 'avgPace' | 'movingTime' | 'distance'>): string {
   let secPerKm: number | null = null;
 
   if (activity.avgPace != null && activity.avgPace > 0) {
-    secPerKm = activity.avgPace;
+    secPerKm = activity.avgPace * 60; // avgPace is min/km → convert to sec/km
   } else if (activity.distance > 0 && activity.movingTime > 0) {
     secPerKm = activity.movingTime / (activity.distance / 1000);
   }
