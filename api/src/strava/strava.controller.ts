@@ -131,13 +131,20 @@ export class StravaController {
     return { disconnected: true };
   }
 
-  /** Paginated list of the user's synced running activities */
+  /**
+   * Paginated list of the user's synced running activities.
+   * Throttled (bulk read: up to limit=365 rows) + private/no-store — rows carry
+   * avgHeartRate (health data), so never edge-cache (parity with detail endpoint).
+   */
   @Get('activities')
   @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
   async getActivities(
     @Req() req: Request,
     @Query() query: StravaActivityQueryDto,
+    @Res({ passthrough: true }) res: Response,
   ) {
+    res.set('Cache-Control', 'private, no-store');
     const userId = (req.user as { id: string }).id;
     return this.stravaService.getActivities(userId, query);
   }

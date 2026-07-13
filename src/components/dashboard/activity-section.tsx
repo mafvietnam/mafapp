@@ -81,9 +81,9 @@ export default function ActivitySection({ activities, loading, error, mafHr }: A
       <div className="hidden lg:block desktop-card overflow-hidden">
         <div className="p-6 border-b border-white/5 flex justify-between items-center">
           <h3 className="text-lg font-bold text-white">Lịch sử hoạt động gần đây</h3>
-          <a href="#" className="text-sm font-medium text-maf-red hover:text-white transition-colors">
+          <Link to="/journal" className="text-sm font-medium text-maf-red hover:text-white transition-colors">
             Xem tất cả
-          </a>
+          </Link>
         </div>
         {body('desktop')}
       </div>

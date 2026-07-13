@@ -20,6 +20,8 @@ import AdminSettingsPage from './pages/admin/admin-settings-page';
 
 // Lazy-loaded: pulls in the (heavier, phase-04-added) MAF analysis chart deps in a separate chunk.
 const ActivityDetailPage = lazy(() => import('./pages/activity-detail-page'));
+// Lazy-loaded: shares the recharts chunk with the detail page (MAF trend chart).
+const JournalPage = lazy(() => import('./pages/journal-page'));
 
 const routeSuspenseFallback = (
   <div className="flex justify-center py-20">
@@ -59,6 +61,14 @@ const App: React.FC = () => {
           {/* All pages inside dark theme layout */}
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route
+              path="/journal"
+              element={
+                <Suspense fallback={routeSuspenseFallback}>
+                  <JournalPage />
+                </Suspense>
+              }
+            />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/plan" element={<CalculatorPage />} />
             <Route path="/guide" element={<GuidePage />} />

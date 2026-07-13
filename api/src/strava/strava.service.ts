@@ -122,11 +122,21 @@ export class StravaService {
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
 
-    const where: { userId: string; type?: string; isDuplicate?: boolean } = {
-      userId,
-    };
+    const where: {
+      userId: string;
+      type?: string;
+      isDuplicate?: boolean;
+      startDate?: { gte?: Date; lt?: Date };
+    } = { userId };
     if (query.type) where.type = query.type;
     if (query.excludeDuplicates) where.isDuplicate = false;
+    // Half-open interval [since, until) — tiles cleanly with the journal's
+    // back-to-back 6-month fetch windows (no boundary double-count).
+    if (query.since || query.until) {
+      where.startDate = {};
+      if (query.since) where.startDate.gte = new Date(query.since);
+      if (query.until) where.startDate.lt = new Date(query.until);
+    }
 
     const [data, total] = await this.prisma.$transaction([
       this.prisma.stravaActivity.findMany({

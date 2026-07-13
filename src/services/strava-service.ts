@@ -94,11 +94,15 @@ export async function getStravaActivities(
   limit = 20,
   type?: string,
   excludeDuplicates?: boolean,
+  since?: string,
+  until?: string,
 ): Promise<StravaActivitiesResponse | null> {
   try {
     const params = new URLSearchParams({ page: String(page), limit: String(limit) });
     if (type) params.set('type', type);
     if (excludeDuplicates !== undefined) params.set('excludeDuplicates', String(excludeDuplicates));
+    if (since) params.set('since', since);
+    if (until) params.set('until', until);
     const res = await api.get(`/strava/activities?${params.toString()}`);
     if (!res.ok) return null;
     return res.json();

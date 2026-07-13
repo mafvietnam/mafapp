@@ -11,6 +11,7 @@ import {
   formatPace,
   formatSpeedKmh,
   hrZone,
+  paceSecPerKm,
 } from '../format-strava-activity';
 
 describe('formatActivityDate', () => {
@@ -69,6 +70,31 @@ describe('formatPace', () => {
   it('pads seconds under 10 with a leading zero', () => {
     // 6.1 min/km = 366 sec/km = 6:06 /km
     expect(formatPace({ avgPace: 6.1, movingTime: 0, distance: 0 })).toBe('6:06 /km');
+  });
+});
+
+describe('paceSecPerKm', () => {
+  it('converts avgPace (min/km) to sec/km', () => {
+    expect(paceSecPerKm({ avgPace: 6, movingTime: 0, distance: 0 })).toBe(360);
+  });
+
+  it('derives sec/km from movingTime/distance when avgPace missing', () => {
+    // 1800s over 5000m (5km) = 360 sec/km
+    expect(paceSecPerKm({ avgPace: null, movingTime: 1800, distance: 5000 })).toBe(360);
+  });
+
+  it('returns null when both avgPace and moving data are underivable', () => {
+    expect(paceSecPerKm({ avgPace: null, movingTime: 0, distance: 0 })).toBeNull();
+  });
+
+  it('returns null for zero distance (guards divide-by-zero)', () => {
+    expect(paceSecPerKm({ avgPace: null, movingTime: 1800, distance: 0 })).toBeNull();
+  });
+
+  it('formatPace consumes paceSecPerKm (values stay consistent)', () => {
+    const a = { avgPace: 4.75, movingTime: 0, distance: 0 };
+    expect(paceSecPerKm(a)).toBe(285); // 4:45
+    expect(formatPace(a)).toBe('4:45 /km');
   });
 });
 

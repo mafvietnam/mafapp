@@ -4,6 +4,30 @@ All notable changes to MAF Running Coach are documented here.
 
 ---
 
+## [1.7.0] — 2026-07-13 (Running Journal — `/journal`)
+
+### Major: Full run-history journal with long-term MAF trend
+
+**Scope:** New `/journal` page — full Strava run history grouped by week, current-month stats header, and a long-term MAF trend chart. Read-only from existing Strava sync (no new DB model/migration). Replaces the `#` nav placeholders. Plan: `plans/260713-1452-running-journal/`.
+
+### Added
+- **Frontend page** `src/pages/journal-page.tsx` (lazy route `/journal`, shares recharts chunk with detail page) + components in `src/components/journal/` (stats header, MAF trend chart, week group, activity row, states).
+- **Fetch hook** `src/hooks/use-journal-activities.ts` — 6-month fetch windows with "Tải thêm" load-more to a 2-year cap. Hardened (red-team): single stable `now`, synchronous re-entrancy lock, seeded/populated dedupe set, non-clobbering load-more errors, empty-window skip.
+- **Analytics utils** `src/utils/journal-analytics.ts` + `journal-date-utils.ts` — weekly grouping (Monday weeks), monthly summary (km / sessions / %-in-MAF-zone), MAF trend series (pace@MAF + aerobic efficiency). Reuses `verdict()`/`aerobicEfficiency()` (no MAF-formula duplication). Extracted `paceSecPerKm` from `formatPace` (DRY).
+
+### Changed
+- **Backend** `GET /strava/activities` — added optional `since`/`until` (ISO, `@IsDateString`) half-open `startDate` filter; `limit` cap relaxed 100→365; `page` capped `@Max(100000)`; added `@Throttle 30/min` + `Cache-Control: private, no-store` (bulk HR read, parity with detail endpoint). Backward-compatible (all params optional; dashboard unaffected).
+- **Nav** desktop-top-nav "Nhật ký chạy", mobile-bottom-tabs "Nhật ký", and dashboard "Xem tất cả" now link to `/journal`.
+
+### Tests
+- Frontend: +52 vitest (journal-analytics, journal-date-utils, paceSecPerKm) — 257 total pass.
+- Backend: +14 jest (DTO validation, service where-clause) — 72 total pass.
+
+### Notes
+- DB stores runs only (`RUN_TYPES` in sync) → no server `type` filter needed. Deploy backend-first (`forbidNonWhitelisted` rejects new params on old API).
+
+---
+
 ## [1.5.0] — 2026-04-07 (Strava Integration — Phase 4: Cron Fallback & MAF Lab)
 
 ### Major: Strava Daily Sync Fallback & Activity List Endpoint

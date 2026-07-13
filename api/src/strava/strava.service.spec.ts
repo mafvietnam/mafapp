@@ -25,6 +25,8 @@ function buildService(
   } = {},
 ) {
   const deleteConnection = jest.fn().mockResolvedValue(undefined);
+  const activityFindMany = jest.fn().mockResolvedValue([]);
+  const activityCount = jest.fn().mockResolvedValue(0);
   const prisma = {
     stravaConnection: {
       count: jest.fn().mockResolvedValue(opts.activeCount ?? 0),
@@ -38,10 +40,13 @@ function buildService(
     },
     stravaActivity: {
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
+      findMany: activityFindMany,
+      count: activityCount,
     },
     stravaActivityDetail: {
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
     },
+    $transaction: jest.fn((ops: Promise<unknown>[]) => Promise.all(ops)),
   } as unknown as PrismaService;
 
   const redis = {
@@ -62,7 +67,16 @@ function buildService(
   } as unknown as AppSettingsService;
 
   const service = new StravaService(prisma, redis, encryption, appSettings);
-  return { service, prisma, redis, encryption, appSettings, deleteConnection };
+  return {
+    service,
+    prisma,
+    redis,
+    encryption,
+    appSettings,
+    deleteConnection,
+    activityFindMany,
+    activityCount,
+  };
 }
 
 describe('StravaService.getSlotInfo — slot math (H6b)', () => {
@@ -168,6 +182,63 @@ describe('StravaService.getStatus — connectionLimitReached boolean only (M14)'
     const status = await service.getStatus('u1');
     expect(status.connected).toBe(true);
     expect(status.connectionLimitReached).toBe(false);
+  });
+});
+
+describe('StravaService.getActivities — where-clause building', () => {
+  it('applies half-open startDate range when since + until present', async () => {
+    const { service, activityFindMany } = buildService();
+    await service.getActivities('u1', {
+      since: '2026-01-01',
+      until: '2026-07-01',
+    });
+    const { where } = activityFindMany.mock.calls[0][0];
+    expect(where.userId).toBe('u1');
+    expect(where.startDate).toEqual({
+      gte: new Date('2026-01-01'),
+      lt: new Date('2026-07-01'),
+    });
+  });
+
+  it('applies only gte when until is omitted', async () => {
+    const { service, activityFindMany } = buildService();
+    await service.getActivities('u1', { since: '2026-01-01' });
+    const { where } = activityFindMany.mock.calls[0][0];
+    expect(where.startDate).toEqual({ gte: new Date('2026-01-01') });
+    expect(where.startDate.lt).toBeUndefined();
+  });
+
+  it('omits startDate entirely when neither since nor until given', async () => {
+    const { service, activityFindMany } = buildService();
+    await service.getActivities('u1', {});
+    const { where } = activityFindMany.mock.calls[0][0];
+    expect(where).not.toHaveProperty('startDate');
+  });
+
+  it('combines date range with type + excludeDuplicates, always userId-scoped', async () => {
+    const { service, activityFindMany, activityCount } = buildService();
+    await service.getActivities('u1', {
+      type: 'Run',
+      excludeDuplicates: true,
+      since: '2026-01-01',
+      until: '2026-07-01',
+      page: 2,
+      limit: 50,
+    });
+    const args = activityFindMany.mock.calls[0][0];
+    expect(args.where).toEqual({
+      userId: 'u1',
+      type: 'Run',
+      isDuplicate: false,
+      startDate: {
+        gte: new Date('2026-01-01'),
+        lt: new Date('2026-07-01'),
+      },
+    });
+    expect(args.skip).toBe(50);
+    expect(args.take).toBe(50);
+    // count must use the exact same where for a consistent total
+    expect(activityCount.mock.calls[0][0].where).toEqual(args.where);
   });
 });
 

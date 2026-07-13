@@ -19,11 +19,16 @@ export function formatDistanceKm(meters: number): string {
 }
 
 /**
+ * Numeric pace in seconds/km — the single source of the pace formula.
  * Prefer explicit `avgPace` from the API (stored as MIN/km — see Prisma schema
  * and StravaSyncService: movingTime/60 / km); otherwise derive sec/km from
- * movingTime / (distance in km). Guards divide-by-zero and unknown values.
+ * movingTime / (distance in km). Returns null when underivable (guards
+ * divide-by-zero and unknown values). Consumed by both `formatPace` (display)
+ * and journal analytics (trend math) so the two never diverge.
  */
-export function formatPace(activity: Pick<StravaActivity, 'avgPace' | 'movingTime' | 'distance'>): string {
+export function paceSecPerKm(
+  activity: Pick<StravaActivity, 'avgPace' | 'movingTime' | 'distance'>,
+): number | null {
   let secPerKm: number | null = null;
 
   if (activity.avgPace != null && activity.avgPace > 0) {
@@ -32,7 +37,14 @@ export function formatPace(activity: Pick<StravaActivity, 'avgPace' | 'movingTim
     secPerKm = activity.movingTime / (activity.distance / 1000);
   }
 
-  if (secPerKm == null || !Number.isFinite(secPerKm) || secPerKm <= 0) return '—';
+  if (secPerKm == null || !Number.isFinite(secPerKm) || secPerKm <= 0) return null;
+  return secPerKm;
+}
+
+/** Formats pace as "m:ss /km". Em-dash when pace is underivable. */
+export function formatPace(activity: Pick<StravaActivity, 'avgPace' | 'movingTime' | 'distance'>): string {
+  const secPerKm = paceSecPerKm(activity);
+  if (secPerKm == null) return '—';
 
   const totalSec = Math.round(secPerKm);
   const min = Math.floor(totalSec / 60);

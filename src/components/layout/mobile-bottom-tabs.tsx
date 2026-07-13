@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const TABS = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Trang chủ' },
-  { to: '#', icon: BarChart2, label: 'Nhật ký' },
+  { to: '/journal', icon: BarChart2, label: 'Nhật ký' },
   // Center "+" button is rendered separately
   { to: '#', icon: Users, label: 'Cộng đồng' },
   { to: '/profile', icon: User, label: 'Hồ sơ' },

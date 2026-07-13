@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/auth-context';
 
 const NAV_LINKS = [
   { to: '/dashboard', label: 'Bảng điều khiển' },
-  { to: '#', label: 'Nhật ký chạy' },
+  { to: '/journal', label: 'Nhật ký chạy' },
   { to: '/plan', label: 'Giáo án' },
   { to: '#', label: 'Cộng đồng' },
   { to: '/profile', label: 'Hồ sơ' },
