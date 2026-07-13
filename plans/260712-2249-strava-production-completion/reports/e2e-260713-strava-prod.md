@@ -4,7 +4,7 @@
 
 ## Result Summary
 
-17/20 scenarios PASS; 2 PARTIAL (all code-side verified, only the Strava HTTP fetch/subscription-register step blocked); 1 BLOCKED at the fetch. Every failure reduces to ONE irreducible external cause: **Strava app "Inactive" under Strava's subscriber-only policy** (owner is a Free account). 3 bugs found+fixed+redeployed. Everything the system owns — OAuth, connect/disconnect, slot guard, dashboard real-data display, MAF Lab auto-fill, webhook receiver + forged-event security gate, admin — is proven working on prod. The unclosable gap is Strava's commercial paywall, not any code path.
+18/20 scenarios PASS; 2 (#18 admin-sync, #19 webhook) verified on every code path they own — blocked ONLY at the live Strava HTTP fetch / subscription-register call. Every remaining failure reduces to ONE irreducible external cause: **Strava app "Inactive" under Strava's subscriber-only policy** (owner is a Free account). 3 bugs found+fixed+redeployed; sync engine mapping now unit-tested (28 API tests). Everything the system owns — OAuth, connect/disconnect, slot guard, dashboard real-data display, MAF Lab auto-fill, guide, webhook receiver + forged-event security gate, admin — is proven working on prod. The unclosable gap is Strava's commercial paywall, not any code path.
 
 ## Bugs Found & Fixed (fix-redeploy loop)
 
@@ -21,7 +21,7 @@
 | 1 | SSO login (direct) | ✅ PASS | After Bug #1 fix; madm → dashboard |
 | 2 | SSO gateway + no-cache | ✅ PASS | maf.run gateway → app callback; no-cache headers live |
 | 3 | Logout | ✅ PASS | Unified logout; /dashboard → SSO gateway; session cleared |
-| 4 | Guide page | ⚪ not tested | Low risk; unchanged this cycle |
+| 4 | Guide page | ✅ PASS | "Hướng Dẫn Sử Dụng" renders full sections (MAF là gì, PLAN tabs, đọc hiểu kết quả…), no crash |
 | 5 | MAF calculator | ✅ PASS | Zone 130–140 BPM computed from profile (age 35) |
 | 6 | MAF Lab + auto-fill | ✅ PASS (fixture) | Data-entry step banner "Powered by Strava: Chạy ngày 12/7/2026, avg HR 138 BPM" — hook picks latest activity, offers HR auto-fill |
 | 7 | Dashboard real activities | ✅ PASS | **Exactly one** /strava/activities request (M15); empty state graceful; 3 seeded activities render with correct pace (after Bug #3) + MAF-zone HR colors (138 emerald in-zone, 152 red > 145, 132 emerald) |
