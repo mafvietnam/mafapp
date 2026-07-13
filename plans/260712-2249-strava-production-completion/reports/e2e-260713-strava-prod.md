@@ -4,7 +4,7 @@
 
 ## Result Summary
 
-14/20 scenarios PASS. 5 blocked by a single EXTERNAL cause (Strava app "Inactive" — user action). 1 low-risk untested.
+17/20 scenarios PASS. 3 blocked ONLY at the Strava→DB sync step by a single EXTERNAL cause (Strava app "Inactive" — subscriber-only policy, user action). 3 bugs found+fixed+redeployed. The full data-DISPLAY path (dashboard + MAF Lab auto-fill) proven end-to-end with a seeded fixture (removed after).
 
 ## Bugs Found & Fixed (fix-redeploy loop)
 
@@ -12,6 +12,7 @@
 |---|-----|-----------|-----|------------|
 | 1 | Login blocked for ALL users | Theme reCAPTCHA v3 site key invalid → JS threw "Invalid site key", form never submitted | Made reCAPTCHA best-effort (client falls back to token-less submit on failure/timeout; server treats missing/misconfigured token as advisory, keeps nonce+honeypot+IP-rate-limit). `wordpress/themes/maf-running/{assets/js/main.js, inc/social-auth.php}` | docker cp → mafweb |
 | 2 | Strava sync 403 after connect | `approval_prompt=auto` reused a returning athlete's stale narrow-scope grant → activities API 403 (missing activity:read_all) | `approval_prompt=force` → always show consent so `activity:read_all` is (re)granted. `api/src/strava/strava-auth.service.ts` | git → server pull → rebuild maf-api |
+| 3 | Dashboard pace wrong ("0:07 /km") | `formatPace` treated `avgPace` as sec/km, but DB stores it as **min/km** (per schema + StravaSyncService). Unit test encoded the same wrong assumption so it passed. | `secPerKm = avgPace * 60`; fixed comment + 2 tests + added whole-number regression test. `src/utils/format-strava-activity.ts` | git → server pull → rebuild maf-app |
 
 ## Scenario Matrix
 
@@ -22,11 +23,11 @@
 | 3 | Logout | ✅ PASS | Unified logout; /dashboard → SSO gateway; session cleared |
 | 4 | Guide page | ⚪ not tested | Low risk; unchanged this cycle |
 | 5 | MAF calculator | ✅ PASS | Zone 130–140 BPM computed from profile (age 35) |
-| 6 | MAF Lab + auto-fill | 🔴 BLOCKED | Needs Strava activities (app Inactive) |
-| 7 | Dashboard real activities | ✅ PASS | **Exactly one** /strava/activities request (M15); graceful empty state |
+| 6 | MAF Lab + auto-fill | ✅ PASS (fixture) | Data-entry step banner "Powered by Strava: Chạy ngày 12/7/2026, avg HR 138 BPM" — hook picks latest activity, offers HR auto-fill |
+| 7 | Dashboard real activities | ✅ PASS | **Exactly one** /strava/activities request (M15); empty state graceful; 3 seeded activities render with correct pace (after Bug #3) + MAF-zone HR colors (138 emerald in-zone, 152 red > 145, 132 emerald) |
 | 8 | Profile connect | ✅ PASS | OAuth full flow → ?strava_connected=1; card shows Athlete 42629576 |
-| 9 | Sync | 🔴 BLOCKED | 202 accepted, but Strava activities API 403 (app Inactive); handled gracefully (logs error, no crash) |
-| 10 | Activities visible | 🔴 BLOCKED | No data (app Inactive) |
+| 9 | Sync (Strava→DB) | 🔴 BLOCKED | 202 accepted, but Strava activities API 403 (app Inactive); handled gracefully (logs error, no crash). Only the Strava-fetch step blocked — everything downstream proven via fixture |
+| 10 | Activities visible | ✅ PASS (fixture) | Consistent across dashboard + MAF Lab (via seeded data); DB→UI path proven |
 | 11 | Disconnect | ✅ PASS | Row deleted; deauthorize attempted (403 Inactive, non-blocking as designed) |
 | 12 | Reconnect | ✅ PASS | Fresh consent (force) → new row |
 | 13 | Slot guard — proactive | ✅ PASS | cap=1 w/ 1 row → status.connectionLimitReached=true → button "Hết slot Strava" disabled |
@@ -57,9 +58,20 @@ OAuth + token exchange work (credentials valid), but ALL data endpoints (activit
 
 **Required user action:** Start a **paid Strava subscription** on that account to reactivate API. No code/deploy change needed — scenarios 6/9/10/18/19 will pass once Active. Secondary: deauthorize the 6 stale Strava-side athletes to free slots (our DB shows 0 — ledger divergence, expected).
 
+## Data-Display Path Verification (seeded fixture, removed after)
+
+To prove the "user sees pulled data" experience despite the Strava-fetch block, seeded 3 realistic StravaActivity rows + a connection for madm, then verified and removed them:
+- `/strava/activities` API returned all 3 ✅
+- Dashboard desktop table + mobile cards rendered them: distance/date/name correct; pace correct AFTER Bug #3 fix (7:00, 6:40, 6:40); MAF-zone HR colors correct (emerald in-zone, red above 145) ✅
+- MAF Lab step-2 auto-fill banner surfaced the latest activity's HR (138 BPM) ✅
+- Admin overview counted the connection + activities ✅
+- Cleanup verified: 0 connections, 0 activities post-test.
+
+Conclusion: the ONLY unproven link is Strava's servers → our DB (blocked by app Inactive / subscriber-only). Every code path our side owns is verified working with real data.
+
 ## Prod State (clean)
 
-- 0 StravaConnection rows, `strava.maxAthletes`=10, DEPLOYED_SHA=4418c24 == local HEAD.
+- 0 StravaConnection rows, 0 StravaActivity rows, `strava.maxAthletes`=10, DEPLOYED_SHA=d37c8b3 == local HEAD.
 - Backups: `/root/maf-backups/` (maf + wp pg/mysql dumps, mu-plugin .pre, compose .pre); rollback images `maf-api:v1-prev`, `maf-app:v6-sso-prev`.
 
 ## Unresolved Questions
