@@ -61,7 +61,10 @@ export class StravaAuthService implements OnModuleInit {
       redirect_uri: redirectUri,
       response_type: 'code',
       scope: 'read,activity:read_all',
-      approval_prompt: 'auto',
+      // 'force' always shows the consent screen so the requested scope is (re)granted.
+      // With 'auto', a returning athlete who previously authorized with a narrower scope
+      // keeps that stale grant → the activities API then returns 403 (missing activity:read_all).
+      approval_prompt: 'force',
       state,
     });
     return `https://www.strava.com/oauth/authorize?${params.toString()}`;
