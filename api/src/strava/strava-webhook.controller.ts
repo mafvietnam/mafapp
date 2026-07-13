@@ -33,8 +33,12 @@ export class StravaWebhookController {
     @Query('hub.verify_token') verifyToken: string,
     @Query('hub.challenge') challenge: string,
   ) {
+    // Log every challenge hit — helps diagnose subscription-registration failures
+    // (e.g. whether Strava's validator actually reaches this origin through the CDN).
+    this.logger.log(`Webhook challenge GET received (mode=${mode})`);
     const valid = await this.webhookService.isValidVerifyToken(verifyToken);
     if (!valid || mode !== 'subscribe') {
+      this.logger.warn('Webhook challenge rejected — invalid token or mode');
       throw new BadRequestException('Invalid webhook verification');
     }
     return { 'hub.challenge': challenge };
