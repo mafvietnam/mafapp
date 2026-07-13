@@ -53,7 +53,9 @@
 
 OAuth + token exchange work (credentials valid), but ALL data endpoints (activities, webhook, deauthorize) return 403 while Inactive. Nothing app-side can bypass this.
 
-**Required user action:** Activate the app at https://www.strava.com/settings/api (verify status is Active; ensure API Agreement accepted). Once Active, re-run scenarios 6/9/10/18/19 — the code path is proven; only Strava's gate remains.
+**Root cause (confirmed 2026-07-13 via strava.com/settings/api screenshot):** Strava moved API access to **subscriber-only**. Owner account `mafvietnam2021@gmail.com` is a **Free Account** → app auto-deactivated. Banner: "We're updating API access to be subscriber-only. Start a subscription to maintain your access." Creds 221736 confirmed correct (10 athletes allowed, 6 currently connected Strava-side).
+
+**Required user action:** Start a **paid Strava subscription** on that account to reactivate API. No code/deploy change needed — scenarios 6/9/10/18/19 will pass once Active. Secondary: deauthorize the 6 stale Strava-side athletes to free slots (our DB shows 0 — ledger divergence, expected).
 
 ## Prod State (clean)
 

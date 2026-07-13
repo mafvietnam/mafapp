@@ -1,14 +1,17 @@
 ---
 title: "Strava Production Completion — Enable + Complete UX + E2E"
 description: "Ship 3 small UX gaps (dashboard real data, athlete slot cap guard, callback error UX), enable Strava on prod via big-bang deploy, verify end-to-end."
-status: pending
+status: completed
 priority: P1
 effort: 2.3d
 branch: dev
 tags: [strava, oauth, deploy, production, e2e, dashboard]
 created: 2026-07-12
+completed: 2026-07-13
 related: [260407-1549-strava-integration, 260517-2232-strava-admin-ui]
 ---
+
+> **Outcome (2026-07-13):** All 4 phases done — code shipped, big-bang deploy live (SHA 958e8c5+4418c24), 14/20 E2E scenarios PASS, 2 bugs fixed+redeployed (reCAPTCHA login block, OAuth scope force). 5 data-sync scenarios blocked by an EXTERNAL non-code cause: Strava moved API to **subscriber-only** and the owner account is Free → app "Inactive", all data APIs 403. Requires a paid Strava subscription (user action). See `reports/e2e-260713-strava-prod.md`.
 
 # Strava Production Completion
 
