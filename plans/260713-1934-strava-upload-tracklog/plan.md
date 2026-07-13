@@ -1,7 +1,9 @@
 ---
 title: Strava Upload Tracklog (GPX/TCX)
-status: pending
+status: completed
 created: 2026-07-13
+completed: 2026-07-13
+deployedSha: 66182ef
 tags: [strava, upload, gpx, tcx, maf]
 blockedBy: []
 blocks: []
@@ -23,16 +25,23 @@ tracklog từ Strava → upload → app parse → activity lên dashboard + deta
 - `disconnect()`: scope `source=STRAVA`; detail purge loại trừ `upload_` prefix → upload sống sót.
 - Limits: ≤5MB/file, ≤20 files/batch, throttle 10/min, whitelist `.gpx/.tcx`.
 
-## Phases
+## Phases — ALL COMPLETE ✅
 | # | Phase | Status | File |
 |---|-------|--------|------|
-| 01 | Schema + migration + scope disconnect | pending | phase-01-schema-migration.md |
-| 02 | Tracklog parsers (GPX/TCX, pure utils) | pending | phase-02-tracklog-parsers.md |
-| 03 | Upload service + controller endpoint | pending | phase-03-upload-service-endpoint.md |
-| 04 | Detail service UPLOAD branch | pending | phase-04-detail-service-branch.md |
-| 05 | Frontend upload UI | pending | phase-05-frontend-upload-ui.md |
-| 06 | Tests (unit + integration) | pending | phase-06-tests.md |
-| 07 | E2E + deploy prod | pending | phase-07-e2e-deploy.md |
+| 01 | Schema + migration + scope disconnect | ✅ done | phase-01-schema-migration.md |
+| 02 | Tracklog parsers (GPX/TCX, pure utils) | ✅ done | phase-02-tracklog-parsers.md |
+| 03 | Upload service + controller endpoint | ✅ done | phase-03-upload-service-endpoint.md |
+| 04 | Detail service UPLOAD branch | ✅ done | phase-04-detail-service-branch.md |
+| 05 | Frontend upload UI | ✅ done | phase-05-frontend-upload-ui.md |
+| 06 | Tests (unit + integration) | ✅ done (106 api / 284 web) | phase-06-tests.md |
+| 07 | E2E + deploy prod | ✅ done (24/24 backend + FE flow, DEPLOYED_SHA=66182ef) | phase-07-e2e-deploy.md |
+
+**Shipped 2026-07-13** (commit 66182ef): deployed to app.maf.run via staged docker rebuild; 0004 migration
+applied drift-safe (SQL + `migrate resolve` in new container). Prod E2E all green: upload GPX/TCX →
+dashboard + detail HR chart + MAF zone + Maffetone coaching + cardiac drift + aerobic efficiency; "Tệp
+tải lên" badge (no Strava link); idempotent re-upload; TCX treadmill distance; invalid/malformed graceful.
+Code-review found H1 (HR stream clamp) + M1 (post-txn dedup) → fixed pre-deploy. Follow-up M2: Garmin-sync
+upload dedup (not blocking — Garmin OAuth not live). Rollback tags `:pre-upload`.
 
 ## Dependencies
 - 01 → 02/03/04 (schema needed by services). 03 depends on 02 (parsers). 04 depends on 01 (source field).

@@ -4,6 +4,31 @@ All notable changes to MAF Running Coach are documented here.
 
 ---
 
+## [1.9.0] — 2026-07-13 (Manual GPX/TCX tracklog upload)
+
+### Major: Upload Strava-exported tracklogs to bypass the 10-athlete OAuth cap
+
+**Scope:** New `POST /strava/upload` endpoint + dashboard card. Users who cannot connect via OAuth (Strava app limited to 10 authorized athletes) export GPX/TCX from Strava and upload them to get the full MAF analysis pipeline — dashboard row, detail page HR chart, MAF zone, Maffetone coaching, cardiac drift, aerobic efficiency. Plan: `plans/260713-1934-strava-upload-tracklog/`. Commit 66182ef, deployed to app.maf.run.
+
+### Added
+- **Server-side parsers** `api/src/strava/tracklog/` — `gpx-parser` (HR via TrackPointExtension, namespace-agnostic), `tcx-parser` (explicit `DistanceMeters` → survives GPS-less treadmill runs; multisport picks Running), `tracklog-parser` (content-sniff detect + `summarize`: haversine/hint distance, moving-time from moving samples, avgHR/maxHR/avgSpeed, elevation, validation/clamping), `tracklog-streams` (reuses `downsampleStreams` → same detail-chart shape). `fast-xml-parser` (XXE-safe: no DTD/entity resolution).
+- **Ingest** `api/src/strava/strava-upload.service.ts` — `StravaActivity(source=UPLOAD)` + `StravaActivityDetail` in one transaction; synthetic `upload_<hash>` id = idempotent re-upload; userId-scoped writes (never overwrite another tenant); ±5min symmetric dedup across STRAVA/Garmin/UPLOAD.
+- **Endpoint/UI** `strava-upload.controller.ts` (Multer memory, ≤8 files ×5MB, throttle 10/min, per-file isolation), `multer-exception.filter.ts` (limit errors → clean 4xx), `src/components/tracklog-upload-card.tsx`, `api.postForm` multipart helper.
+- **Schema** `ActivitySource {STRAVA,UPLOAD}` enum + `StravaActivity.source` (migration `0004_add_activity_source`, additive fast-default).
+- **Tests** — 106 api (parsers, ingest, dedup, HR-clamp, detail branch) + 284 web pass.
+
+### Changed
+- **Detail service** serves UPLOAD rows from stored streams (no Strava/token call, `hydrated:true`); missing row → retry.
+- **`disconnect()`** scoped to `source=STRAVA` (+ detail purge excludes `upload_`) → uploads survive OAuth disconnect.
+- **Sync `checkAndMarkDuplicate`** also flags overlapping UPLOAD rows (order-independent dedup).
+- **Activity-detail header** hides the Strava link + attribution for uploads (shows "Tệp tải lên").
+
+### Quality gates
+- **Red-teamed** (3 hostile reviewers): cross-tenant upsert isolation, symmetric dedup double-count, avgSpeed/aerobic-efficiency, sync-parse DoS caps, input validation, transactional writes, HR-partial tolerance — all applied. **Code review:** H1 (HR stream not range-clamped) + M1 (post-txn dedup could orphan) fixed pre-deploy. Follow-up: Garmin-sync upload dedup before Garmin OAuth goes live.
+- **Prod E2E all green** (24/24 backend + full browser flow): upload → dashboard + detail render, idempotent re-upload, TCX treadmill distance, invalid/malformed graceful, browser multipart+cookie upload. Staged docker deploy; 0004 migration applied drift-safe (SQL + `migrate resolve` in new container); rollback tags `:pre-upload`.
+
+---
+
 ## [1.8.0] — 2026-07-13 (Maffetone coaching insights on activity detail)
 
 ### Major: Book-grounded training-effectiveness analysis + recommendations
