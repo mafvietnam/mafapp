@@ -38,6 +38,12 @@ export interface MafVerdict {
 const GAP_CAP_SEC = 30;
 /** Below this instantaneous speed (m/s) a sample is considered "stopped" (traffic light, aid station, etc). */
 const MOVING_SPEED_THRESHOLD = 0.5;
+/**
+ * Aerobic decoupling / cardiac-drift threshold (%). ≥ this = a fatigue/heat/
+ * aerobic-deficiency signal (Friel-style heuristic, NOT a Maffetone page number).
+ * Shared by cardiac-drift-card + maf-coaching-insights so the cutoff stays in one place.
+ */
+export const DRIFT_THRESHOLD = 5;
 
 /**
  * Weight HR samples by time deltas into below/in/above MAF band buckets.

@@ -1,5 +1,5 @@
 import { Activity } from 'lucide-react';
-import { cardiacDrift } from '../../utils/maf-activity-analysis';
+import { cardiacDrift, DRIFT_THRESHOLD } from '../../utils/maf-activity-analysis';
 import type { StravaStreams } from '../../services/strava-service';
 
 interface CardiacDriftCardProps {
@@ -7,14 +7,14 @@ interface CardiacDriftCardProps {
 }
 
 function interpret(drift: number): { label: string; colorClass: string } {
-  if (drift < 5) {
+  if (drift < DRIFT_THRESHOLD) {
     return {
-      label: 'Dưới 5% — nền tảng hiếu khí tốt, nhịp tim ổn định so với tốc độ suốt buổi chạy.',
+      label: `Dưới ${DRIFT_THRESHOLD}% — nền tảng hiếu khí tốt, nhịp tim ổn định so với tốc độ suốt buổi chạy.`,
       colorClass: 'text-emerald-400',
     };
   }
   return {
-    label: 'Trên 5% — có dấu hiệu trôi tim mạch, có thể do mệt mỏi, nắng nóng hoặc thiếu nền tảng hiếu khí.',
+    label: `Trên ${DRIFT_THRESHOLD}% — có dấu hiệu trôi tim mạch, có thể do mệt mỏi, nắng nóng hoặc thiếu nền tảng hiếu khí.`,
     colorClass: 'text-maf-red',
   };
 }

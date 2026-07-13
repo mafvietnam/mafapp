@@ -4,6 +4,27 @@ All notable changes to MAF Running Coach are documented here.
 
 ---
 
+## [1.8.0] — 2026-07-13 (Maffetone coaching insights on activity detail)
+
+### Major: Book-grounded training-effectiveness analysis + recommendations
+
+**Scope:** New "Phân tích hiệu quả buổi tập" card on each Strava activity-detail page. Turns the already-computed per-activity metrics into an effectiveness verdict (tier) + prioritized recommendations, each citing a chapter of Dr. Phil Maffetone's *The Big Book of Endurance Training and Racing* (`docs/`). Deterministic rule engine — offline, no LLM, no backend, no new fetch. Plan: `plans/260713-1847-activity-maffetone-coaching-insights/`.
+
+### Added
+- **Rule engine** `src/utils/maf-coaching-insights.ts` — pure `coachingInsights(input)` → `CoachingInsight { tier, tierLabel, findings[], recommendations[] }`. Consumes existing `verdict`/`timeInZone`/`cardiacDrift`/`aerobicEfficiency`/`splits`. Tier: `aerobic-effective` / `mixed` / `above-zone`. Rules grounded in CH3 (aerobic vs anaerobic), CH4 (MAF test / drift), CH5 (warm-up), CH8/CH9 (overtraining, "less means success"). Focused depth: ≤4 findings (importance-ranked), ≤3 recommendations.
+- **Card** `src/components/activity-detail/training-effectiveness-card.tsx` — tier badge + severity-dotted findings + recommendations, each with a chapter chip + book attribution. Pure render; XSS-safe (static VN copy + numbers only).
+- **Tests** `src/utils/__tests__/maf-coaching-insights.test.ts` — 27 vitest (each rule + all red-team regressions). 284 frontend tests pass.
+
+### Changed
+- **Wired** into `src/components/activity-detail/activity-detail-sections.tsx` (after MAF verdict, above time-in-zone), only when `hydrated && mafHr>0`; gracefully partial in avgHr-only mode.
+- **DRY** — hoisted `DRIFT_THRESHOLD` (5%) into `src/utils/maf-activity-analysis.ts`; `cardiac-drift-card.tsx` + the engine now share it (constant + displayed copy interpolated).
+
+### Quality gates
+- **Red-teamed** (3 hostile reviewers, 11 findings all applied): avgHr-only tier capping, unconditional zone finding, split-pattern warm-up (with 3% tolerance), raw-fraction tier, mixed-tier non-empty recs, negative-drift copy, importance-ordinal cap. **Code review:** production-ready, no Critical/High.
+- Frontend-only → `maf-app` rebuild + `up -d maf-app` (api untouched).
+
+---
+
 ## [1.7.1] — 2026-07-13 (Fix: MAF trend chart axis labels)
 
 ### Fixed — `src/components/journal/maf-trend-chart.tsx`

@@ -1,8 +1,16 @@
 import { Gauge } from 'lucide-react';
 import type { StravaActivityDetailResponse } from '../../services/strava-service';
-import { aerobicEfficiency, type MafZone } from '../../utils/maf-activity-analysis';
+import {
+  aerobicEfficiency,
+  cardiacDrift,
+  timeInZone,
+  verdict,
+  type MafZone,
+} from '../../utils/maf-activity-analysis';
+import { coachingInsights } from '../../utils/maf-coaching-insights';
 import { HydrationNotice, NoHrNotice, ProfileNoticeCard } from './degradation-notices';
 import MafVerdictCard from './maf-verdict-card';
+import TrainingEffectivenessCard from './training-effectiveness-card';
 import TimeInZoneBar from './time-in-zone-bar';
 import HrChart from './hr-chart';
 import SplitsTable from './splits-table';
@@ -63,6 +71,25 @@ export default function ActivityDetailSections({ data, mafHr, zone, refetch }: A
       ) : (
         <>
           <MafVerdictCard avgHr={activity.avgHeartRate} zone={zone} />
+
+          {(() => {
+            // Re-interprets the same pure metrics the cards below already show,
+            // grounded in Maffetone's book. Cheap for one activity — no memo needed.
+            const insight = coachingInsights({
+              verdict: verdict(activity.avgHeartRate, zone),
+              timeInZone: streams ? timeInZone(streams.heartrate, streams.time, zone) : null,
+              drift: streams?.velocitySmooth
+                ? cardiacDrift(streams.velocitySmooth, streams.heartrate, streams.time)
+                : null,
+              aerobicEff: aerobicEfficiency(activity.avgSpeed, activity.avgHeartRate),
+              splits: detail?.splitsMetric ?? [],
+              zone,
+              activityType: activity.type,
+              movingTimeSec: activity.movingTime,
+              avgHr: activity.avgHeartRate,
+            });
+            return insight ? <TrainingEffectivenessCard insight={insight} /> : null;
+          })()}
 
           {streams ? (
             <>
