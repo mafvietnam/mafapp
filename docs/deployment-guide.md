@@ -253,6 +253,33 @@ docker-compose logs -f n8n
 
 ---
 
+## Production Deployment Note: Prisma Migration History
+
+**Important:** Production Prisma migration history is **DRIFTED** (old-style timestamp-based migration names vs. repo's squashed `0001_init`).
+
+### Migration Procedure
+
+**For new migrations going forward:**
+1. **Do NOT use** `prisma migrate deploy` blindly
+2. Instead, apply the migration SQL directly:
+   ```bash
+   docker exec maf-postgres psql -U maf_user -d maf < migration.sql
+   ```
+3. Then record it in Prisma history:
+   ```bash
+   npm run prisma migrate resolve --applied {migration_name}
+   ```
+4. This prevents automatic sync failures and keeps deployment safe
+
+**Rationale:** Prod schema was already applied before repo squashed migrations into `0001_init`. Using blind `migrate deploy` would detect a mismatch and fail. The surgical approach (SQL direct + `migrate resolve`) acknowledges the history divergence.
+
+**Example (from 2026-07-13 deployment):**
+- Applied `0003_strava_activity_detail` SQL directly
+- Ran `migrate resolve --applied 0003_strava_activity_detail` to update Prisma history
+- Subsequent deploys can then use normal `migrate deploy` if all migrations are resolved
+
+---
+
 ## Strava OAuth Setup
 
 ### Prerequisites

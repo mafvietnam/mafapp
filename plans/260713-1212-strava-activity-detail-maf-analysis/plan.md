@@ -1,9 +1,10 @@
 ---
 title: "Strava Activity Detail Page with MAF Analysis"
 description: "Lazy-hydrated Strava detail cache + full activity page with MAF zone, HR chart, splits, cardiac drift."
-status: pending
+status: completed
 priority: P2
 effort: 15h
+completed: 2026-07-13
 branch: dev
 tags: [strava, maf, frontend, backend, prisma, recharts]
 created: 2026-07-13
@@ -37,12 +38,15 @@ table (lazy hydration, ~2 API calls per activity once, TTL-bounded). MAF zone co
 ## Phases
 | # | File | Scope | Status |
 |---|------|-------|--------|
-| 01 | [phase-01-backend-detail-service-endpoint.md](phase-01-backend-detail-service-endpoint.md) | DB migration + detail service + endpoint + unit tests | pending |
-| 02 | [phase-02-frontend-data-layer-route-page-skeleton.md](phase-02-frontend-data-layer-route-page-skeleton.md) | service fn, hook, types, route, page skeleton + stats grid | pending |
-| 03 | [phase-03-maf-analysis-utils.md](phase-03-maf-analysis-utils.md) | pure MAF analysis utils + vitest | pending |
-| 04 | [phase-04-maf-ui-components-degradation.md](phase-04-maf-ui-components-degradation.md) | MAF UI components + degradation + dashboard Links | pending |
-| 05 | [phase-05-local-verification.md](phase-05-local-verification.md) | lint, tsc, vitest, api build+tests, manual smoke | pending |
-| 06 | [phase-06-prod-deploy-e2e.md](phase-06-prod-deploy-e2e.md) | VPS deploy + prisma migrate deploy + prod E2E + fix loop | pending |
+| 01 | [phase-01-backend-detail-service-endpoint.md](phase-01-backend-detail-service-endpoint.md) | DB migration + detail service + endpoint + unit tests | ✅ done |
+| 02 | [phase-02-frontend-data-layer-route-page-skeleton.md](phase-02-frontend-data-layer-route-page-skeleton.md) | service fn, hook, types, route, page skeleton + stats grid | ✅ done |
+| 03 | [phase-03-maf-analysis-utils.md](phase-03-maf-analysis-utils.md) | pure MAF analysis utils + vitest | ✅ done |
+| 04 | [phase-04-maf-ui-components-degradation.md](phase-04-maf-ui-components-degradation.md) | MAF UI components + degradation + dashboard Links | ✅ done |
+| 05 | [phase-05-local-verification.md](phase-05-local-verification.md) | lint, tsc, vitest, api build+tests, manual smoke | ✅ done |
+| 06 | [phase-06-prod-deploy-e2e.md](phase-06-prod-deploy-e2e.md) | VPS deploy + migrate + prod E2E + fix loop | ✅ done |
+
+## Outcome (2026-07-13)
+Shipped to https://app.maf.run. Local gates: FE lint(0 new)/vitest 231 + api build/jest 58. Code-review: 2 High (H1 non-JSON-body 500, H2 webhook-deauth cache purge) + 1 Med (hook race) found & fixed + regression-tested. Deploy: migration applied surgically (prod history was drifted — old-style names vs repo `0001_init`; ran `0003` SQL directly + `migrate resolve`, NOT blind `migrate deploy`). Prod E2E on real data (owner acct, JWT minted server-side): hydration 200, splits+streams(688-aligned)+kcal correct, recharts HR chart renders (not blank), MAF verdict/time-in-zone/drift render, NO-HR degradation correct, IDOR 404, Cache-Control private no-store, 0 console errors, no token leak. No bugs in E2E → no redeploy loop needed.
 
 ## Key dependencies
 - 01 blocks 02 (endpoint contract). 03 independent of 01/02 (pure utils, can run parallel).

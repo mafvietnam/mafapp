@@ -120,12 +120,13 @@
 │   ├── login-page.tsx — WordPress SSO login screen
 │   ├── dashboard-page.tsx — Authenticated user dashboard (dark theme)
 │   ├── profile-page.tsx — User profile management, server sync
-│   └── guide-page.tsx (121 lines) — /guide route with 5 guide sections
+│   ├── guide-page.tsx (121 lines) — /guide route with 5 guide sections
+│   └── activity-detail-page.tsx — Lazy route /activities/:id (MAF analysis, recharts HR chart, splits, drift)
 │
 ├── types.ts (55 lines) — TypeScript interfaces & enums
 ├── constants.ts (70 lines) — Schedules, commitment cards, experience options
 │
-└── utils/ (~1,050 lines, 9 files + 6 tests)
+└── utils/ (~1,150 lines, 10 files + 6 tests)
     Pure functions (no state, no side effects):
 
     ├── maf-logic.ts (12 lines) — Barrel export for all utilities
@@ -137,6 +138,7 @@
     ├── maf-smart-long-run.ts (177 lines) — History-based long-run ±10% adjustment
     ├── maf-volume-cap.ts (128 lines) — Enforce weekly minute caps per commitment
     ├── maf-session-formatter.ts (40 lines) — 15/15 warmup/main/cool breakdown
+    ├── maf-activity-analysis.ts (~90 lines) — MAF zone verdict, time-in-zone, cardiac drift, aerobic efficiency (pure)
     │
     └── __tests__/ (6 files, ~600 LOC)
         ├── maf-calculator-orchestrator.test.ts (15 tests)
@@ -375,10 +377,11 @@ api/
 │   │   ├── garmin-activity.dto.ts — activity query DTOs
 │   │   └── garmin.module.ts
 │   │
-│   ├── strava/ (Strava activity sync + webhook + OAuth state — gated by FEATURE_STRAVA)
-│   │   ├── strava.controller.ts — GET/POST /webhook, GET /activities/:id, connect, disconnect, sync, getStatus
+│   ├── strava/ (Strava activity sync + webhook + detail cache — gated by FEATURE_STRAVA)
+│   │   ├── strava.controller.ts — GET/POST /webhook, GET /activities/:id/detail, connect, disconnect, sync, getStatus
 │   │   ├── strava.service.ts — business logic, connection mgmt, getActivities(), getStatus (includes featureEnabled)
 │   │   ├── strava-auth.service.ts — OAuth2 token exchange, state verification (Redis nonce + HMAC)
+│   │   ├── strava-detail.service.ts — lazy hydration (userId-scoped cache, fetch+whitelist+downsample, error tiers, disconnect purge)
 │   │   ├── strava-sync.service.ts — sync engine (paginated fetch + upsert, dedup, rate-limit handling)
 │   │   ├── strava-webhook.service.ts — webhook subscription, event processing, auto-resubscribe on credential save
 │   │   ├── strava-cron.service.ts — daily 3am cron fallback (25h threshold, Redis global lock)

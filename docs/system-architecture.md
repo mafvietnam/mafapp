@@ -82,6 +82,18 @@ App (App.tsx)
 │   │  ├─ Webhook resubscription status
 │   │  └─ Admin sync trigger + history
 │   │
+│   ├─ /activities/:id → ActivityDetailPage (authenticated, lazy route)
+│   │  ├─ Header: name, date, "Xem trên Strava", Powered-by-Strava
+│   │  ├─ Full stats grid (distance, duration, elevation, pace)
+│   │  └─ MAF analysis section:
+│   │     ├─ Verdict card (below/in/above MAF)
+│   │     ├─ Time-in-zone bar (HR-weighted)
+│   │     ├─ HR-over-time chart (recharts@3, MAF band overlay)
+│   │     ├─ Per-km splits table (HR-colored)
+│   │     ├─ Cardiac drift (estimated, labeled "ước tính")
+│   │     ├─ Aerobic efficiency (VO2/kg/min, labeled "ước tính")
+│   │     └─ Degradation tiers: ProfileNotice, hydrated:false, no-HR-stream
+│   │
 │   ├─ /app → AppPageWrapper (with nav)
 │   │  ├─ PLAN Tab ──────────────────────────
 │   │  │  ├─ UserInputForm (orchestrator)
@@ -369,11 +381,14 @@ api/ (NestJS 10)
 │  │  ├─ garmin-activity.dto.ts (query DTOs)
 │  │  └─ garmin.module.ts
 │  │
-│  ├─ strava/ (Strava activity sync + webhook — gated by FEATURE_STRAVA)
-│  │  ├─ strava.controller.ts (GET/POST /strava/webhook, connect/disconnect/sync endpoints)
-│  │  ├─ strava.service.ts (business logic, connection management)
+│  ├─ strava/ (Strava activity sync + webhook + detail cache — gated by FEATURE_STRAVA)
+│  │  ├─ strava.controller.ts (GET/POST /webhook, GET /activities/:id/detail, connect/disconnect/sync endpoints)
+│  │  ├─ strava.service.ts (business logic, connection management, getActivities)
+│  │  ├─ strava-auth.service.ts (OAuth2 token exchange, state verification)
+│  │  ├─ strava-detail.service.ts (lazy hydration: cache read, fetch+whitelist+downsample, upsert, error tiers)
 │  │  ├─ strava-sync.service.ts (sync engine — fetch + upsert from Strava API)
 │  │  ├─ strava-webhook.service.ts (webhook subscription, event processing)
+│  │  ├─ strava-cron.service.ts (daily 3am cron fallback)
 │  │  ├─ strava-encryption.service.ts (AES-256 for token encryption)
 │  │  ├─ strava.module.ts
 │  │  └─ types/ (TypeScript types for Strava API contracts)
@@ -423,6 +438,7 @@ api/ (NestJS 10)
 | GET | `/strava/status` | ✅ | — | Check Strava connection status |
 | POST | `/strava/sync` | ✅ | — | Manual sync: fetch and upsert activities |
 | GET | `/strava/activities` | ✅ | — | List synced Strava activities (paginated) |
+| GET | `/strava/activities/:id/detail` | ✅ | — | Lazy-hydrated activity detail + streams (@Throttle 30/min, Cache-Control: private no-store) |
 
 ### Database Schema (Prisma)
 
@@ -506,8 +522,41 @@ model StravaActivity {
   avgPace               Float?   // min/km
   maxSpeed              Float?   // m/s
   totalElevationGain    Float?   // meters
-  calories              Float?
+  calories              Float?   // kilojoules (summary)
   isDuplicate           Boolean  @default(false)  // Duplicate with Garmin activity
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  activityDetail        StravaActivityDetail?  // 1-1 lazy-hydrated detail cache
+}
+
+model StravaActivityDetail {
+  id                    String   @id @default(uuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  stravaActivityId      Int      @unique
+  stravaActivity        StravaActivity @relation(fields: [stravaActivityId], references: [stravaActivityId])
+  
+  // Hydration status
+  hydrated              Boolean  @default(false)
+  reason                String?  // deleted|unauthorized|rate_limited|error (if hydrated=false)
+  
+  // Whitelisted detail fields (from Strava API)
+  description           String?
+  deviceName            String?
+  gearName              String?
+  calories_kcal         Float?   // real kcal (from detail endpoint)
+  
+  // Streams (truncated to shortest common length, ≤1000 pts downsampled)
+  streams_time          Int[]    // elapsed seconds
+  streams_heartrate     Int[]    // bpm
+  streams_velocity_smooth Float[]  // m/s
+  streams_altitude      Float[]  // meters
+  streams_distance      Float[]  // meters
+  
+  // Splits (per-km or per-mile)
+  splits_metric         Json[]   // distance, elapsed_time, elevation_difference, moving_time, split, average_speed, average_heartrate?, pace_zone
+  
+  fetchedAt             DateTime  // TTL: re-fetch if (now - fetchedAt) > 30 days
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 }

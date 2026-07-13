@@ -596,12 +596,127 @@ Following Semantic Versioning (MAJOR.MINOR.PATCH):
 
 ---
 
-## Next Release: v1.6.0 (Planned Q2 2026)
+## [1.7.0] — 2026-07-13 (Strava Activity Detail Page with MAF Analysis)
+
+### Major: Lazy-Hydrated Activity Detail Cache + Full Analysis UI
+
+**Scope:** User-facing feature (Phase 2 of activity-detail project). Implements lazy-hydrated detail cache (`StravaActivityDetail` table), detail endpoint with error tiers, full-page activity analysis with MAF zone verdict, time-in-zone bar, HR-over-time chart (recharts@^3), per-km splits, cardiac drift, aerobic efficiency. Progressive degradation: no-profile → ProfileNotice, hydrated:false → reason notice + retry (disabled on rate_limited), no-HR-stream → NoHrNotice + hide HR analyses.
+
+### Added
+
+#### Backend — StravaActivityDetail Model & Migration
+- **File:** `api/prisma/migrations/0003_strava_activity_detail/migration.sql`
+- **Model:** `StravaActivityDetail`
+  - 1-1 relation to `StravaActivity` via unique `stravaActivityId`
+  - User FK cascade (purges on user disconnect)
+  - Whitelisted fields: description, deviceName, gearName, calories_kcal, splitsMetric[]
+  - Streams: time, heartrate, velocity_smooth, altitude, distance (truncated to shortest common length, ≤1000 pts downsampled)
+  - `fetchedAt` TTL (30 days; triggers re-fetch on stale read)
+  - `hydrated: boolean` (false → reason field populated)
+  - Error tier fields: reason (deleted|unauthorized|rate_limited|error)
+
+#### Backend — StravaDdetailService
+- **File:** `api/src/strava/strava-detail.service.ts`
+- **Features:**
+  - `GET /strava/activities/:id/detail` endpoint (JWT-protected, @Throttle 30/min)
+  - Lazy hydration: userId-scoped cache read (within TTL) else fetch from Strava API
+  - Whitelist fields + downsample streams to ≤1000 pts (truncate to shortest common length)
+  - Upsert into detail cache on first fetch
+  - Ownership check: 404 if activity not user's
+  - Error tiers + graceful degradation: thrown timeout/network/409 P2002 → `hydrated:false + reason`, never 500
+  - `disconnect()` + webhook athlete-deauth both purge detail cache (health PII)
+  - Cache-Control: private, no-store; 30d fetchedAt TTL
+
+#### Frontend — Activity Detail Route & Page
+- **File:** `src/pages/activity-detail-page.tsx` (or similar)
+- **Features:**
+  - Lazy route `/activities/:id` (ProtectedRoute + AppLayout)
+  - Header: activity name/date, "Xem trên Strava" link, Powered-by-Strava badge
+  - Full stats grid (distance, duration, elevation, avg pace, etc.)
+  - MAF analysis section:
+    - Verdict card: "below MAF" (neutral), "in MAF" (green), "above MAF" (warning red)
+    - Time-in-zone bar (time-weighted from HR stream)
+    - HR-over-time chart (recharts@3, MAF band overlay; no chart if no HR stream)
+    - Per-km splits table (HR-colored coding)
+    - Cardiac drift (estimated, moving-filter guard, labeled "ước tính")
+    - Aerobic efficiency (VO2/kg/min approximation, labeled "ước tính")
+  - Degradation tiers:
+    - no-profile → ProfileNotice (link to /profile)
+    - hydrated:false → reason notice (deleted, unauthorized, rate_limited, error) + retry button (disabled on rate_limited)
+    - no-HR-stream → NoHrNotice + hide HR analyses (summary stats + splits still visible)
+
+#### Frontend — Pure Utils
+- **File:** `src/utils/maf-activity-analysis.ts`
+- **Functions:**
+  - `calculateTimeInZone(hrStream, mafHr)` — time-weighted (time_data weighted)
+  - `calculateCardiacDrift(splits, mafHr)` — moving-filter + gap-cap logic, "ước tính" label
+  - `calculateAerobicEfficiency(vo2, weight)` — VO2/kg/min approximation
+  - `getMafVerdict(avgHr, mafHr)` — below|in|above zone (zone = [mafHr-10, mafHr])
+  - Pure functions, no side effects, tested
+
+#### Frontend — New Dependency
+- `recharts@^3` (React 19 native, lazy-chunked; LineChart + ReferenceArea for MAF band)
+
+#### Dashboard Integration
+- Activity rows/cards now render as `<Link to={`/activities/${id}`}>` instead of inert cards
+- Clicking any synced Strava activity now navigates to detail page
+
+### Changed
+
+#### Strava Activity Model
+- Added `StravaActivityDetail` relation (optional 1-1)
+- Summary StravaActivity.calories stores kilojoules (unchanged); detail endpoint surfaces real kcal (detail model)
+
+#### Database Schema
+- New table: `StravaActivityDetail` with userId FK cascade
+- Migration: `0003_strava_activity_detail` (applied surgically in prod due to drifted history)
+
+#### Frontend Routes
+- Added lazy route `/activities/:id` with AppLayout + activity-detail-page component
+- Dashboard activity cards now clickable
+
+### Security Considerations
+
+- Ownership check: 404 if activity not user's (prevents IDOR)
+- userId-scoped cache read: no cross-user leaks
+- Whitelist fields: only specified detail fields returned (no PII exposure)
+- disconnect() purges detail cache (health PII not retained)
+- Cache-Control: private, no-store (Cloudflare no-cache)
+- Throttle 30/min: protects Strava API quota
+
+### Performance
+
+- **Endpoint latency:** <200ms cache hit; ~1-2s first fetch (Strava API + Streams)
+- **Stream downsampling:** ≤1000 pts sent to frontend (client-side chart rendering)
+- **Recharts chart render:** <100ms (lazy-chunked, React 19 native)
+- **Cardiac drift calc:** <10ms (pure JS)
+- **30d TTL:** rare re-fetch (Strava quota safe, privacy-compliant)
+
+### Production Deployment Notes
+
+- **Prisma Migration:** Prod history was DRIFTED (old-style timestamp migrations vs repo's squashed 0001_init). Applied `0003` SQL directly + `migrate resolve --applied 0003_strava_activity_detail` (NOT blind `migrate deploy`).
+- **Future migrations:** Apply new migration SQL directly + `migrate resolve` (update deploy procedure).
+- **E2E Validation:** Hydration 200, splits+streams correct length, kcal correct, recharts render (not blank), MAF verdict/time-in-zone/drift render, no-HR degradation correct, IDOR 404, Cache-Control headers, 0 console errors.
+
+### Compatibility
+
+- No breaking changes
+- Backward compatible with existing Strava integration (connection flow, webhook, sync)
+
+### Testing
+
+- Local: FE lint(0 new), vitest 231 + api build/jest 58
+- Code review: 2 High (non-JSON 500, webhook-deauth cache purge) + 1 Med (hook race) found & fixed
+- Prod E2E: real data, real user JWT, all checks pass
+
+---
+
+## Next Release: v1.8.0 (Planned Q3 2026)
 
 **Planned Additions:**
-- Strava OAuth2 connection flow (Phase 13.2)
+- Garmin activity detail parity
 - Training history API endpoints (save/load past results)
-- Progress charts & visualization (Recharts)
+- Progress charts & visualization enhancements
 - User profile export (CSV/JSON)
 - Bug fixes & performance improvements from user feedback
 
