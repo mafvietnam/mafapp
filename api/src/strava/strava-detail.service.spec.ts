@@ -18,6 +18,7 @@ const baseActivity: StravaActivity = {
   id: 'act-1',
   userId: 'user-1',
   stravaActivityId: '900001',
+  source: 'STRAVA',
   name: 'Morning MAF Run',
   type: 'Run',
   startDate: new Date('2026-07-12T00:00:00Z'),
@@ -397,6 +398,57 @@ describe('StravaDetailService.getDetail', () => {
     expect(findFirst).toHaveBeenCalledTimes(2);
     expect(findFirst.mock.calls[1][0]).toEqual({
       where: { stravaActivityId: '900001', userId: 'user-1' },
+    });
+  });
+
+  describe('UPLOAD source branch (RT phase-04)', () => {
+    const uploadActivity = {
+      ...baseActivity,
+      source: 'UPLOAD' as const,
+      stravaActivityId: 'upload_abc123',
+    };
+
+    it('serves the stored detail row directly — no Strava fetch, no token fetch', async () => {
+      const { service, findFirst, getValidAccessToken } = buildService();
+      const row = cacheRow({
+        stravaActivityId: 'upload_abc123',
+        streamsJson: { time: [0, 10], heartrate: [130, 140] } as never,
+      });
+      findFirst.mockResolvedValue(row);
+      const fetchSpy = jest.spyOn(global, 'fetch');
+
+      const result = await service.getDetail('user-1', uploadActivity);
+
+      expect(result.hydrated).toBe(true);
+      expect(result.reason).toBeUndefined();
+      expect(result.streams).toEqual({ time: [0, 10], heartrate: [130, 140] });
+      expect(findFirst).toHaveBeenCalledWith({
+        where: { stravaActivityId: 'upload_abc123', userId: 'user-1' },
+      });
+      expect(fetchSpy).not.toHaveBeenCalled();
+      expect(getValidAccessToken).not.toHaveBeenCalled();
+    });
+
+    it('no-HR upload (streamsJson=null) still hydrated:true', async () => {
+      const { service, findFirst } = buildService();
+      findFirst.mockResolvedValue(
+        cacheRow({ stravaActivityId: 'upload_abc123', streamsJson: null }),
+      );
+
+      const result = await service.getDetail('user-1', uploadActivity);
+
+      expect(result.hydrated).toBe(true);
+      expect(result.streams).toBeNull();
+    });
+
+    it('missing detail row -> hydrated:false, reason:error (offer retry, RT-M8)', async () => {
+      const { service, findFirst } = buildService();
+      findFirst.mockResolvedValue(null);
+
+      const result = await service.getDetail('user-1', uploadActivity);
+
+      expect(result.hydrated).toBe(false);
+      expect(result.reason).toBe('error');
     });
   });
 });

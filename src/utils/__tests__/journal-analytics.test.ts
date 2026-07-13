@@ -15,6 +15,7 @@ function run(partial: Partial<StravaActivity> & { startDate: string }): StravaAc
   return {
     id: partial.id ?? Math.random().toString(36).slice(2),
     stravaActivityId: partial.stravaActivityId ?? '1',
+    source: partial.source ?? 'STRAVA',
     name: partial.name ?? 'Run',
     type: partial.type ?? 'Run',
     distance: partial.distance ?? 10000, // 10 km

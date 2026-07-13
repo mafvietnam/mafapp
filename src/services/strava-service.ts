@@ -63,9 +63,13 @@ export async function triggerStravaSync(): Promise<boolean> {
   }
 }
 
+export type ActivitySource = 'STRAVA' | 'UPLOAD';
+
 export interface StravaActivity {
   id: string;
   stravaActivityId: string;
+  /** STRAVA = OAuth sync; UPLOAD = user-uploaded GPX/TCX tracklog. */
+  source: ActivitySource;
   name: string;
   type: string;
   startDate: string;
@@ -158,6 +162,35 @@ export interface StravaActivityDetailResponse {
 export async function getStravaActivityDetail(id: string): Promise<StravaActivityDetailResponse | null> {
   try {
     const res = await api.get(`/strava/activities/${id}/detail`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+// -- Tracklog upload (bypasses the 10-athlete OAuth slot cap) --
+
+export interface UploadResultItem {
+  filename: string;
+  ok: boolean;
+  id?: string;
+  duplicate?: boolean;
+  error?: string;
+}
+
+export interface UploadTracklogResult {
+  results: UploadResultItem[];
+  imported: number;
+  failed: number;
+}
+
+/** Upload one or more GPX/TCX files (multipart). Returns per-file results, or null on transport error. */
+export async function uploadTracklog(files: File[]): Promise<UploadTracklogResult | null> {
+  try {
+    const form = new FormData();
+    for (const f of files) form.append('files', f);
+    const res = await api.postForm('/strava/upload', form);
     if (!res.ok) return null;
     return res.json();
   } catch {

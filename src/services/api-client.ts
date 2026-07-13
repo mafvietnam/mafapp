@@ -21,10 +21,15 @@ async function apiFetch(
   options?: RequestInit,
   retried = false,
 ): Promise<Response> {
+  // For FormData (multipart uploads) the browser MUST set Content-Type itself (with the boundary) —
+  // forcing application/json would make the server see zero files. Auth stays via the httpOnly
+  // cookie (credentials:'include'), and the 401→refresh retry below still applies.
+  const isForm = options?.body instanceof FormData;
+  const baseHeaders = isForm ? {} : { 'Content-Type': 'application/json' };
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
     credentials: 'include',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    headers: { ...baseHeaders, ...options?.headers },
   });
 
   if (res.status === 401 && !retried) {
@@ -46,6 +51,9 @@ export const api = {
       method: 'POST',
       body: body ? JSON.stringify(body) : undefined,
     }),
+  /** Multipart POST — pass a FormData; Content-Type/boundary set by the browser. */
+  postForm: (path: string, form: FormData) =>
+    apiFetch(path, { method: 'POST', body: form }),
   patch: (path: string, body: unknown) =>
     apiFetch(path, { method: 'PATCH', body: JSON.stringify(body) }),
   delete: (path: string) => apiFetch(path, { method: 'DELETE' }),

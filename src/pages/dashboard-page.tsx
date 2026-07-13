@@ -10,6 +10,7 @@ import DesktopStatsRow from '../components/dashboard/desktop-stats-row';
 import ChartPlaceholder from '../components/dashboard/chart-placeholder';
 import MafFormulaWidget from '../components/dashboard/maf-formula-widget';
 import ActivitySection from '../components/dashboard/activity-section';
+import TracklogUploadCard from '../components/tracklog-upload-card';
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -18,7 +19,7 @@ export default function DashboardPage() {
   const mafHr = calculateRawMaf(userProfile);
   // Fetched ONCE here — both ActivitySection mounts below (mobile + desktop) share
   // this single result via props (CSS-only visibility toggle, both are always mounted).
-  const { activities, loading: activitiesLoading, error: activitiesError } = useStravaActivities();
+  const { activities, loading: activitiesLoading, error: activitiesError, refetch: refetchActivities } = useStravaActivities();
 
   return (
     <>
@@ -59,6 +60,7 @@ export default function DashboardPage() {
           {mafHr > 0 && ageNum > 0 && <MafZoneCard mafHr={mafHr} age={ageNum} />}
           <MafAssistantCard />
           <EcosystemSection />
+          <TracklogUploadCard onImported={refetchActivities} />
           <ActivitySection
             activities={activities}
             loading={activitiesLoading}
@@ -96,6 +98,7 @@ export default function DashboardPage() {
             <div className="col-span-8 flex flex-col gap-8">
               <DesktopStatsRow mafHr={mafHr} />
               <ChartPlaceholder />
+              <TracklogUploadCard onImported={refetchActivities} />
               <ActivitySection
                 activities={activities}
                 loading={activitiesLoading}

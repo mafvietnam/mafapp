@@ -50,7 +50,18 @@ export class StravaDetailService {
   ) {}
 
   /** Serve cached detail if fresh, else hydrate. Never throws for expected edge cases (see `reason`). */
-  async getDetail(userId: string, activity: StravaActivity) {
+  async getDetail(userId: string, activity: StravaActivity): Promise<DetailResponse> {
+    // UPLOAD activities have no Strava API to hydrate from — their detail + streams were written
+    // at upload time. Serve the stored row directly (no TTL, never call Strava). Branch BEFORE the
+    // numeric-id guard below, since "upload_<hash>" ids are non-numeric by design.
+    if (activity.source === 'UPLOAD') {
+      const row = await this.prisma.stravaActivityDetail.findFirst({
+        where: { stravaActivityId: activity.stravaActivityId, userId },
+      });
+      // Row present (even with streamsJson=null for a no-HR upload) → hydrated. Missing → offer retry.
+      return row ? this.fromCacheRow(activity, row) : this.errorResponse(activity, 'error');
+    }
+
     // Never interpolate an untrusted id into a Strava URL (defense-in-depth on the trusted DB row).
     if (!/^\d+$/.test(activity.stravaActivityId))
       return this.errorResponse(activity, 'error');

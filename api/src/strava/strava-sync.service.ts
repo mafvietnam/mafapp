@@ -192,7 +192,12 @@ export class StravaSyncService {
     await this.checkAndMarkDuplicate(userId, activity);
   }
 
-  /** Flag overlapping Garmin activity as duplicate — Strava wins */
+  /**
+   * Flag overlapping lower-precedence activities as duplicate — a synced STRAVA row wins over both
+   * Garmin and any user-UPLOADed tracklog of the same run (precedence STRAVA > Garmin > UPLOAD).
+   * Marking the UPLOAD side here (not only at upload time) makes dedup symmetric + order-independent:
+   * upload-then-sync no longer double-counts in dashboard/journal/trends (RT-C2).
+   */
   async checkAndMarkDuplicate(
     userId: string,
     activity: { id: string; startDate: Date },
@@ -214,6 +219,21 @@ export class StravaSyncService {
         data: { isDuplicate: true },
       });
       this.logger.debug(`Marked Garmin activity ${garminMatch.id} as duplicate (Strava wins)`);
+    }
+
+    // Reverse-direction dedup: an earlier UPLOAD of this same run must lose to the authoritative sync.
+    const uploadMatches = await this.prisma.stravaActivity.updateMany({
+      where: {
+        userId,
+        source: 'UPLOAD',
+        isDuplicate: false,
+        id: { not: activity.id },
+        startDate: { gte: startWindow, lte: endWindow },
+      },
+      data: { isDuplicate: true },
+    });
+    if (uploadMatches.count > 0) {
+      this.logger.debug(`Marked ${uploadMatches.count} UPLOAD activity(ies) duplicate (Strava wins)`);
     }
   }
 }

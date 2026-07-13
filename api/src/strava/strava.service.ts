@@ -172,10 +172,17 @@ export class StravaService {
         await this.deauthorizeBestEffort(conn.accessToken);
       }
 
-      await this.prisma.stravaActivity.deleteMany({ where: { userId } });
-      // Purge detail cache too — honors data-deletion + prevents stale HR/PII resurrection
-      // if this stravaActivityId is later reused by another account's sync.
-      await this.prisma.stravaActivityDetail.deleteMany({ where: { userId } });
+      // Scope to OAuth-synced rows only — user-UPLOADed tracklogs are NOT tied to the
+      // Strava connection and must survive a disconnect (they never used a slot/OAuth).
+      await this.prisma.stravaActivity.deleteMany({
+        where: { userId, source: 'STRAVA' },
+      });
+      // Purge detail cache for SYNC activities too — honors data-deletion + prevents stale HR/PII
+      // resurrection if this stravaActivityId is later reused by another account's sync.
+      // Exclude "upload_" rows so uploaded activities keep their stored streams/detail.
+      await this.prisma.stravaActivityDetail.deleteMany({
+        where: { userId, NOT: { stravaActivityId: { startsWith: 'upload_' } } },
+      });
       await this.prisma.stravaConnection
         .delete({ where: { userId } })
         .catch(() => {});

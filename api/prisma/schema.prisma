@@ -27,6 +27,13 @@ enum GarminConnectionStatus {
   ERROR
 }
 
+/// Origin of a StravaActivity row. STRAVA = pulled via OAuth sync/webhook.
+/// UPLOAD = parsed from a user-uploaded GPX/TCX tracklog (no OAuth — bypasses the 10-athlete slot cap).
+enum ActivitySource {
+  STRAVA
+  UPLOAD
+}
+
 model User {
   id        String       @id @default(uuid())
   wpUserId  Int?         @unique
@@ -135,7 +142,11 @@ model StravaConnection {
 model StravaActivity {
   id               String   @id @default(cuid())
   userId           String
-  stravaActivityId String   @unique                // Strava numeric activity ID (as string)
+  // Global-unique. For STRAVA rows = Strava numeric activity ID (as string).
+  // For UPLOAD rows = "upload_" + content hash. Reads/writes MUST be userId-scoped
+  // (this is not a tenant boundary) — see strava-upload.service.ts.
+  stravaActivityId String   @unique
+  source           ActivitySource @default(STRAVA)  // STRAVA (OAuth sync) | UPLOAD (GPX/TCX file)
   name             String
   type             String                           // Run | TrailRun | VirtualRun
   startDate        DateTime
@@ -156,6 +167,7 @@ model StravaActivity {
 
   @@index([userId, startDate])
   @@index([userId, stravaActivityId])
+  @@index([userId, source])
 }
 
 /// Lazily-hydrated detail + streams cache for a single StravaActivity (1-1 via stravaActivityId).

@@ -8,13 +8,22 @@ import type { StravaTokenService } from './strava-token.service.js';
  * when Strava returns activity JSON. Isolates the parse/transform logic from the
  * (external) HTTP fetch. Guards the avgPace-unit contract (min/km) that Bug #3 exposed.
  */
-function buildService(opts: { garminMatch?: { id: string } | null } = {}) {
+function buildService(
+  opts: {
+    garminMatch?: { id: string } | null;
+    uploadMatchCount?: number;
+  } = {},
+) {
   const upsert = jest.fn().mockResolvedValue({ id: 'act-1', startDate: new Date('2026-07-12T00:00:00Z') });
   const garminFindFirst = jest.fn().mockResolvedValue(opts.garminMatch ?? null);
   const garminUpdate = jest.fn().mockResolvedValue({});
+  // Reverse-direction (STRAVA-wins-over-UPLOAD) dedup — added for symmetric dedup (RT-C2).
+  const stravaUpdateMany = jest
+    .fn()
+    .mockResolvedValue({ count: opts.uploadMatchCount ?? 0 });
 
   const prisma = {
-    stravaActivity: { upsert },
+    stravaActivity: { upsert, updateMany: stravaUpdateMany },
     garminActivity: { findFirst: garminFindFirst, update: garminUpdate },
   } as unknown as PrismaService;
 
@@ -22,7 +31,7 @@ function buildService(opts: { garminMatch?: { id: string } | null } = {}) {
   const tokenService = {} as unknown as StravaTokenService;
 
   const service = new StravaSyncService(prisma, redis, tokenService);
-  return { service, upsert, garminFindFirst, garminUpdate };
+  return { service, upsert, garminFindFirst, garminUpdate, stravaUpdateMany };
 }
 
 const rawRun = {
@@ -101,5 +110,21 @@ describe('StravaSyncService.checkAndMarkDuplicate — dedup', () => {
       startDate: new Date('2026-07-12T00:00:00Z'),
     });
     expect(garminUpdate).not.toHaveBeenCalled();
+  });
+
+  it('marks an overlapping earlier UPLOAD as duplicate (symmetric dedup, RT-C2)', async () => {
+    const { service, stravaUpdateMany } = buildService({ uploadMatchCount: 1 });
+    await service.checkAndMarkDuplicate('user-1', {
+      id: 'sync-act-1',
+      startDate: new Date('2026-07-12T00:00:00Z'),
+    });
+    const arg = stravaUpdateMany.mock.calls[0][0];
+    expect(arg.where.userId).toBe('user-1');
+    expect(arg.where.source).toBe('UPLOAD');
+    expect(arg.where.isDuplicate).toBe(false);
+    expect(arg.where.id).toEqual({ not: 'sync-act-1' }); // never flag itself
+    expect(arg.where.startDate.gte).toEqual(new Date('2026-07-11T23:55:00Z'));
+    expect(arg.where.startDate.lte).toEqual(new Date('2026-07-12T00:05:00Z'));
+    expect(arg.data).toEqual({ isDuplicate: true });
   });
 });
