@@ -25,6 +25,21 @@ function paceTick(secPerKm: number): string {
   return `${min}:${sec.toString().padStart(2, '0')}`;
 }
 
+/**
+ * Efficiency axis tick → 2 decimals. WITHOUT this the domain padding
+ * (`dataMin - 0.1`) yields raw floats like 0.8300000000000001 on the axis.
+ */
+function effTick(value: number): string {
+  return value.toFixed(2);
+}
+
+/** Chart X tick: show only the week's START date ("20/4"), not the full range — the
+ *  full "dd/M – dd/M" range stays on the week-group headers; compact here avoids
+ *  label overlap on narrow (mobile) charts. */
+function weekTick(label: string): string {
+  return label.split('–')[0].trim();
+}
+
 function EmptyChart() {
   return (
     <div className="glass-card lg:desktop-card rounded-2xl p-6 flex items-center justify-center h-48 text-center">
@@ -60,6 +75,8 @@ export default function MafTrendChart({ points }: MafTrendChartProps) {
               dataKey="label"
               stroke="rgba(255,255,255,0.4)"
               tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.5)' }}
+              tickFormatter={weekTick}
+              minTickGap={16}
             />
             {showPace && (
               <YAxis
@@ -78,7 +95,8 @@ export default function MafTrendChart({ points }: MafTrendChartProps) {
                 orientation="right"
                 stroke="#9130F8"
                 tick={{ fontSize: 10, fill: 'rgba(255,255,255,0.5)' }}
-                width={40}
+                tickFormatter={effTick}
+                width={44}
                 domain={['dataMin - 0.1', 'dataMax + 0.1']}
               />
             )}
