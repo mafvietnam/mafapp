@@ -163,6 +163,9 @@ export class StravaService {
       }
 
       await this.prisma.stravaActivity.deleteMany({ where: { userId } });
+      // Purge detail cache too — honors data-deletion + prevents stale HR/PII resurrection
+      // if this stravaActivityId is later reused by another account's sync.
+      await this.prisma.stravaActivityDetail.deleteMany({ where: { userId } });
       await this.prisma.stravaConnection
         .delete({ where: { userId } })
         .catch(() => {});

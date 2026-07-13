@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { LinkIcon, AlertTriangle } from 'lucide-react';
 import type { StravaActivity } from '../../services/strava-service';
 import {
@@ -14,6 +15,8 @@ interface ActivityTableDesktopProps {
 
 /** Presentational desktop table — preserves the desktop-card design from the original ActivitySection. */
 export default function ActivityTableDesktop({ activities, mafHr }: ActivityTableDesktopProps) {
+  const navigate = useNavigate();
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-left text-sm">
@@ -31,7 +34,11 @@ export default function ActivityTableDesktop({ activities, mafHr }: ActivityTabl
           {activities.map((a) => {
             const zone = hrZone(a.avgHeartRate, mafHr);
             return (
-              <tr key={a.id} className="hover:bg-white/5 transition-colors group">
+              <tr
+                key={a.id}
+                onClick={() => navigate(`/activities/${a.id}`)}
+                className="hover:bg-white/5 transition-colors group cursor-pointer"
+              >
                 <td className="px-6 py-4 text-slate-300">{formatActivityDate(a.startDate)}</td>
                 <td className="px-6 py-4 font-bold text-white group-hover:text-maf-red transition-colors cursor-pointer flex items-center gap-2">
                   {zone.warn && <AlertTriangle className="w-3.5 h-3.5 text-maf-red" />}

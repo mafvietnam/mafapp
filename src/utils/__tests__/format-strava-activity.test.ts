@@ -7,7 +7,9 @@ import { describe, it, expect } from 'vitest';
 import {
   formatActivityDate,
   formatDistanceKm,
+  formatDuration,
   formatPace,
+  formatSpeedKmh,
   hrZone,
 } from '../format-strava-activity';
 
@@ -67,6 +69,49 @@ describe('formatPace', () => {
   it('pads seconds under 10 with a leading zero', () => {
     // 6.1 min/km = 366 sec/km = 6:06 /km
     expect(formatPace({ avgPace: 6.1, movingTime: 0, distance: 0 })).toBe('6:06 /km');
+  });
+});
+
+describe('formatDuration', () => {
+  it('formats under an hour as m:ss', () => {
+    expect(formatDuration(125)).toBe('2:05');
+  });
+
+  it('formats an hour+ as h:mm:ss', () => {
+    expect(formatDuration(3725)).toBe('1:02:05');
+  });
+
+  it('pads minutes and seconds under 10', () => {
+    expect(formatDuration(3605)).toBe('1:00:05');
+  });
+
+  it('returns em-dash for null/undefined', () => {
+    expect(formatDuration(null)).toBe('—');
+    expect(formatDuration(undefined)).toBe('—');
+  });
+
+  it('returns em-dash for negative values', () => {
+    expect(formatDuration(-5)).toBe('—');
+  });
+
+  it('handles zero seconds', () => {
+    expect(formatDuration(0)).toBe('0:00');
+  });
+});
+
+describe('formatSpeedKmh', () => {
+  it('converts m/s to km/h with 1 decimal', () => {
+    expect(formatSpeedKmh(2.5)).toBe('9.0 km/h');
+  });
+
+  it('returns em-dash for null/undefined', () => {
+    expect(formatSpeedKmh(null)).toBe('—');
+    expect(formatSpeedKmh(undefined)).toBe('—');
+  });
+
+  it('returns em-dash for zero or negative values', () => {
+    expect(formatSpeedKmh(0)).toBe('—');
+    expect(formatSpeedKmh(-1)).toBe('—');
   });
 });
 

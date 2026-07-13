@@ -199,7 +199,11 @@ export class StravaWebhookService implements OnModuleInit {
     if (!conn) return;
 
     // Transactional: never leave activities deleted while the connection row survives (or vice versa).
+    // Purge the detail cache too (HR streams + free-text description = health PII) — mirrors disconnect().
     await this.prisma.$transaction([
+      this.prisma.stravaActivityDetail.deleteMany({
+        where: { userId: conn.userId },
+      }),
       this.prisma.stravaActivity.deleteMany({ where: { userId: conn.userId } }),
       this.prisma.stravaConnection.delete({ where: { userId: conn.userId } }),
     ]);

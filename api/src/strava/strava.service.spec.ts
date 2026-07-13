@@ -39,6 +39,9 @@ function buildService(
     stravaActivity: {
       deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
     },
+    stravaActivityDetail: {
+      deleteMany: jest.fn().mockResolvedValue({ count: 0 }),
+    },
   } as unknown as PrismaService;
 
   const redis = {

@@ -40,6 +40,23 @@ export function formatPace(activity: Pick<StravaActivity, 'avgPace' | 'movingTim
   return `${min}:${sec.toString().padStart(2, '0')} /km`;
 }
 
+/** Seconds -> "h:mm:ss" (or "m:ss" when under an hour). Em-dash for null/invalid/negative. */
+export function formatDuration(seconds: number | null | undefined): string {
+  if (seconds == null || !Number.isFinite(seconds) || seconds < 0) return '—';
+  const total = Math.round(seconds);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+/** m/s -> "X.X km/h". Em-dash for null/invalid/non-positive. */
+export function formatSpeedKmh(metersPerSecond: number | null | undefined): string {
+  if (metersPerSecond == null || !Number.isFinite(metersPerSecond) || metersPerSecond <= 0) return '—';
+  return `${(metersPerSecond * 3.6).toFixed(1)} km/h`;
+}
+
 export interface HrZoneResult {
   label: string;
   colorClass: string;

@@ -19,6 +19,7 @@ import type { Request, Response } from 'express';
 import { StravaService } from './strava.service.js';
 import { StravaAuthService } from './strava-auth.service.js';
 import { StravaSyncService } from './strava-sync.service.js';
+import { StravaDetailService } from './strava-detail.service.js';
 import { JwtAuthGuard } from '../auth/auth.guard.js';
 import { StravaActivityQueryDto } from './dto/strava-activity-query.dto.js';
 import { mapStravaCallbackError } from './strava-callback-error.util.js';
@@ -33,6 +34,7 @@ export class StravaController {
     private readonly stravaService: StravaService,
     private readonly authService: StravaAuthService,
     private readonly syncService: StravaSyncService,
+    private readonly detailService: StravaDetailService,
     private readonly config: ConfigService,
   ) {
     this.frontendUrl = config.get<string>(
@@ -148,6 +150,22 @@ export class StravaController {
     const activity = await this.stravaService.getActivity(userId, id);
     if (!activity) throw new NotFoundException('Activity not found');
     return activity;
+  }
+
+  /** Activity detail + streams — lazily hydrated from Strava, cached thereafter. Private, never edge-cached. */
+  @Get('activities/:id/detail')
+  @UseGuards(JwtAuthGuard)
+  @Throttle({ default: { limit: 30, ttl: 60000 } })
+  async getActivityDetail(
+    @Req() req: Request,
+    @Param('id') id: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    res.set('Cache-Control', 'private, no-store');
+    const userId = (req.user as { id: string }).id;
+    const activity = await this.stravaService.getActivity(userId, id);
+    if (!activity) throw new NotFoundException('Activity not found');
+    return this.detailService.getDetail(userId, activity);
   }
 
   /** Trigger manual activity sync (async — returns 202 immediately) */

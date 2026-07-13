@@ -8,6 +8,7 @@ import { StravaEncryptionService } from './strava-encryption.service.js';
 import { StravaSyncService } from './strava-sync.service.js';
 import { StravaCronService } from './strava-cron.service.js';
 import { StravaWebhookService } from './strava-webhook.service.js';
+import { StravaDetailService } from './strava-detail.service.js';
 
 @Module({
   controllers: [StravaController, StravaWebhookController],
@@ -19,6 +20,7 @@ import { StravaWebhookService } from './strava-webhook.service.js';
     StravaSyncService,
     StravaCronService,
     StravaWebhookService,
+    StravaDetailService,
   ],
   exports: [
     StravaService,

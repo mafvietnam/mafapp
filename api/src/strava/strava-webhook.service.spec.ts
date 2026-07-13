@@ -20,11 +20,13 @@ describe('StravaWebhookService.processEvent — athlete deauth branch', () => {
     const findFirst = jest.fn().mockResolvedValue(opts.connFindFirst ?? null);
     const deleteConnection = jest.fn().mockResolvedValue(undefined);
     const deleteMany = jest.fn().mockResolvedValue({ count: 0 });
+    const detailDeleteMany = jest.fn().mockResolvedValue({ count: 0 });
     const transaction = jest.fn((ops: unknown[]) => Promise.all(ops));
 
     const prisma = {
       stravaConnection: { findFirst, delete: deleteConnection },
       stravaActivity: { deleteMany },
+      stravaActivityDetail: { deleteMany: detailDeleteMany },
       $transaction: transaction,
     } as unknown as PrismaService;
 
@@ -52,7 +54,14 @@ describe('StravaWebhookService.processEvent — athlete deauth branch', () => {
       syncService,
       config,
     );
-    return { service, findFirst, deleteConnection, deleteMany, transaction };
+    return {
+      service,
+      findFirst,
+      deleteConnection,
+      deleteMany,
+      detailDeleteMany,
+      transaction,
+    };
   }
 
   const deauthEvent: StravaWebhookEvent = {
@@ -65,12 +74,18 @@ describe('StravaWebhookService.processEvent — athlete deauth branch', () => {
     updates: { authorized: 'false' },
   };
 
-  it('deletes the connection and activities transactionally when subscription_id matches the trusted id', async () => {
-    const { service, findFirst, deleteMany, deleteConnection, transaction } =
-      buildService({
-        connFindFirst: { userId: 'user-1' },
-        webhookSubscriptionId: '1',
-      });
+  it('deletes the connection, activities AND detail cache transactionally when subscription_id matches (H2)', async () => {
+    const {
+      service,
+      findFirst,
+      deleteMany,
+      detailDeleteMany,
+      deleteConnection,
+      transaction,
+    } = buildService({
+      connFindFirst: { userId: 'user-1' },
+      webhookSubscriptionId: '1',
+    });
 
     await service.processEvent(deauthEvent);
 
@@ -79,6 +94,10 @@ describe('StravaWebhookService.processEvent — athlete deauth branch', () => {
     });
     expect(transaction).toHaveBeenCalledTimes(1);
     expect(deleteMany).toHaveBeenCalledWith({ where: { userId: 'user-1' } });
+    // Health PII (HR streams + description) must be purged on deauth, not just on manual disconnect.
+    expect(detailDeleteMany).toHaveBeenCalledWith({
+      where: { userId: 'user-1' },
+    });
     expect(deleteConnection).toHaveBeenCalledWith({
       where: { userId: 'user-1' },
     });

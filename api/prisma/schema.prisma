@@ -44,6 +44,7 @@ model User {
   garminDailySummaries GarminDailySummary[]
   stravaConnection     StravaConnection?
   stravaActivities     StravaActivity[]
+  stravaActivityDetails StravaActivityDetail[]
 }
 
 model GarminConnection {
@@ -155,6 +156,23 @@ model StravaActivity {
 
   @@index([userId, startDate])
   @@index([userId, stravaActivityId])
+}
+
+/// Lazily-hydrated detail + streams cache for a single StravaActivity (1-1 via stravaActivityId).
+/// userId is duplicated here (not derived via the StravaActivity relation) so cache reads stay
+/// userId-scoped even if the activity is later reassigned/deleted — see disconnect() purge.
+model StravaActivityDetail {
+  id               String   @id @default(cuid())
+  stravaActivityId String   @unique                // 1-1 with StravaActivity.stravaActivityId
+  userId           String
+  detailJson       Json                             // { description, deviceName, gearName, calories, splitsMetric[] }
+  streamsJson      Json?                            // { time[], heartrate[], velocitySmooth[], altitude[], distance[] } | null
+  fetchedAt        DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model UserProfile {

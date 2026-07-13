@@ -4,6 +4,7 @@ import { StravaController } from './strava.controller.js';
 import type { StravaService } from './strava.service.js';
 import type { StravaAuthService } from './strava-auth.service.js';
 import type { StravaSyncService } from './strava-sync.service.js';
+import type { StravaDetailService } from './strava-detail.service.js';
 import type { ConfigService } from '@nestjs/config';
 
 /** RED TEAM #H6: /strava/connect must 409 when the slot cap is reached for a new connection, but exempt reconnects. */
@@ -25,6 +26,7 @@ describe('StravaController.getConnectUrl — slot cap guard', () => {
       getAuthorizationUrl,
     } as unknown as StravaAuthService;
     const syncService = {} as unknown as StravaSyncService;
+    const detailService = {} as unknown as StravaDetailService;
     const config = {
       get: jest.fn().mockReturnValue('http://localhost:5173'),
     } as unknown as ConfigService;
@@ -33,6 +35,7 @@ describe('StravaController.getConnectUrl — slot cap guard', () => {
       stravaService,
       authService,
       syncService,
+      detailService,
       config,
     );
     return { controller, isNewConnectionBlockedMock, getAuthorizationUrl };

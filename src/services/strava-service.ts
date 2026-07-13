@@ -106,3 +106,57 @@ export async function getStravaActivities(
     return null;
   }
 }
+
+// -- Activity detail --
+
+/** Per-km auto-lap split, passed through from Strava's `splits_metric` (kept snake_case to match backend). */
+export interface StravaSplitMetric {
+  distance: number;
+  elapsed_time: number;
+  elevation_difference: number;
+  moving_time: number;
+  split: number;
+  average_speed: number;
+  average_heartrate?: number;
+  pace_zone?: number;
+}
+
+/**
+ * Detail-endpoint-only fields (fetched live from Strava, not stored on the summary row).
+ * NOTE: `calories` here is real kcal — the summary `StravaActivity.calories` field is kJ.
+ * `laps` intentionally omitted for v1 (splitsMetric covers the auto-lap use case).
+ */
+export interface StravaActivityDetailData {
+  description: string | null;
+  deviceName: string | null;
+  gearName: string | null;
+  calories: number | null;
+  splitsMetric: StravaSplitMetric[];
+}
+
+/** Time-series streams for chart rendering (phase-04). All arrays optional except `time`. */
+export interface StravaStreams {
+  time: number[];
+  heartrate?: number[];
+  velocitySmooth?: number[];
+  altitude?: number[];
+  distance?: number[];
+}
+
+export interface StravaActivityDetailResponse {
+  activity: StravaActivity;
+  detail: StravaActivityDetailData | null;
+  streams: StravaStreams | null;
+  hydrated: boolean;
+  reason?: 'deleted' | 'unauthorized' | 'rate_limited' | 'error';
+}
+
+export async function getStravaActivityDetail(id: string): Promise<StravaActivityDetailResponse | null> {
+  try {
+    const res = await api.get(`/strava/activities/${id}/detail`);
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
