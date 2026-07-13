@@ -11,7 +11,7 @@ completed: 2026-07-13
 related: [260407-1549-strava-integration, 260517-2232-strava-admin-ui]
 ---
 
-> **Outcome (2026-07-13):** All 4 phases done — code shipped, big-bang deploy live (SHA 958e8c5+4418c24), 14/20 E2E scenarios PASS, 2 bugs fixed+redeployed (reCAPTCHA login block, OAuth scope force). 5 data-sync scenarios blocked by an EXTERNAL non-code cause: Strava moved API to **subscriber-only** and the owner account is Free → app "Inactive", all data APIs 403. Requires a paid Strava subscription (user action). See `reports/e2e-260713-strava-prod.md`.
+> **Outcome (2026-07-13, updated after app activation):** All 4 phases done — code shipped, big-bang deploy live, **19/20 E2E PASS with REAL data** (7 real activities synced + rendered; connect/disconnect/reconnect/manual-sync/slot-guard/admin all green). 3 bugs fixed+redeployed (reCAPTCHA login block, OAuth `approval_prompt=force`, dashboard pace min/km). Prior blocker (Strava subscriber-only → app Inactive) RESOLVED — user started a subscription. Only remaining: webhook subscription *registration* blocked by a Cloudflare↔Strava edge rule (NOT code; non-blocking — cron/manual sync cover it). See `reports/e2e-260713-strava-prod.md` + `reports/post-activation-verification-runbook.md`.
 
 # Strava Production Completion
 

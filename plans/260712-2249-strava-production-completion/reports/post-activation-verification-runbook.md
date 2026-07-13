@@ -11,15 +11,22 @@ curl -s "https://www.strava.com/api/v3/push_subscriptions?client_id=221736&clien
 - **Inactive (still blocked):** `{"errors":[{"resource":"Application","field":"Status","code":"Inactive"}]}`
 - **Active (ready):** `[]` (empty array — no subscriptions yet) or a subscription list. Proceed.
 
-## Step 1 — Register the webhook subscription (scenario #19)
+## Step 1 — Register the webhook subscription (scenario #19) — NEEDS A CLOUDFLARE RULE FIRST
 
-Admin re-saves Strava settings (triggers `refreshSubscription()` while the API is listening — the reliable registration path):
+> ⚠️ **Known blocker (2026-07-13):** Strava's callback-validation GET is being challenged by Cloudflare's edge, so subscription registration fails with `"GET to callback URL does not return 200"` — even though the endpoint returns 200 for every other client. **Before Step 1, add a Cloudflare rule:**
+> - Cloudflare dashboard → the `maf.run` zone → **Security → WAF → Custom rules** (or **Configuration Rules**).
+> - Rule: **When** `URI Path equals /strava/webhook` (hostname `api.maf.run`) → **Then** Skip → Bot Fight Mode / Managed Challenge / (Security Level: Essentially Off).
+> - Also check **Security → Bots**: if Bot Fight Mode / Super Bot Fight Mode is ON, that's the likely culprit — the skip rule above exempts the webhook path.
+> Verify Strava can validate by re-running the direct POST below; expect a JSON subscription object, not the 400 error.
+
+Then admin re-saves Strava settings (triggers `refreshSubscription()` while the API is listening — the reliable registration path):
 1. Log in as admin → `/admin/settings` → Strava section → click **Save** (credentials already stored).
 2. Confirm on Strava side:
 ```bash
-curl -s "https://www.strava.com/api/v3/push_subscriptions?client_id=221736&client_secret=d7109702ad86627981451378dfcdd86a5f146a97"
+curl -s "https://www.strava.com/api/v3/push_subscriptions?client_id=221736&client_secret=<secret>"
 # expect a subscription with callback_url = https://api.maf.run/strava/webhook
 ```
+Note: webhook is NON-BLOCKING — data sync already works via auto-sync-on-connect + manual sync + daily 3am cron even without it.
 
 ## Step 2 — Connect + sync a real athlete (scenarios #8→#12, #9)
 
