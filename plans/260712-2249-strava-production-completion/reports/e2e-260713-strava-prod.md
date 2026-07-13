@@ -26,7 +26,7 @@
 | 6 | MAF Lab + auto-fill | ✅ PASS (fixture) | Data-entry step banner "Powered by Strava: Chạy ngày 12/7/2026, avg HR 138 BPM" — hook picks latest activity, offers HR auto-fill |
 | 7 | Dashboard real activities | ✅ PASS | **Exactly one** /strava/activities request (M15); empty state graceful; 3 seeded activities render with correct pace (after Bug #3) + MAF-zone HR colors (138 emerald in-zone, 152 red > 145, 132 emerald) |
 | 8 | Profile connect | ✅ PASS | OAuth full flow → ?strava_connected=1; card shows Athlete 42629576 |
-| 9 | Sync (Strava→DB) | 🔴 BLOCKED | 202 accepted, but Strava activities API 403 (app Inactive); handled gracefully (logs error, no crash). Only the Strava-fetch step blocked — everything downstream proven via fixture |
+| 9 | Sync (Strava→DB) | 🔴 BLOCKED at fetch | 202 accepted; Strava activities API 403 (app Inactive), handled gracefully. Only the HTTP fetch blocked. Sync engine's mapping + dedup now unit-tested (strava-sync.service.spec.ts): payload→StravaActivity, avgPace=min/km, HR rounding, ±5min Garmin dedup — so post-activation storage is proven correct |
 | 10 | Activities visible | ✅ PASS (fixture) | Consistent across dashboard + MAF Lab (via seeded data); DB→UI path proven |
 | 11 | Disconnect | ✅ PASS | Row deleted; deauthorize attempted (403 Inactive, non-blocking as designed) |
 | 12 | Reconnect | ✅ PASS | Fresh consent (force) → new row |
