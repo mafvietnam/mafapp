@@ -41,6 +41,11 @@ codes + citation ids), never client free text — closes the prompt-injection + 
 | 2 | [Content Library & Guidance](phase-02-content-library-guidance.md) — pre/post-run, bài bổ trợ, R.E.S.T cards, rule-based selection | completed | 2.5d | Phase 1 |
 | 3 | [Health Screening & Safety Advisor](phase-03-health-screening-safety.md) — `healthConditions`, questionnaire, gates, safety card | completed | 3d | Phase 1 |
 | 4 | [AI Narrative Layer](phase-04-ai-narrative-layer.md) — NestJS `coaching` module, server-local recompute port, Claude (server key), cache, fallback | completed | 4d | Phases 1-3 |
+| 5 | [Multi-provider AI + BYOK + Admin Budget](phase-05-multi-provider-ai-byok.md) — OpenRouter backbone, user BYOK (AES), 30/mo quota, admin AI page | completed | ~4d | Phase 4 |
+
+**Phase 5 shipped (prod SHA 1636a03, migration 0008_ai_keys_usage), AI still OFF (`ai.enabled=false` default).** E2E-verified: coaching no-regression (template), BYOK lifecycle (set/mask/resolve/delete + fake-key→template), validation 400, admin settings+usage, UI (BYOK card on /profile + /admin/ai). **To activate AI:** admin sets OpenRouter key + toggles Bật AI on /admin/ai (or a user adds their own BYOK key). Refinements shipped SHA 358c43f (PDF content + Garmin-labeled RHR).
+
+**Post-1-4 additions (user-requested 2026-07-14):** (a) refinements — fill Phase 2 PDF content gaps via FREE local extraction (pypdf, non-profit cost) + RHR readiness labeled "Garmin device only" & hidden when absent; (b) Phase 5 above. Garmin API stays OFF (not yet approved).
 
 **Shipped (all E2E-verified on prod app.maf.run):** P1 c96ba0e (migration 0005) · P2 7e2a3d8 · P3 9799f05 (migration 0006) · P4 338a5e4 (migration 0007, ships AI-OFF; enable with `ANTHROPIC_API_KEY` + `AI_COACHING_ENABLED=true`).
 **Arch change from plan:** P4 used a server-LOCAL recompute port under `api/src/coaching/recompute/` (NOT `packages/maf-core` workspace extraction — that would break the separate frontend/api Docker build contexts). DRY debt noted in ported files.
