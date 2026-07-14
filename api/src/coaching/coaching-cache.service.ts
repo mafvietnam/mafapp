@@ -11,9 +11,13 @@ import { RedisService } from '../shared/redis.service.js';
 
 const REDIS_CACHE_TTL_SEC = 26 * 60 * 60; // slightly over one ICT day
 
+/** Phase 5: 'source' distinguishes the AI tier that produced the cached narrative (byok/system). */
+export type NarrativeSource = 'byok' | 'system';
+
 interface CachedNarrative {
   narrative: string;
   model: string;
+  source: NarrativeSource;
 }
 
 @Injectable()
@@ -43,9 +47,16 @@ export class CoachingCacheService {
           narrative: string;
           inputHash: string;
           model: string;
+          source?: NarrativeSource;
         };
         if (parsed.inputHash === inputHash)
-          return { narrative: parsed.narrative, model: parsed.model };
+          return {
+            narrative: parsed.narrative,
+            model: parsed.model,
+            // Legacy Phase-4 cache entries have no `source` field — treat as 'system'
+            // (the only tier that existed before Phase 5's BYOK).
+            source: parsed.source ?? 'system',
+          };
       }
     } catch (err: unknown) {
       this.logger.warn(
@@ -58,14 +69,16 @@ export class CoachingCacheService {
         where: { userId_date: { userId, date: serverToday } },
       });
       if (row && row.inputHash === inputHash) {
+        const source = toNarrativeSource(row.source);
         await this.writeRedisCache(
           userId,
           ictDateKey,
           row.narrative,
           row.inputHash,
           row.model,
+          source,
         );
-        return { narrative: row.narrative, model: row.model };
+        return { narrative: row.narrative, model: row.model, source };
       }
     } catch (err: unknown) {
       // Table-absent guard (DB-first migration rollout gap) — soft-fail to miss, never throw.
@@ -83,19 +96,27 @@ export class CoachingCacheService {
     inputHash: string,
     narrative: string,
     model: string,
+    source: NarrativeSource,
   ): Promise<void> {
-    await this.writeRedisCache(userId, ictDateKey, narrative, inputHash, model);
+    await this.writeRedisCache(
+      userId,
+      ictDateKey,
+      narrative,
+      inputHash,
+      model,
+      source,
+    );
     try {
       await this.prisma.coachingNarrative.upsert({
         where: { userId_date: { userId, date: serverToday } },
-        update: { inputHash, narrative, model, source: 'ai' },
+        update: { inputHash, narrative, model, source },
         create: {
           userId,
           date: serverToday,
           inputHash,
           narrative,
           model,
-          source: 'ai',
+          source,
         },
       });
     } catch (err: unknown) {
@@ -112,9 +133,10 @@ export class CoachingCacheService {
     narrative: string,
     inputHash: string,
     model: string,
+    source: NarrativeSource,
   ): Promise<void> {
     try {
-      const value = JSON.stringify({ narrative, inputHash, model });
+      const value = JSON.stringify({ narrative, inputHash, model, source });
       await this.redis.set(
         this.redisKey(userId, ictDateKey),
         value,
@@ -131,4 +153,10 @@ export class CoachingCacheService {
   private errMessage(err: unknown): string {
     return err instanceof Error ? err.message : 'Unknown error';
   }
+}
+
+/** DB `source` is a plain String column ('byok'|'system'|legacy-'ai'|'template') —
+ * narrow it defensively; anything unrecognized (incl. legacy 'ai') falls back to 'system'. */
+function toNarrativeSource(dbSource: string): NarrativeSource {
+  return dbSource === 'byok' ? 'byok' : 'system';
 }

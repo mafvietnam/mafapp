@@ -2,8 +2,7 @@ import { CoachingService } from './coaching.service.js';
 import type { CoachingRepository } from './coaching-repository.js';
 import type { CoachingCacheService } from './coaching-cache.service.js';
 import type { CoachingLockBudgetService } from './coaching-lock-budget.service.js';
-import type { ClaudeClientService } from './claude-client.service.js';
-import type { ConfigService } from '@nestjs/config';
+import type { AiProviderService } from '../ai/ai-provider.service.js';
 import type { RecomputeUserProfile } from './recompute/recompute.js';
 
 function validProfile(
@@ -26,11 +25,19 @@ function validProfile(
 
 function buildService(opts: {
   profile?: RecomputeUserProfile | null;
-  env?: Record<string, string>;
-  cachedHit?: { narrative: string; model: string } | null;
+  cachedHit?: {
+    narrative: string;
+    model: string;
+    source: 'byok' | 'system';
+  } | null;
+  hasAiPath?: boolean;
   lockAcquired?: boolean;
   withinBudget?: boolean;
-  claudeNarrative?: string | null;
+  aiResult?: {
+    narrative: string;
+    model: string;
+    source: 'byok' | 'system';
+  } | null;
 }) {
   // Standalone mock-fn variables (not accessed via `obj.method` in assertions below) —
   // avoids the @typescript-eslint/unbound-method false positive on `expect(obj.method)...`.
@@ -64,20 +71,14 @@ function buildService(opts: {
     checkAndReserveBudget,
   } as unknown as CoachingLockBudgetService;
 
-  const env = opts.env ?? {};
-  const configGet = jest.fn((key: string, def?: unknown) => env[key] ?? def);
-  const config = { get: configGet } as unknown as ConfigService;
-
-  const generateNarrative = jest
-    .fn()
-    .mockResolvedValue(opts.claudeNarrative ?? null);
-  const getModel = jest.fn().mockReturnValue('claude-haiku-4-5-20251001');
-  const claude = {
+  const hasAiPath = jest.fn().mockResolvedValue(opts.hasAiPath ?? true);
+  const generateNarrative = jest.fn().mockResolvedValue(opts.aiResult ?? null);
+  const aiProvider = {
+    hasAiPath,
     generateNarrative,
-    getModel,
-  } as unknown as ClaudeClientService;
+  } as unknown as AiProviderService;
 
-  const service = new CoachingService(repo, cache, lockBudget, config, claude);
+  const service = new CoachingService(repo, cache, lockBudget, aiProvider);
   return {
     service,
     loadProfile,
@@ -87,14 +88,10 @@ function buildService(opts: {
     releaseLock,
     checkAndReserveBudget,
     saveNarrative,
+    hasAiPath,
     generateNarrative,
   };
 }
-
-const AI_ON_ENV = {
-  AI_COACHING_ENABLED: 'true',
-  ANTHROPIC_API_KEY: 'test-key',
-};
 
 describe('CoachingService.getToday — no profile', () => {
   it('returns a template narrative with recommendation:null and never queries activities/checkin', async () => {
@@ -107,25 +104,34 @@ describe('CoachingService.getToday — no profile', () => {
 });
 
 describe('CoachingService.getToday — cache hit', () => {
-  it('returns the cached AI narrative without calling Claude', async () => {
+  it('returns the cached narrative + its stored tier without calling the AI provider', async () => {
     const { service, generateNarrative } = buildService({
       cachedHit: {
         narrative: 'cached VN text',
         model: 'claude-haiku-4-5-20251001',
+        source: 'system',
       },
     });
     const result = await service.getToday('user-1');
-    expect(result.source).toBe('ai');
+    expect(result.source).toBe('system');
     expect(result.narrative).toBe('cached VN text');
     expect(result.recommendation).not.toBeNull();
     expect(generateNarrative).not.toHaveBeenCalled();
   });
+
+  it('a BYOK-tier cache hit reports source:"byok"', async () => {
+    const { service } = buildService({
+      cachedHit: { narrative: 'cached', model: 'x', source: 'byok' },
+    });
+    const result = await service.getToday('user-1');
+    expect(result.source).toBe('byok');
+  });
 });
 
-describe('CoachingService.getToday — kill-switch / missing key (AI off by default)', () => {
-  it('AI_COACHING_ENABLED unset => template, zero Claude calls, zero lock/budget calls', async () => {
+describe('CoachingService.getToday — no AI path available (default ships-off state)', () => {
+  it('hasAiPath:false => template, zero generation calls, zero lock/budget calls', async () => {
     const { service, generateNarrative, acquireLock } = buildService({
-      env: {},
+      hasAiPath: false,
     });
     const result = await service.getToday('user-1');
     expect(result.source).toBe('template');
@@ -134,30 +140,11 @@ describe('CoachingService.getToday — kill-switch / missing key (AI off by defa
     expect(generateNarrative).not.toHaveBeenCalled();
     expect(acquireLock).not.toHaveBeenCalled();
   });
-
-  it('AI_COACHING_ENABLED=true but no ANTHROPIC_API_KEY => template, zero Claude calls', async () => {
-    const { service, generateNarrative } = buildService({
-      env: { AI_COACHING_ENABLED: 'true' },
-    });
-    const result = await service.getToday('user-1');
-    expect(result.source).toBe('template');
-    expect(generateNarrative).not.toHaveBeenCalled();
-  });
-
-  it('ANTHROPIC_API_KEY present but AI_COACHING_ENABLED=false => template', async () => {
-    const { service, generateNarrative } = buildService({
-      env: { ANTHROPIC_API_KEY: 'test-key', AI_COACHING_ENABLED: 'false' },
-    });
-    const result = await service.getToday('user-1');
-    expect(result.source).toBe('template');
-    expect(generateNarrative).not.toHaveBeenCalled();
-  });
 });
 
 describe('CoachingService.getToday — SETNX single-flight lock (RED TEAM FIX #2)', () => {
-  it('lock not acquired (concurrent request already generating) => template, Claude never called, no budget spent', async () => {
+  it('lock not acquired (concurrent request already generating) => template, provider never called, no budget spent', async () => {
     const { service, generateNarrative, checkAndReserveBudget } = buildService({
-      env: AI_ON_ENV,
       lockAcquired: false,
     });
     const result = await service.getToday('user-1');
@@ -168,9 +155,8 @@ describe('CoachingService.getToday — SETNX single-flight lock (RED TEAM FIX #2
 });
 
 describe('CoachingService.getToday — budget breach (RED TEAM FIX #2 mandatory cap)', () => {
-  it('over budget => template fallback, Claude never called, lock released', async () => {
+  it('over budget => template fallback, provider never called, lock released', async () => {
     const { service, generateNarrative, releaseLock } = buildService({
-      env: AI_ON_ENV,
       withinBudget: false,
     });
     const result = await service.getToday('user-1');
@@ -180,11 +166,10 @@ describe('CoachingService.getToday — budget breach (RED TEAM FIX #2 mandatory 
   });
 });
 
-describe('CoachingService.getToday — Claude error/unsafe output => template fallback', () => {
-  it('Claude call fails (returns null) => template, lock released', async () => {
+describe('CoachingService.getToday — provider error/unsafe output => template fallback', () => {
+  it('provider call fails (returns null) => template, lock released', async () => {
     const { service, releaseLock, saveNarrative } = buildService({
-      env: AI_ON_ENV,
-      claudeNarrative: null,
+      aiResult: null,
     });
     const result = await service.getToday('user-1');
     expect(result.source).toBe('template');
@@ -192,10 +177,13 @@ describe('CoachingService.getToday — Claude error/unsafe output => template fa
     expect(saveNarrative).not.toHaveBeenCalled();
   });
 
-  it('Claude returns an unsafe narrative (invented number) => template, never cached', async () => {
+  it('provider returns an unsafe narrative (invented number) => template, never cached', async () => {
     const { service, saveNarrative } = buildService({
-      env: AI_ON_ENV,
-      claudeNarrative: 'Giữ nhịp tim dưới 999 bpm nhé.',
+      aiResult: {
+        narrative: 'Giữ nhịp tim dưới 999 bpm nhé.',
+        model: 'x',
+        source: 'system',
+      },
     });
     const result = await service.getToday('user-1');
     expect(result.source).toBe('template');
@@ -203,14 +191,17 @@ describe('CoachingService.getToday — Claude error/unsafe output => template fa
   });
 });
 
-describe('CoachingService.getToday — successful AI generation', () => {
-  it('returns source:"ai" with the Claude narrative and persists it via cache.saveNarrative', async () => {
+describe('CoachingService.getToday — successful system-tier generation', () => {
+  it('returns source:"system" with the narrative and persists it via cache.saveNarrative', async () => {
     const { service, saveNarrative } = buildService({
-      env: AI_ON_ENV,
-      claudeNarrative: 'Hôm nay cứ chạy nhẹ nhàng và thoải mái nhé!',
+      aiResult: {
+        narrative: 'Hôm nay cứ chạy nhẹ nhàng và thoải mái nhé!',
+        model: 'google/gemini-2.0-flash-001',
+        source: 'system',
+      },
     });
     const result = await service.getToday('user-1');
-    expect(result.source).toBe('ai');
+    expect(result.source).toBe('system');
     expect(result.narrative).toBe(
       'Hôm nay cứ chạy nhẹ nhàng và thoải mái nhé!',
     );
@@ -220,7 +211,31 @@ describe('CoachingService.getToday — successful AI generation', () => {
       expect.any(String),
       expect.any(String),
       'Hôm nay cứ chạy nhẹ nhàng và thoải mái nhé!',
+      'google/gemini-2.0-flash-001',
+      'system',
+    );
+  });
+});
+
+describe('CoachingService.getToday — successful BYOK-tier generation', () => {
+  it('returns source:"byok" and persists the "byok" tier in the cache write', async () => {
+    const { service, saveNarrative } = buildService({
+      aiResult: {
+        narrative: 'Chạy thoải mái nhé!',
+        model: 'claude-haiku-4-5-20251001',
+        source: 'byok',
+      },
+    });
+    const result = await service.getToday('user-1');
+    expect(result.source).toBe('byok');
+    expect(saveNarrative).toHaveBeenCalledWith(
+      'user-1',
+      expect.any(Date),
+      expect.any(String),
+      expect.any(String),
+      'Chạy thoải mái nhé!',
       'claude-haiku-4-5-20251001',
+      'byok',
     );
   });
 });

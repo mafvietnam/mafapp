@@ -4,7 +4,8 @@ import type { DailyRecommendation } from '../types';
 // -- Types --
 
 export interface CoachingTodayResponse {
-  source: 'ai' | 'template';
+  /** Phase 5: 'byok' (user's own key) or 'system' (shared OpenRouter quota) both mean AI-generated; 'template' is the deterministic fallback. */
+  source: 'byok' | 'system' | 'template';
   narrative: string;
   /** null only when the user has no profile yet. */
   recommendation: DailyRecommendation | null;

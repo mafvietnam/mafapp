@@ -34,6 +34,16 @@ enum ActivitySource {
   UPLOAD
 }
 
+/// Phase 5 — supported BYOK ("bring your own key") + system-tier AI providers.
+/// OPENROUTER doubles as both the SYSTEM backbone (admin key) and a valid BYOK choice
+/// (user's own OpenRouter key) — see api/src/ai/ai-provider.service.ts.
+enum AiProvider {
+  OPENROUTER
+  ANTHROPIC
+  OPENAI
+  GEMINI
+}
+
 model User {
   id        String       @id @default(uuid())
   wpUserId  Int?         @unique
@@ -54,6 +64,8 @@ model User {
   stravaActivityDetails StravaActivityDetail[]
   dailyCheckins        DailyCheckin[]
   coachingNarratives   CoachingNarrative[]
+  aiKey                UserAiKey?
+  aiUsages             AiUsage[]
 }
 
 model GarminConnection {
@@ -259,9 +271,47 @@ model CoachingNarrative {
   inputHash  String
   narrative  String
   model      String
-  source     String // 'ai' | 'template' — kept for observability even though template rows aren't cached today
+  // Phase 5: widened from 'ai'|'template' to 'byok'|'system'|'template' so a cache HIT
+  // can still report the correct tier (see api/src/coaching/coaching-cache.service.ts) —
+  // no column/migration change needed, just new string values.
+  source     String // 'byok' | 'system' | 'template'
   createdAt  DateTime @default(now())
 
   @@unique([userId, date])
   @@index([userId, date])
+}
+
+/// Phase 5 — one active BYOK (bring-your-own-key) AI key per user. `encryptedKey` is
+/// AES-256-GCM ciphertext (garmin-encryption.service.ts, reused — see
+/// api/src/ai/user-ai-key.service.ts). A present row makes AiProviderService always
+/// prefer the user's own key over the shared system quota (no admin.enabled or quota
+/// gating — see phase-05 spec "Key resolution"). `onDelete: Cascade` satisfies the
+/// PII-erasure requirement: deleting a User purges their stored key immediately.
+model UserAiKey {
+  id           String     @id @default(uuid())
+  userId       String     @unique
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider     AiProvider
+  encryptedKey String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+/// Phase 5 — system-tier (shared OpenRouter key) monthly generation counter. BYOK
+/// requests never touch this table (see AiProviderService.generateNarrative). `yearMonth`
+/// is derived from the server ICT date (checkin.service.ts `deriveIctDate()`, formatted
+/// "YYYY-MM" — see api/src/ai/ai-usage-date.util.ts) so the free quota resets on the
+/// server's Asia/Ho_Chi_Minh calendar month, not the client's. `onDelete: Cascade`
+/// satisfies PII-erasure: deleting a User purges their usage history.
+model AiUsage {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  yearMonth String
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, yearMonth])
+  @@index([userId, yearMonth])
 }

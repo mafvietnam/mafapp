@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { getTodayNarrative } from '../services/coaching-service';
 
 export interface UseCoachingNarrativeResult {
-  /** Non-null only on a successful 'ai' response — TodayCard shows the intro paragraph only then. */
+  /** Non-null only on a successful AI response ('byok' or 'system') — TodayCard shows the intro paragraph only then. */
   narrative: string | null;
-  source: 'ai' | 'template' | null;
+  source: 'byok' | 'system' | 'template' | null;
 }
 
 /**
@@ -21,7 +21,7 @@ export interface UseCoachingNarrativeResult {
  */
 export function useCoachingNarrative(enabled: boolean): UseCoachingNarrativeResult {
   const [narrative, setNarrative] = useState<string | null>(null);
-  const [source, setSource] = useState<'ai' | 'template' | null>(null);
+  const [source, setSource] = useState<'byok' | 'system' | 'template' | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
@@ -31,7 +31,9 @@ export function useCoachingNarrative(enabled: boolean): UseCoachingNarrativeResu
       const result = await getTodayNarrative();
       if (cancelled || !result) return;
       setSource(result.source);
-      setNarrative(result.source === 'ai' ? result.narrative : null);
+      // Phase 5: both 'byok' (user's own key) and 'system' (shared OpenRouter quota) are AI-generated.
+      const isAi = result.source === 'byok' || result.source === 'system';
+      setNarrative(isAi ? result.narrative : null);
     })();
 
     return () => {

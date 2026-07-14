@@ -8,6 +8,7 @@ const SECRET_KEYS = new Set([
   'garmin.encryptionKey',
   'strava.clientSecret',
   'strava.webhookVerifyToken',
+  'ai.openRouterKey',
 ]);
 
 /** All known setting keys and their defaults */
@@ -22,6 +23,13 @@ const DEFAULTS: Record<string, string> = {
   'strava.webhookVerifyToken': '',
   'strava.maxAthletes': '10',
   'strava.webhookSubscriptionId': '',
+  // Phase 5 — ships OFF (zero behavior change from Phase 4's default-disabled coaching AI
+  // until an admin explicitly opts in via PUT /admin/ai/settings).
+  'ai.enabled': 'false',
+  'ai.openRouterKey': '',
+  // Cheap OpenRouter model id — admin-configurable; see getAiRuntimeConfig().
+  'ai.defaultModel': 'google/gemini-2.0-flash-001',
+  'ai.defaultMonthlyQuota': '30',
 };
 
 export interface StravaRuntimeConfig {
@@ -35,11 +43,26 @@ export interface StravaRuntimeConfig {
   webhookSubscriptionId: string;
 }
 
+export interface AiRuntimeConfig {
+  /** Master switch for the SYSTEM tier only — BYOK keys work regardless (see AiProviderService). */
+  enabled: boolean;
+  openRouterKey: string;
+  defaultModel: string;
+  /** Free system-tier generations per user per calendar month (server ICT). */
+  defaultMonthlyQuota: number;
+}
+
 @Injectable()
 export class AppSettingsService {
   /** 30-second TTL cache for Strava runtime config — invalidated on setMany writes to strava.* keys */
   private stravaCfgCache: {
     data: StravaRuntimeConfig;
+    expiresAt: number;
+  } | null = null;
+
+  /** 30-second TTL cache for AI runtime config — invalidated on setMany writes to ai.* keys */
+  private aiCfgCache: {
+    data: AiRuntimeConfig;
     expiresAt: number;
   } | null = null;
 
@@ -97,6 +120,10 @@ export class AppSettingsService {
     // Invalidate Strava runtime config cache if any strava.* key was written
     if (Object.keys(settings).some((k) => k.startsWith('strava.'))) {
       this.stravaCfgCache = null;
+    }
+    // Invalidate AI runtime config cache if any ai.* key was written
+    if (Object.keys(settings).some((k) => k.startsWith('ai.'))) {
+      this.aiCfgCache = null;
     }
   }
 
@@ -156,6 +183,49 @@ export class AppSettingsService {
     };
 
     this.stravaCfgCache = { data, expiresAt: now + 30_000 };
+    return data;
+  }
+
+  /** Get AI settings with secrets masked for frontend display (admin AI settings page) */
+  async getAiSettings() {
+    const s = await this.getByPrefix('ai');
+    const parsedQuota = parseInt(s['ai.defaultMonthlyQuota'] ?? '', 10);
+    return {
+      enabled: s['ai.enabled'] === 'true',
+      openRouterKey: this.mask(s['ai.openRouterKey'] || ''),
+      hasOpenRouterKey: !!s['ai.openRouterKey'],
+      defaultModel: s['ai.defaultModel'] || DEFAULTS['ai.defaultModel'],
+      defaultMonthlyQuota:
+        Number.isFinite(parsedQuota) && parsedQuota >= 0
+          ? parsedQuota
+          : Number(DEFAULTS['ai.defaultMonthlyQuota']),
+    };
+  }
+
+  /**
+   * Raw decrypted AI config for runtime service consumers (AiProviderService).
+   * Cached with 30s TTL — admin save propagates within 30s, not instantly.
+   * @internal — not exposed via public API endpoints; use getAiSettings() for masked responses.
+   */
+  async getAiRuntimeConfig(): Promise<AiRuntimeConfig> {
+    const now = Date.now();
+    if (this.aiCfgCache && this.aiCfgCache.expiresAt > now) {
+      return this.aiCfgCache.data;
+    }
+
+    const s = await this.getByPrefix('ai');
+    const parsedQuota = parseInt(s['ai.defaultMonthlyQuota'] ?? '', 10);
+    const data: AiRuntimeConfig = {
+      enabled: s['ai.enabled'] === 'true',
+      openRouterKey: s['ai.openRouterKey'] || '',
+      defaultModel: s['ai.defaultModel'] || DEFAULTS['ai.defaultModel'],
+      defaultMonthlyQuota:
+        Number.isFinite(parsedQuota) && parsedQuota >= 0
+          ? parsedQuota
+          : Number(DEFAULTS['ai.defaultMonthlyQuota']),
+    };
+
+    this.aiCfgCache = { data, expiresAt: now + 30_000 };
     return data;
   }
 

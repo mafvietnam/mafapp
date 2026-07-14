@@ -228,3 +228,5 @@ export async function saveStravaSettings(data: {
     return { ok: false };
   }
 }
+
+// AI admin settings/usage live in ./admin-ai-service.ts (mirrors admin-ai.service.ts split on the backend).

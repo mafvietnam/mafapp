@@ -16,6 +16,7 @@ import AdminUsersPage from './pages/admin/admin-users-page';
 import AdminPlaceholderPage from './pages/admin/admin-placeholder-page';
 import AdminGarminPage from './pages/admin/admin-garmin-page';
 import AdminStravaPage from './pages/admin/admin-strava-page';
+import AdminAiPage from './pages/admin/admin-ai-page';
 import AdminSettingsPage from './pages/admin/admin-settings-page';
 
 // Lazy-loaded: pulls in the (heavier, phase-04-added) MAF analysis chart deps in a separate chunk.
@@ -48,6 +49,7 @@ const App: React.FC = () => {
             <Route path="/admin/challenges" element={<AdminPlaceholderPage title="Thử thách & Sự kiện" />} />
             <Route path="/admin/garmin" element={<AdminGarminPage />} />
             <Route path="/admin/strava" element={<AdminStravaPage />} />
+            <Route path="/admin/ai" element={<AdminAiPage />} />
             <Route path="/admin/settings" element={<AdminSettingsPage />} />
             <Route path="/admin/permissions" element={<AdminPlaceholderPage title="Phân quyền" />} />
           </Route>

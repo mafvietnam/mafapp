@@ -13,6 +13,7 @@ import { AdminModule } from './admin/admin.module.js';
 import { StravaModule } from './strava/strava.module.js';
 import { CheckinModule } from './checkin/checkin.module.js';
 import { CoachingModule } from './coaching/coaching.module.js';
+import { AiModule } from './ai/ai.module.js';
 
 const isStravaEnabled = process.env.FEATURE_STRAVA === 'true';
 
@@ -75,18 +76,15 @@ class CfConnectingIpThrottlerGuard extends ThrottlerGuard {
             otherwise: Joi.string().default(''),
           },
         ),
-        // Phase 4 — AI Narrative Layer. Kill-switch defaults to 'false' (deploy-safe,
-        // template-fallback-only) — this single flag doubles as the feature flag, so the
-        // module is always registered (endpoint always answers) but never calls Claude
-        // unless explicitly turned on. ANTHROPIC_API_KEY is intentionally NOT required
-        // here even when the switch is on — coaching.service.ts treats a missing key the
-        // same as the switch being off (falls back to template), so a misconfigured env
-        // can never crash boot or 500 the endpoint.
-        AI_COACHING_ENABLED: Joi.string().default('false'),
-        ANTHROPIC_API_KEY: Joi.string().default(''),
-        AI_COACHING_MODEL: Joi.string().default('claude-haiku-4-5-20251001'),
+        // Phase 4/5 — AI Narrative Layer. The per-provider kill-switch/keys/model/quota
+        // moved to runtime admin config (`ai.*` AppSetting rows — see
+        // AppSettingsService.getAiRuntimeConfig() / PUT /admin/ai/settings) so they can be
+        // changed without a redeploy; env vars for them were removed. Module is always
+        // registered (endpoint always answers) but never calls a provider unless an admin
+        // explicitly enables it or a user configures their own BYOK key.
         // MANDATORY global daily generation cap (RED TEAM FIX #2) — breach falls back to
-        // template + logs a warn-level alert; never silently overspends.
+        // template + logs a warn-level alert; never silently overspends. Still env-sourced
+        // (infra-level safety net, not a per-tenant admin setting).
         AI_COACHING_DAILY_BUDGET: Joi.number().integer().min(0).default(2000),
       }),
     }),
@@ -100,6 +98,7 @@ class CfConnectingIpThrottlerGuard extends ThrottlerGuard {
     AdminModule,
     ...(isStravaEnabled ? [StravaModule] : []),
     CheckinModule,
+    AiModule,
     CoachingModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: CfConnectingIpThrottlerGuard }],

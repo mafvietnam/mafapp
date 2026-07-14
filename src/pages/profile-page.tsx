@@ -8,6 +8,7 @@ import { Activity, Heart, Flame, Zap } from 'lucide-react';
 import GarminConnectCard from '../components/garmin-connect-card';
 import StravaConnectCard from '../components/strava-connect-card';
 import HealthScreeningForm from '../components/health/health-screening-form';
+import AiKeyCard from '../components/settings/ai-key-card';
 
 const EXPERIENCE_OPTIONS = [
   { value: ExperienceLevel.NONE, label: 'Chưa từng chạy' },
@@ -206,6 +207,9 @@ export default function ProfilePage() {
         {/* Connected Devices */}
         <GarminConnectCard />
         <StravaConnectCard />
+
+        {/* AI coaching — bring-your-own-key (Phase 5) */}
+        <AiKeyCard />
 
         {/* Commitment */}
         <div className="desktop-card p-6">

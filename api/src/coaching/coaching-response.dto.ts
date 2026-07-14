@@ -5,8 +5,13 @@
  */
 import type { DailyRecommendation } from './recompute/recompute-types.js';
 
+/**
+ * Phase 5: 'source' widened from 'ai'|'template' to distinguish which tier produced the
+ * narrative — 'byok' (user's own key), 'system' (shared OpenRouter quota), or 'template'
+ * (deterministic fallback, always available).
+ */
 export interface CoachingTodayResponse {
-  source: 'ai' | 'template';
+  source: 'byok' | 'system' | 'template';
   narrative: string;
   /** null only when the user has no UserProfile yet (mirrors the frontend's `hasProfile` gate). */
   recommendation: DailyRecommendation | null;

@@ -1,19 +1,19 @@
 /**
  * Orchestrates GET /coaching/today: RECOMPUTE (server-owned data only, RED TEAM FIX #1)
- * -> structured-only LLM input -> cache lookup -> kill-switch/budget/single-flight-gated
- * generation -> template fallback. NEVER throws to the caller — every failure mode
- * (no profile, no key, disabled, over budget, lock contention, Claude error, unsafe
- * output) degrades to the deterministic template narrative.
+ * -> structured-only LLM input -> cache lookup -> budget/single-flight-gated generation
+ * (key resolved by AiProviderService: BYOK -> system+quota -> none) -> template
+ * fallback. NEVER throws to the caller — every failure mode (no profile, no key,
+ * disabled, over budget, lock contention, provider error, unsafe output) degrades to the
+ * deterministic template narrative.
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { createHash } from 'node:crypto';
 import { deriveIctDate } from '../checkin/checkin.service.js';
 import { CoachingRepository } from './coaching-repository.js';
 import { CoachingCacheService } from './coaching-cache.service.js';
 import { CoachingLockBudgetService } from './coaching-lock-budget.service.js';
-import { ClaudeClientService } from './claude-client.service.js';
+import { AiProviderService } from '../ai/ai-provider.service.js';
 import { recomputeDailyRecommendation } from './recompute/recompute.js';
 import {
   buildStructuredInput,
@@ -34,8 +34,7 @@ export class CoachingService {
     private readonly repo: CoachingRepository,
     private readonly cache: CoachingCacheService,
     private readonly lockBudget: CoachingLockBudgetService,
-    private readonly config: ConfigService,
-    private readonly claude: ClaudeClientService,
+    private readonly aiProvider: AiProviderService,
   ) {}
 
   async getToday(userId: string): Promise<CoachingTodayResponse> {
@@ -78,18 +77,26 @@ export class CoachingService {
       serverToday,
     );
     if (cached) {
-      return { source: 'ai', narrative: cached.narrative, recommendation };
+      return {
+        source: cached.source,
+        narrative: cached.narrative,
+        recommendation,
+      };
     }
 
-    const narrative = await this.tryGenerateAiNarrative(
+    const generated = await this.tryGenerateAiNarrative(
       userId,
       serverToday,
       ictDateKey,
       inputHash,
       structuredInput,
     );
-    if (narrative) {
-      return { source: 'ai', narrative, recommendation };
+    if (generated) {
+      return {
+        source: generated.source,
+        narrative: generated.narrative,
+        recommendation,
+      };
     }
 
     return {
@@ -99,20 +106,18 @@ export class CoachingService {
     };
   }
 
-  /** Returns the AI narrative on success, or null when disabled/no-key/locked/over-budget/unsafe/error. */
+  /** Returns the generated narrative + tier on success, or null when unavailable/locked/over-budget/unsafe/error. */
   private async tryGenerateAiNarrative(
     userId: string,
     serverToday: Date,
     ictDateKey: string,
     inputHash: string,
     structuredInput: StructuredCoachingInput,
-  ): Promise<string | null> {
-    // Kill-switch (RED TEAM FIX #2) — default 'false', so a fresh deploy makes zero API calls.
-    const enabled =
-      this.config.get<string>('AI_COACHING_ENABLED', 'false') === 'true';
-    const hasApiKey =
-      (this.config.get<string>('ANTHROPIC_API_KEY', '') || '').length > 0;
-    if (!enabled || !hasApiKey) return null;
+  ): Promise<{ narrative: string; source: 'byok' | 'system' } | null> {
+    // Cheap pre-check (RED TEAM FIX #2 spirit) — skip the Redis lock/budget entirely when
+    // there is definitely no AI path (no BYOK key, system tier off) — default deploy state.
+    const available = await this.aiProvider.hasAiPath(userId);
+    if (!available) return null;
 
     // Single-flight lock — a losing concurrent request just serves the template this time
     // (no double-spend, no P2002 upsert race on the CoachingNarrative unique key).
@@ -124,10 +129,11 @@ export class CoachingService {
         await this.lockBudget.checkAndReserveBudget(ictDateKey);
       if (!withinBudget) return null;
 
-      const narrative = await this.claude.generateNarrative(
+      const result = await this.aiProvider.generateNarrative(
+        userId,
         JSON.stringify(structuredInput),
       );
-      if (!narrative || !isNarrativeSafe(narrative, structuredInput))
+      if (!result || !isNarrativeSafe(result.narrative, structuredInput))
         return null;
 
       await this.cache.saveNarrative(
@@ -135,10 +141,11 @@ export class CoachingService {
         serverToday,
         ictDateKey,
         inputHash,
-        narrative,
-        this.claude.getModel(),
+        result.narrative,
+        result.model,
+        result.source,
       );
-      return narrative;
+      return { narrative: result.narrative, source: result.source };
     } catch (err: unknown) {
       this.logger.warn(
         `Coaching AI generation path failed for user ${userId}: ${this.errMessage(err)}`,

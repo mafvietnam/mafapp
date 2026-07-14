@@ -28,6 +28,7 @@ describe('CoachingCacheService.getCached', () => {
         narrative: 'cached text',
         inputHash: 'abc',
         model: 'claude-haiku-4-5-20251001',
+        source: 'system',
       }),
     );
     const result = await service.getCached(
@@ -39,7 +40,26 @@ describe('CoachingCacheService.getCached', () => {
     expect(result).toEqual({
       narrative: 'cached text',
       model: 'claude-haiku-4-5-20251001',
+      source: 'system',
     });
+  });
+
+  it('defaults a legacy Redis entry with no `source` field to "system"', async () => {
+    const { service, redisGet } = buildService();
+    redisGet.mockResolvedValue(
+      JSON.stringify({
+        narrative: 'pre-phase5 cached text',
+        inputHash: 'abc',
+        model: 'claude-haiku-4-5-20251001',
+      }),
+    );
+    const result = await service.getCached(
+      'user-1',
+      ICT_DATE_KEY,
+      'abc',
+      SERVER_TODAY,
+    );
+    expect(result?.source).toBe('system');
   });
 
   it('treats a Redis hit with a MISMATCHED inputHash as a miss (falls through to DB)', async () => {
@@ -64,6 +84,7 @@ describe('CoachingCacheService.getCached', () => {
       narrative: 'db text',
       inputHash: 'abc',
       model: 'claude-haiku-4-5-20251001',
+      source: 'byok',
     });
     const result = await service.getCached(
       'user-1',
@@ -74,7 +95,26 @@ describe('CoachingCacheService.getCached', () => {
     expect(result).toEqual({
       narrative: 'db text',
       model: 'claude-haiku-4-5-20251001',
+      source: 'byok',
     });
+  });
+
+  it('narrows a legacy DB row (Phase-4 source:"ai") to "system"', async () => {
+    const { service, redisGet, findUnique } = buildService();
+    redisGet.mockResolvedValue(null);
+    findUnique.mockResolvedValue({
+      narrative: 'db text',
+      inputHash: 'abc',
+      model: 'claude-haiku-4-5-20251001',
+      source: 'ai',
+    });
+    const result = await service.getCached(
+      'user-1',
+      ICT_DATE_KEY,
+      'abc',
+      SERVER_TODAY,
+    );
+    expect(result?.source).toBe('system');
   });
 
   it('returns null (never throws) when the DB read fails — table-absent guard', async () => {
@@ -99,7 +139,7 @@ describe('CoachingCacheService.getCached', () => {
 });
 
 describe('CoachingCacheService.saveNarrative', () => {
-  it('writes both Redis and the DB row, never throws on DB failure', async () => {
+  it('writes both Redis and the DB row (with the given source), never throws on DB failure', async () => {
     const { service, redisSet, upsert } = buildService();
     await service.saveNarrative(
       'user-1',
@@ -108,11 +148,18 @@ describe('CoachingCacheService.saveNarrative', () => {
       'abc',
       'narrative text',
       'claude-haiku-4-5-20251001',
+      'byok',
     );
     expect(redisSet).toHaveBeenCalled();
     expect(upsert).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { userId_date: { userId: 'user-1', date: SERVER_TODAY } },
+        update: {
+          inputHash: 'abc',
+          narrative: 'narrative text',
+          model: 'claude-haiku-4-5-20251001',
+          source: 'byok',
+        },
       }),
     );
   });
@@ -128,6 +175,7 @@ describe('CoachingCacheService.saveNarrative', () => {
         'abc',
         'text',
         'model',
+        'system',
       ),
     ).resolves.toBeUndefined();
   });

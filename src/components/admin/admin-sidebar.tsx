@@ -10,6 +10,7 @@ import {
   ShieldAlert,
   Watch,
   Activity,
+  Sparkles,
 } from 'lucide-react';
 import { useAuth } from '../../contexts/auth-context';
 
@@ -35,6 +36,7 @@ const sections = [
     items: [
       { to: '/admin/garmin', icon: Watch, label: 'Garmin Connect' },
       { to: '/admin/strava', icon: Activity, label: 'Strava' },
+      { to: '/admin/ai', icon: Sparkles, label: 'AI Coaching' },
     ],
   },
   {
