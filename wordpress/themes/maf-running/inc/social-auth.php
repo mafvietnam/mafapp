@@ -191,6 +191,14 @@ add_action( 'template_redirect', function () {
         wp_die( 'Không nhận được email từ Google.', 'Lỗi đăng nhập', [ 'response' => 500 ] );
     }
 
+    // Reject unverified Google emails (OAuth account-takeover guard). Below we link
+    // by email via get_user_by('email', ...); if Google has not proven the caller
+    // owns this address, that link would let an attacker log into an existing WP
+    // account by email alone. Google's oauth2/v2/userinfo returns `verified_email`.
+    if ( empty( $profile['verified_email'] ) ) {
+        wp_die( 'Email Google chưa được xác minh. Không thể đăng nhập.', 'Lỗi đăng nhập', [ 'response' => 403 ] );
+    }
+
     // Find or create WordPress user
     $email      = sanitize_email( $profile['email'] );
     $google_id  = sanitize_text_field( $profile['id'] ?? '' );
