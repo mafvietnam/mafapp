@@ -45,4 +45,18 @@ release-manifest.json
 # Claude session artifacts (command transcripts may contain sensitive values)
 .claude/hooks/.logs/
 .claude/session-state/
+.claude/agent-memory/
+api/.claude/
 .playwright-mcp/
+
+# Python bytecode cache
+__pycache__/
+
+# Dev/E2E screenshots + snapshot artifacts (root-level throwaway, not project source)
+/*.png
+/*-snapshot.md
+dashboard-snapshot.md
+
+# Large copyrighted reference material — kept locally, NOT distributed via git
+# (the app extracts guidance content from it; the binary itself is not committed)
+docs/the-big-book-of-endurance-training-and-racing.pdf
