@@ -116,6 +116,19 @@ add_action( 'template_redirect', function () {
     $state = bin2hex( random_bytes( 16 ) );
     set_transient( 'maf_oauth_state_' . $state, '1', 10 * MINUTE_IN_SECONDS );
 
+    // Bind the OAuth state to THIS browser (login-CSRF / session-fixation guard):
+    // the callback must present the same state both in the URL (echoed by Google)
+    // AND in this httpOnly cookie, proving the flow was started by the same browser.
+    // Without this, an attacker can pre-generate a valid state and trick a victim
+    // into completing the callback — logging the victim into the attacker's account.
+    setcookie( 'maf_oauth_state', $state, [
+        'expires'  => time() + 10 * MINUTE_IN_SECONDS,
+        'path'     => '/',
+        'secure'   => is_ssl(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ] );
+
     $url = 'https://accounts.google.com/o/oauth2/v2/auth?' . http_build_query( [
         'client_id'     => MAF_GOOGLE_CLIENT_ID,
         'redirect_uri'  => MAF_GOOGLE_REDIRECT_URI,
@@ -138,13 +151,32 @@ add_action( 'template_redirect', function () {
         return;
     }
 
-    // Verify CSRF state via transient (survives redirect to Google and back)
+    // Verify CSRF state: it must be present in the URL (echoed by Google), match a
+    // server-side transient we issued, AND match the browser-bound cookie set at
+    // login-initiation. The cookie binding is what closes login-CSRF — a transient
+    // alone is global, so an attacker's pre-generated state would otherwise pass.
     $state         = sanitize_text_field( $_GET['state'] ?? '' );
+    $cookie_state  = isset( $_COOKIE['maf_oauth_state'] )
+        ? sanitize_text_field( wp_unslash( $_COOKIE['maf_oauth_state'] ) )
+        : '';
     $transient_key = 'maf_oauth_state_' . $state;
-    if ( empty( $state ) || ! get_transient( $transient_key ) ) {
+    if (
+        empty( $state )
+        || empty( $cookie_state )
+        || ! hash_equals( $cookie_state, $state )
+        || ! get_transient( $transient_key )
+    ) {
         wp_die( 'Xác minh bảo mật thất bại. Vui lòng thử lại.', 'Lỗi đăng nhập', [ 'response' => 403 ] );
     }
     delete_transient( $transient_key );
+    // Consume the state cookie so it cannot be replayed.
+    setcookie( 'maf_oauth_state', '', [
+        'expires'  => time() - 3600,
+        'path'     => '/',
+        'secure'   => is_ssl(),
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ] );
 
     // Check for error from Google
     if ( ! empty( $_GET['error'] ) ) {
