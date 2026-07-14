@@ -12,6 +12,7 @@ import { ProfileModule } from './profile/profile.module.js';
 import { AdminModule } from './admin/admin.module.js';
 import { StravaModule } from './strava/strava.module.js';
 import { CheckinModule } from './checkin/checkin.module.js';
+import { CoachingModule } from './coaching/coaching.module.js';
 
 const isStravaEnabled = process.env.FEATURE_STRAVA === 'true';
 
@@ -30,11 +31,15 @@ class CfConnectingIpThrottlerGuard extends ThrottlerGuard {
   protected override getTracker(req: Record<string, unknown>): Promise<string> {
     const headers = req.headers as Record<string, unknown> | undefined;
     const cfIp = headers?.['cf-connecting-ip'];
-    if (typeof cfIp === 'string' && cfIp.length > 0) return Promise.resolve(cfIp);
+    if (typeof cfIp === 'string' && cfIp.length > 0)
+      return Promise.resolve(cfIp);
 
     const ip = typeof req.ip === 'string' ? req.ip : undefined;
     const socket = req.socket as { remoteAddress?: unknown } | undefined;
-    const remoteAddress = typeof socket?.remoteAddress === 'string' ? socket.remoteAddress : undefined;
+    const remoteAddress =
+      typeof socket?.remoteAddress === 'string'
+        ? socket.remoteAddress
+        : undefined;
     return Promise.resolve(ip ?? remoteAddress ?? 'unknown');
   }
 }
@@ -70,6 +75,19 @@ class CfConnectingIpThrottlerGuard extends ThrottlerGuard {
             otherwise: Joi.string().default(''),
           },
         ),
+        // Phase 4 — AI Narrative Layer. Kill-switch defaults to 'false' (deploy-safe,
+        // template-fallback-only) — this single flag doubles as the feature flag, so the
+        // module is always registered (endpoint always answers) but never calls Claude
+        // unless explicitly turned on. ANTHROPIC_API_KEY is intentionally NOT required
+        // here even when the switch is on — coaching.service.ts treats a missing key the
+        // same as the switch being off (falls back to template), so a misconfigured env
+        // can never crash boot or 500 the endpoint.
+        AI_COACHING_ENABLED: Joi.string().default('false'),
+        ANTHROPIC_API_KEY: Joi.string().default(''),
+        AI_COACHING_MODEL: Joi.string().default('claude-haiku-4-5-20251001'),
+        // MANDATORY global daily generation cap (RED TEAM FIX #2) — breach falls back to
+        // template + logs a warn-level alert; never silently overspends.
+        AI_COACHING_DAILY_BUDGET: Joi.number().integer().min(0).default(2000),
       }),
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
@@ -82,6 +100,7 @@ class CfConnectingIpThrottlerGuard extends ThrottlerGuard {
     AdminModule,
     ...(isStravaEnabled ? [StravaModule] : []),
     CheckinModule,
+    CoachingModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: CfConnectingIpThrottlerGuard }],
 })

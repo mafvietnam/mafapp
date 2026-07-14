@@ -53,6 +53,7 @@ model User {
   stravaActivities     StravaActivity[]
   stravaActivityDetails StravaActivityDetail[]
   dailyCheckins        DailyCheckin[]
+  coachingNarratives   CoachingNarrative[]
 }
 
 model GarminConnection {
@@ -241,4 +242,26 @@ model UserProfile {
   createdAt                  DateTime  @default(now())
   updatedAt                  DateTime  @updatedAt
   user                       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/// Phase 4 — AI narrative cache for the "Today" coaching card (1 generation/user/server-ICT-day).
+/// `date` is the SERVER-derived Asia/Ho_Chi_Minh calendar date (mirrors DailyCheckin.date) — the
+/// client never supplies the authoritative cache date. `inputHash` is derived SERVER-SIDE from the
+/// server-recomputed structured recommendation (never a client-sent hash) — see
+/// api/src/coaching/coaching.service.ts. `onDelete: Cascade` satisfies PII-erasure: deleting a User
+/// purges their cached narratives. Narrative text is a warm VN rephrasing of already-derived
+/// structured fields/enum codes — no raw check-in free text is ever persisted here.
+model CoachingNarrative {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date       DateTime @db.Date
+  inputHash  String
+  narrative  String
+  model      String
+  source     String // 'ai' | 'template' — kept for observability even though template rows aren't cached today
+  createdAt  DateTime @default(now())
+
+  @@unique([userId, date])
+  @@index([userId, date])
 }

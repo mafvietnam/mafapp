@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Loader2, Sparkles } from 'lucide-react';
 import DashboardCard from '../ui/dashboard-card';
 import { useTodayRecommendation } from '../../hooks/use-today-recommendation';
+import { useCoachingNarrative } from '../../hooks/use-coaching-narrative';
 import TodayCardWorkoutSummary from './today-card-workout-summary';
 import TodayCardReasons from './today-card-reasons';
 import TodayCardSyncBanner from './today-card-sync-banner';
@@ -39,6 +40,11 @@ export default function TodayCard({ variant }: TodayCardProps) {
     submitCheckin,
     healthAdjustment,
   } = useTodayRecommendation();
+
+  // Phase 4 — optional AI narrative hydration. Only fetched once there's a real
+  // recommendation to narrate; any failure/disabled-backend/non-'ai' source leaves
+  // `narrative` null, so the card below renders byte-identical to Phases 1-3.
+  const { narrative } = useCoachingNarrative(!loading && !isChild && !!recommendation);
 
   const compact = variant === 'compact';
   const padding = compact ? 'p-4' : 'p-4 lg:p-5';
@@ -87,6 +93,11 @@ export default function TodayCard({ variant }: TodayCardProps) {
 
   return (
     <DashboardCard className={`${padding} space-y-3`}>
+      {narrative && (
+        <p className="text-[13px] text-slate-300 leading-relaxed bg-maf-violet/5 border border-maf-violet/20 rounded-lg px-3 py-2">
+          {narrative}
+        </p>
+      )}
       <TodayCardWorkoutSummary rec={recommendation} compact={compact} />
       {/* Phase 3 — always visible (compact + prominent) when flagged: danger-sign
           checklist + persistent disclaimer take priority over routine tips. */}
