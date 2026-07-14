@@ -29,14 +29,14 @@ const ResultDisplay: React.FC<ResultDisplayProps> = ({
 }) => {
   if (isChild) {
     return (
-      <div ref={resultRef} className="max-w-7xl mx-auto space-y-8 mt-10 animate-fade-in-up">
+      <div ref={resultRef} className="max-w-7xl mx-auto space-y-6 md:space-y-8 mt-8 md:mt-10 animate-fade-in-up">
         <ResultChildrenDisplay result={result} />
       </div>
     );
   }
 
   return (
-    <div ref={resultRef} className="max-w-7xl mx-auto space-y-8 mt-10 animate-fade-in-up">
+    <div ref={resultRef} className="max-w-7xl mx-auto space-y-6 md:space-y-8 mt-8 md:mt-10 animate-fade-in-up">
       <ResultHeartRateCard
         mafHeartRate={result.mafHeartRate}
         lowerZone={result.lowerZone}

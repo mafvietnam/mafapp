@@ -31,18 +31,18 @@ const VolumeAdjustmentCard: React.FC<VolumeAdjustmentCardProps> = ({ message, ty
     : 'text-blue-900';
 
   return (
-    <div className={`p-6 rounded-2xl shadow-lg border-4 ${containerClass}`}>
-      <div className="flex items-start space-x-4">
-        <div className={`p-3 rounded-full ${iconBgClass}`}>
-          {isProgress && <TrendingUp className="w-8 h-8 text-green-700" />}
-          {isRegression && <TrendingDown className="w-8 h-8 text-red-700" />}
-          {!isProgress && !isRegression && <CheckCircle2 className="w-8 h-8 text-blue-700" />}
+    <div className={`p-4 md:p-6 rounded-2xl shadow-lg border-4 ${containerClass}`}>
+      <div className="flex items-start space-x-3 md:space-x-4">
+        <div className={`p-2.5 md:p-3 rounded-full ${iconBgClass}`}>
+          {isProgress && <TrendingUp className="w-6 h-6 md:w-8 md:h-8 text-green-700" />}
+          {isRegression && <TrendingDown className="w-6 h-6 md:w-8 md:h-8 text-red-700" />}
+          {!isProgress && !isRegression && <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-blue-700" />}
         </div>
         <div className="flex-1">
-          <h3 className={`text-xl font-bold mb-2 uppercase ${titleClass}`}>
+          <h3 className={`text-base md:text-xl font-bold mb-1.5 md:mb-2 uppercase ${titleClass}`}>
             ĐIỀU CHỈNH KHỐI LƯỢNG TẬP
           </h3>
-          <p className={`text-lg leading-relaxed ${textClass}`}>{message}</p>
+          <p className={`text-sm md:text-lg leading-relaxed ${textClass}`}>{message}</p>
         </div>
       </div>
     </div>

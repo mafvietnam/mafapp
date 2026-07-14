@@ -71,7 +71,7 @@ const CalculatorPage: React.FC = () => {
       <div className="min-h-screen pb-20 font-sans">
         <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
-        <main className="max-w-7xl mx-auto px-4 mt-8">
+        <main className="max-w-7xl mx-auto px-4 mt-6 md:mt-8">
           {profileLoading && (
             <div className="flex justify-center py-20">
               <div className="w-8 h-8 border-2 border-maf-violet border-t-transparent rounded-full animate-spin" />
@@ -83,7 +83,7 @@ const CalculatorPage: React.FC = () => {
           )}
 
           {!profileLoading && activeTab === 'PLAN' && (
-            <div className="space-y-10">
+            <div className="space-y-6 md:space-y-10">
               <UserInputForm
                 userProfile={userProfile}
                 isSenior={isSenior}

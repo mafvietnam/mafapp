@@ -22,18 +22,18 @@ const ResultHeartRateCard: React.FC<ResultHeartRateCardProps> = ({
         Nhịp Tim Mục Tiêu (MAF)
       </h3>
     </div>
-    <div className="p-6 md:p-8 bg-gradient-to-br from-white to-gray-50 flex flex-col md:flex-row items-center justify-between gap-6">
+    <div className="p-5 md:p-8 bg-gradient-to-br from-white to-gray-50 flex flex-col md:flex-row items-center justify-between gap-5 md:gap-6">
       {/* BPM number */}
       <div className="flex items-baseline">
-        <span className="text-7xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 leading-none">
+        <span className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 leading-none">
           {mafHeartRate}
         </span>
-        <span className="text-lg font-bold text-gray-400 ml-2 tracking-wider">BPM</span>
+        <span className="text-base md:text-lg font-bold text-gray-400 ml-2 tracking-wider">BPM</span>
       </div>
       {/* Zone + BMI */}
       <div className="flex flex-col items-center md:items-end space-y-3 w-full md:w-auto">
-        <div className="bg-purple-100 px-5 py-2 rounded-xl border border-purple-200 w-full md:w-auto text-center md:text-right">
-          <p className="text-purple-900 font-bold text-lg">
+        <div className="bg-purple-100 px-4 py-2 md:px-5 rounded-xl border border-purple-200 w-full md:w-auto text-center md:text-right">
+          <p className="text-purple-900 font-bold text-base md:text-lg">
             Zone: {lowerZone} - {upperZone} bpm
           </p>
           <p className="text-purple-600 text-xs font-medium uppercase">Vùng Hiệu Suất Tối Đa</p>
