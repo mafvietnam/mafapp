@@ -8,6 +8,7 @@ import TodayCardSyncBanner from './today-card-sync-banner';
 import CheckinMiniForm from './checkin-mini-form';
 import AdherenceStrip from './adherence-strip';
 import GuidanceCardList from './guidance-card-list';
+import SafetyCard from './safety-card';
 
 interface TodayCardProps {
   variant: 'prominent' | 'compact';
@@ -36,6 +37,7 @@ export default function TodayCard({ variant }: TodayCardProps) {
     checkin,
     checkinSubmitting,
     submitCheckin,
+    healthAdjustment,
   } = useTodayRecommendation();
 
   const compact = variant === 'compact';
@@ -86,6 +88,9 @@ export default function TodayCard({ variant }: TodayCardProps) {
   return (
     <DashboardCard className={`${padding} space-y-3`}>
       <TodayCardWorkoutSummary rec={recommendation} compact={compact} />
+      {/* Phase 3 — always visible (compact + prominent) when flagged: danger-sign
+          checklist + persistent disclaimer take priority over routine tips. */}
+      <SafetyCard adjustment={healthAdjustment} />
       <TodayCardSyncBanner lastSyncAt={lastSyncAt} staleSync={staleSync} todayAck={todayAck} onAck={ackRanToday} />
       {!compact && <TodayCardReasons reasons={recommendation.reasons} />}
       <GuidanceCardList cards={guidanceCards} compact={compact} />

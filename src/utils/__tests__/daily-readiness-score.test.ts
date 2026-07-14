@@ -214,6 +214,36 @@ describe('RED TEAM FIX #3 — AMBER floor is a floor, not a ceiling', () => {
   });
 });
 
+describe('Phase 3 — health-condition tierFloor (external param) uses health-specific copy', () => {
+  it('external floor alone (no probation/recovering) => health-specific floor text, Ch6 citation', () => {
+    const result = computeReadiness(baseInput(), 'AMBER');
+    const floorReason = result.reasons.find((r) => r.code === 'profile_floor');
+    expect(floorReason?.text).toContain('tình trạng sức khỏe cần lưu ý');
+    expect(floorReason?.text).not.toContain('thử thách/hồi phục');
+  });
+
+  it('probation + external health floor both present => combined copy', () => {
+    const result = computeReadiness(baseInput({ profile: profile({ isProbation: true }) }), 'AMBER');
+    const floorReason = result.reasons.find((r) => r.code === 'profile_floor');
+    expect(floorReason?.text).toContain('thử thách/hồi phục');
+    expect(floorReason?.text).toContain('tình trạng sức khỏe cần lưu ý');
+  });
+
+  it('health floor + a bad signal (RHR +7) still reaches RED — floor does NOT cap it (FIX #3)', () => {
+    const dailySummaries = rhrBaseline(50, 7);
+    const result = computeReadiness(
+      baseInput({ dailySummaries, checkin: checkin({ restingHr: 57 }) }),
+      'AMBER',
+    );
+    expect(result.tier).toBe('RED');
+  });
+
+  it('no external floor + no probation/recovering => plain profile-floor text branch never triggers (no reason)', () => {
+    const result = computeReadiness(baseInput());
+    expect(result.reasons.find((r) => r.code === 'profile_floor')).toBeUndefined();
+  });
+});
+
 describe('tier mapping — multiple warns escalate to RED without any bad signal', () => {
   it('2 warn-severity reasons => RED', () => {
     const result = computeReadiness(

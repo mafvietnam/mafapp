@@ -14,6 +14,21 @@ export enum CommitmentLevel {
   PERFORMANCE = 'PERFORMANCE',
 }
 
+/**
+ * Phase 3 — server-side WHITELIST for health-condition screening codes
+ * (RED TEAM FIX #9). Mirrors api/src/profile/profile.dto.ts's `HealthCondition`
+ * enum (frontend/backend are separate TS projects — no shared package, same
+ * duplication pattern as ExperienceLevel/CommitmentLevel's string values in
+ * profile.dto.ts's `@IsIn([...])`). The whitelist IS the enum — no "extensible
+ * unknown codes"; extending it requires updating BOTH copies + the API's
+ * `@ArrayMaxSize`.
+ */
+export enum HealthCondition {
+  CARDIOVASCULAR = 'CARDIOVASCULAR',
+  HYPERTENSION = 'HYPERTENSION',
+  JOINT_ISSUES = 'JOINT_ISSUES',
+}
+
 export interface UserProfile {
   age: string;
   height: string;
@@ -30,6 +45,14 @@ export interface UserProfile {
   lastLongRunDuration?: number; // Thời gian Long Run gần nhất (phút)
   lastLongRunHeartRate?: number; // Nhịp tim trung bình của Long Run gần nhất (bpm)
   lastLongRunFeeling?: 'GOOD' | 'TIRED' | 'VERY_TIRED'; // Cảm nhận sau Long Run
+  // --- Phase 3: health-condition screening (sensitive PII — see profile-service.ts) ---
+  healthConditions?: HealthCondition[]; // whitelisted codes only (server rejects unknown at write)
+  healthScreenedAt?: string; // ISO — when the screening questionnaire was last submitted
+  healthConsentGiven?: boolean; // consent INTENT for the next write; server stamps healthConsentAt
+  healthConsentAt?: string; // ISO — server-set consent audit timestamp (read-only, FIX #11)
+  healthClearanceConfirmed?: boolean; // clearance INTENT for the next write; server stamps clearedAt/clearedBy
+  clearedAt?: string; // ISO — server-set clearance audit timestamp (read-only, FIX #10)
+  clearedBy?: string; // server-set clearance audit method (read-only, e.g. "self-attested")
 }
 
 export interface MafResult {

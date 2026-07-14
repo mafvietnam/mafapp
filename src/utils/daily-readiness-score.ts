@@ -87,6 +87,9 @@ export function computeReadiness(input: ReadinessInput, tierFloor?: 'AMBER'): Re
 
   // RED TEAM FIX #3 — AMBER floor, not a ceiling: raises the MINIMUM tier but
   // never blocks RED when a bad/multi-warn signal already pushed tier higher.
+  // `tierFloor` also carries Phase 3's health-condition floor (any declared
+  // condition -> AMBER) — composed via most-cautious with the profile floor,
+  // never a ceiling, so a flagged user still reaches RED on a bad signal.
   const profileFloor: ReadinessTier | undefined =
     input.profile.isProbation || input.profile.isRecovering ? 'AMBER' : undefined;
   let floor: ReadinessTier = 'GREEN';
@@ -94,12 +97,15 @@ export function computeReadiness(input: ReadinessInput, tierFloor?: 'AMBER'): Re
   if (tierFloor) floor = mostCautious(floor, tierFloor);
 
   if (RANK[floor] > RANK[tier]) {
-    reasons.push({
-      code: 'profile_floor',
-      severity: 'warn',
-      bookRef: 'CH7',
-      text: 'Đang trong giai đoạn thử thách/hồi phục — hệ thống giữ mức thận trọng tối thiểu AMBER.',
-    });
+    const fromHealth = tierFloor === floor;
+    const fromProfile = profileFloor === floor;
+    const text =
+      fromHealth && fromProfile
+        ? 'Đang trong giai đoạn thử thách/hồi phục và có tình trạng sức khỏe cần lưu ý — hệ thống giữ mức thận trọng tối thiểu AMBER.'
+        : fromHealth
+          ? 'Có tình trạng sức khỏe cần lưu ý — hệ thống giữ mức thận trọng tối thiểu AMBER. (Chương 6)'
+          : 'Đang trong giai đoạn thử thách/hồi phục — hệ thống giữ mức thận trọng tối thiểu AMBER.';
+    reasons.push({ code: 'profile_floor', severity: 'warn', bookRef: 'CH7', text });
     tier = floor;
   }
 

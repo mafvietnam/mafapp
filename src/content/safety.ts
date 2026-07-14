@@ -15,3 +15,31 @@ export const SAFETY_DISCLAIMER: GuidanceCard = {
   citation: { label: 'Ghi chú an toàn của ứng dụng' },
   appliesTo: {},
 };
+
+// ---------------------------------------------------------------------------
+// Phase 3 — pre-run safety card (danger-sign checklist) for health-condition-
+// flagged users. Rendered by src/components/today/safety-card.tsx, NOT part of
+// the guidance-card library above (a distinct, more urgent, danger-styled
+// element — always visible when flagged, not subject to the guidance-card
+// selection/cap logic in select-guidance-cards.ts). Screening -> adjustment ->
+// gate -> WARN only — no diagnosis/treatment content.
+// ---------------------------------------------------------------------------
+
+export const DANGER_SIGNS_TITLE = 'Dấu hiệu cần NGỪNG tập ngay';
+
+export const DANGER_SIGNS: readonly string[] = [
+  'Đau hoặc tức ngực',
+  'Chóng mặt, choáng váng',
+  'Khó thở bất thường',
+];
+
+export const DANGER_SIGNS_ACTION =
+  'NGỪNG TẬP NGAY và tìm hỗ trợ y tế nếu bạn thấy: đau/tức ngực, chóng mặt, khó thở bất thường.';
+
+/** Persistent disclaimer — shown wherever health flags are active (highest legal-exposure copy, owner-reviewed VN sample). */
+export const MEDICAL_DISCLAIMER =
+  'Ứng dụng không thay thế bác sĩ. Luôn tham khảo chuyên gia y tế cho tình trạng của bạn.';
+
+/** Screening intro copy — shown at the top of health-screening-form.tsx before the consent step. */
+export const SCREENING_INTRO_COPY =
+  'Vài câu hỏi sức khỏe giúp chúng tôi gợi ý an toàn hơn. Thông tin này KHÔNG thay thế chẩn đoán y tế.';

@@ -9,43 +9,31 @@ import type { ScheduleItem, DailyRecommendation, ReadinessResult, ReasonCode, Re
 import type { MafZone } from './maf-activity-analysis';
 import type { BookRef } from './maf-coaching-insights';
 import { computeDurationBreakdown, roundToNearest5 } from './daily-recommendation-math';
+import { applyHealthDurationRules } from './daily-recommendation-health-adjust';
+import type { HealthAdjustment } from './health-condition-rules';
+import {
+  CHILD_COPY,
+  REST_MINIMAL_COPY,
+  TITLE_LABEL,
+  REASON_SHORT_VN,
+  JOINT_ADJUSTMENT_NOTE,
+  JOINT_EXTENDED_WARM_COOL_SUFFIX,
+} from './daily-recommendation-copy';
 
 export interface RecommendationInput {
   adjustedScheduleItem: ScheduleItem;
   mafHr: number;
   readiness: ReadinessResult;
   profile: { age: number; bmi: number };
+  /** Phase 3 — JOINT_ISSUES walk-first/extended-warm-cool/duration-cap effects
+   *  (health-condition-rules.ts). Optional — omitted callers behave exactly as
+   *  before (all existing tests pass an undefined healthAdjustment). */
+  healthAdjustment?: HealthAdjustment;
 }
 
-const CHILD_COPY =
-  'Trẻ dưới 16 tuổi: hãy VUI CHƠI tự nhiên (chạy nhảy, bơi, đạp xe) — không theo lịch tập có cấu trúc.';
-const REST_MINIMAL_COPY =
-  'Ngày nghỉ giúp cơ thể tái tạo mạnh hơn — "Tập luyện = Vận động + Nghỉ ngơi" (Chương 7).';
 const AMBER_REDUCTION_FACTOR = 0.65; // -35% (placeholder, see phase-01 plan)
 
 type DayType = DailyRecommendation['dayType'];
-
-const TITLE_LABEL: Record<Exclude<DayType, 'REST'>, string> = {
-  RUN: 'Chạy nhẹ nhàng',
-  LONG_RUN: 'Chạy dài',
-  WALK: 'Đi bộ',
-  RECOVERY: 'Hồi phục nhẹ',
-};
-
-/** Short VN phrases for the AMBER adjustmentNote — mirrors "vì bạn báo đau bắp chân & ngủ chưa đủ." sample. */
-const REASON_SHORT_VN: Record<string, string> = {
-  rhr_bad: 'nhịp tim nghỉ tăng cao',
-  rhr_warn: 'nhịp tim nghỉ tăng nhẹ',
-  sleep_warn: 'ngủ chưa đủ',
-  stress_warn: 'mức stress cao',
-  fatigue_warn: 'khá mệt',
-  fatigue_bad: 'rất mệt',
-  soreness_warn: 'báo đau nhức',
-  load_spike: 'khối lượng tập tăng đột ngột',
-  efficiency_falling: 'hiệu suất hiếu khí giảm',
-  medicated_or_injured: 'đang dùng thuốc/chấn thương',
-  profile_floor: 'đang trong giai đoạn thận trọng',
-};
 
 function buildTitle(dayType: DayType, totalMinutes: number): string {
   return dayType === 'REST' ? 'Ngày nghỉ' : `${TITLE_LABEL[dayType]} ${totalMinutes} phút`;
@@ -99,22 +87,34 @@ function buildRed(zone: MafZone | null, readiness: ReadinessResult): DailyRecomm
   return restRecommendation('RED', zone, readiness.reasons, restCopy, ['CH7']);
 }
 
-function buildAmber(item: ScheduleItem, zone: MafZone | null, readiness: ReadinessResult): DailyRecommendation {
+function buildAmber(
+  item: ScheduleItem,
+  zone: MafZone | null,
+  readiness: ReadinessResult,
+  healthAdjustment?: HealthAdjustment,
+): DailyRecommendation {
   if (item.type === 'REST') {
     return restRecommendation('AMBER', zone, readiness.reasons, REST_MINIMAL_COPY, ['CH7']);
   }
 
   const reducedTotal = roundToNearest5(item.duration * AMBER_REDUCTION_FACTOR);
-  const breakdown = computeDurationBreakdown(reducedTotal);
+  const breakdown = healthAdjustment
+    ? applyHealthDurationRules(reducedTotal, healthAdjustment)
+    : computeDurationBreakdown(reducedTotal);
   const hasSoreness = readiness.reasons.some((r) => r.code === 'soreness_warn');
   let dayType = mapDayType(item.type);
-  const swapped = hasSoreness && dayType !== 'WALK';
+  const sorenessSwap = hasSoreness && dayType !== 'WALK';
+  const healthSwap = !!healthAdjustment?.walkFirst && (dayType === 'RUN' || dayType === 'LONG_RUN');
+  const swapped = sorenessSwap || healthSwap;
   if (swapped) dayType = 'WALK';
 
   const shortPhrases = readiness.reasons.map((r) => REASON_SHORT_VN[r.code]).filter((p): p is string => Boolean(p));
   const reasonText = shortPhrases.length > 0 ? shortPhrases.join(' & ') : 'tín hiệu hồi phục thấp';
-  const adjustmentNote =
+  let adjustmentNote =
     `Đã giảm còn ${breakdown.totalMinutes} phút${swapped ? ' và chuyển sang đi bộ' : ''} vì bạn ${reasonText}.`;
+  if (healthAdjustment?.extendWarmCool) {
+    adjustmentNote += JOINT_EXTENDED_WARM_COOL_SUFFIX;
+  }
 
   return {
     dayType,
@@ -128,12 +128,27 @@ function buildAmber(item: ScheduleItem, zone: MafZone | null, readiness: Readine
   };
 }
 
-function buildGreen(item: ScheduleItem, zone: MafZone | null, readiness: ReadinessResult): DailyRecommendation {
+function buildGreen(
+  item: ScheduleItem,
+  zone: MafZone | null,
+  readiness: ReadinessResult,
+  healthAdjustment?: HealthAdjustment,
+): DailyRecommendation {
   if (item.type === 'REST') {
     return restRecommendation('GREEN', zone, readiness.reasons, REST_MINIMAL_COPY, ['CH7']);
   }
-  const breakdown = computeDurationBreakdown(item.duration);
-  const dayType = mapDayType(item.type);
+  const breakdown = healthAdjustment
+    ? applyHealthDurationRules(item.duration, healthAdjustment)
+    : computeDurationBreakdown(item.duration);
+  let dayType = mapDayType(item.type);
+  const healthSwap = !!healthAdjustment?.walkFirst && (dayType === 'RUN' || dayType === 'LONG_RUN');
+  if (healthSwap) dayType = 'WALK';
+
+  const healthTriggered =
+    healthSwap ||
+    !!healthAdjustment?.extendWarmCool ||
+    (!!healthAdjustment?.durationCapMin && item.duration > healthAdjustment.durationCapMin);
+
   return {
     dayType,
     title: buildTitle(dayType, breakdown.totalMinutes),
@@ -142,11 +157,12 @@ function buildGreen(item: ScheduleItem, zone: MafZone | null, readiness: Readine
     tier: 'GREEN',
     reasons: readiness.reasons,
     citations: ['CH5', 'CH6'],
+    ...(healthTriggered ? { adjustmentNote: JOINT_ADJUSTMENT_NOTE } : {}),
   };
 }
 
 export function buildDailyRecommendation(input: RecommendationInput): DailyRecommendation {
-  const { adjustedScheduleItem, mafHr, readiness, profile } = input;
+  const { adjustedScheduleItem, mafHr, readiness, profile, healthAdjustment } = input;
 
   // RED TEAM FIX #6 — child short-circuit: mirrors buildChildResult(); no
   // structured workout, no HR zone, ever. Skips all tier/adjustment logic.
@@ -168,6 +184,6 @@ export function buildDailyRecommendation(input: RecommendationInput): DailyRecom
 
   const zone = zoneOf(mafHr);
   if (readiness.tier === 'RED') return buildRed(zone, readiness);
-  if (readiness.tier === 'AMBER') return buildAmber(adjustedScheduleItem, zone, readiness);
-  return buildGreen(adjustedScheduleItem, zone, readiness);
+  if (readiness.tier === 'AMBER') return buildAmber(adjustedScheduleItem, zone, readiness, healthAdjustment);
+  return buildGreen(adjustedScheduleItem, zone, readiness, healthAdjustment);
 }

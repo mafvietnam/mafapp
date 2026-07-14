@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { UserProfile, ExperienceLevel, CommitmentLevel } from '../types';
+import { UserProfile, ExperienceLevel, CommitmentLevel, HealthCondition } from '../types';
 import { getProfile, type ServerProfile } from '../services/profile-service';
 
 export interface UseUserProfileReturn {
@@ -37,6 +37,17 @@ function mapServerToClient(s: ServerProfile): UserProfile {
     lastLongRunDuration: s.lastLongRunDuration ?? undefined,
     lastLongRunHeartRate: s.lastLongRunHeartRate ?? undefined,
     lastLongRunFeeling: (s.lastLongRunFeeling as UserProfile['lastLongRunFeeling']) ?? undefined,
+    // Phase 3 — health-condition screening. Booleans mirror the persisted audit
+    // timestamps (!!x) so a subsequent save naturally re-sends "still consented/
+    // cleared" without the user re-ticking anything — profile.service.ts
+    // preserves (never re-stamps) an already-set healthConsentAt/clearedAt.
+    healthConditions: (s.healthConditions ?? []) as HealthCondition[],
+    healthScreenedAt: s.healthScreenedAt ?? undefined,
+    healthConsentGiven: !!s.healthConsentAt,
+    healthConsentAt: s.healthConsentAt ?? undefined,
+    healthClearanceConfirmed: !!s.clearedAt,
+    clearedAt: s.clearedAt ?? undefined,
+    clearedBy: s.clearedBy ?? undefined,
   };
 }
 

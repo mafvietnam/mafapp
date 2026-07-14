@@ -3,10 +3,11 @@ import { useAuth } from '../contexts/auth-context';
 import { useUserProfile } from '../hooks/use-user-profile';
 import { useMafCalculator } from '../hooks/use-maf-calculator';
 import { getProfile, updateProfile } from '../services/profile-service';
-import { ExperienceLevel, CommitmentLevel } from '../types';
+import { ExperienceLevel, CommitmentLevel, type UserProfile } from '../types';
 import { Activity, Heart, Flame, Zap } from 'lucide-react';
 import GarminConnectCard from '../components/garmin-connect-card';
 import StravaConnectCard from '../components/strava-connect-card';
+import HealthScreeningForm from '../components/health/health-screening-form';
 
 const EXPERIENCE_OPTIONS = [
   { value: ExperienceLevel.NONE, label: 'Chưa từng chạy' },
@@ -51,6 +52,18 @@ export default function ProfilePage() {
           lastLongRunDuration: saved.lastLongRunDuration ?? undefined,
           lastLongRunHeartRate: saved.lastLongRunHeartRate ?? undefined,
           lastLongRunFeeling: (saved.lastLongRunFeeling as 'GOOD' | 'TIRED' | 'VERY_TIRED') ?? undefined,
+          // Phase 3 — health-condition screening. Booleans mirror the persisted
+          // audit timestamps so a later save re-sends "still consented/cleared"
+          // without the user re-ticking anything (mirrors use-user-profile.ts's
+          // mapServerToClient — this page keeps its own separate fetch, an
+          // existing pre-Phase-3 pattern).
+          healthConditions: (saved.healthConditions ?? []) as UserProfile['healthConditions'],
+          healthScreenedAt: saved.healthScreenedAt ?? undefined,
+          healthConsentGiven: !!saved.healthConsentAt,
+          healthConsentAt: saved.healthConsentAt ?? undefined,
+          healthClearanceConfirmed: !!saved.clearedAt,
+          clearedAt: saved.clearedAt ?? undefined,
+          clearedBy: saved.clearedBy ?? undefined,
         }));
       }
       setLoading(false);
@@ -186,6 +199,9 @@ export default function ProfilePage() {
             </label>
           </div>
         </div>
+
+        {/* Health-condition screening (Phase 3) */}
+        <HealthScreeningForm userProfile={userProfile} setUserProfile={setUserProfile} />
 
         {/* Connected Devices */}
         <GarminConnectCard />

@@ -4,6 +4,8 @@ import { useDailyCheckin } from './use-daily-checkin';
 import { calculateMAF } from '../utils/maf-calculator-orchestrator';
 import { computeReadiness } from '../utils/daily-readiness-score';
 import { buildDailyRecommendation } from '../utils/daily-recommendation-engine';
+import { mergeHealthReasons, type HealthAdjustment } from '../utils/health-condition-rules';
+import { useHealthAdjustment } from './use-health-adjustment';
 import { computeAdherence, type AdherenceDay } from '../utils/adherence-analysis';
 import { localToday, localWeekdayLabel, ictDateString, isSameLocalDate } from '../utils/local-today';
 import { mondayOf } from '../utils/journal-date-utils';
@@ -39,6 +41,9 @@ export interface UseTodayRecommendationResult {
   checkin: DailyCheckin | null;
   checkinSubmitting: boolean;
   submitCheckin: (payload: UpsertCheckinPayload) => Promise<boolean>;
+  /** Phase 3 — health-condition rule effects (health-condition-rules.ts). Drives
+   *  TodayCard's pre-run safety card + clearance-gate banner for flagged users. */
+  healthAdjustment: HealthAdjustment;
 }
 
 function readAckFromStorage(dateKey: string): boolean {
@@ -129,9 +134,11 @@ export function useTodayRecommendation(): UseTodayRecommendationResult {
     return Date.now() - new Date(lastSyncAt).getTime() > STALE_SYNC_THRESHOLD_MS;
   }, [hasTodayActivity, todayAck, lastSyncAt]);
 
-  const readiness = useMemo(
-    () =>
-      computeReadiness({
+  const healthAdjustment = useHealthAdjustment(userProfile, ageNum);
+
+  const readiness = useMemo(() => {
+    const base = computeReadiness(
+      {
         recentActivities: activities,
         dailySummaries,
         checkin,
@@ -144,9 +151,11 @@ export function useTodayRecommendation(): UseTodayRecommendationResult {
         },
         today,
         mafHr: mafResult?.mafHeartRate,
-      }),
-    [activities, dailySummaries, checkin, ageNum, bmi, userProfile, today, mafResult],
-  );
+      },
+      healthAdjustment.tierFloor ?? undefined,
+    );
+    return mergeHealthReasons(base, healthAdjustment);
+  }, [activities, dailySummaries, checkin, ageNum, bmi, userProfile, today, mafResult, healthAdjustment]);
 
   const recommendation = useMemo<DailyRecommendation | null>(() => {
     if (!mafResult || !todayScheduleItem) return null;
@@ -155,8 +164,9 @@ export function useTodayRecommendation(): UseTodayRecommendationResult {
       mafHr: mafResult.mafHeartRate,
       readiness,
       profile: { age: ageNum, bmi },
+      healthAdjustment,
     });
-  }, [mafResult, todayScheduleItem, readiness, ageNum, bmi]);
+  }, [mafResult, todayScheduleItem, readiness, ageNum, bmi, healthAdjustment]);
 
   const adherence = useMemo<AdherenceDay[]>(() => {
     if (!mafResult || isChild) return [];
@@ -189,5 +199,6 @@ export function useTodayRecommendation(): UseTodayRecommendationResult {
     checkin,
     checkinSubmitting,
     submitCheckin,
+    healthAdjustment,
   };
 }

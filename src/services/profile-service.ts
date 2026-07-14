@@ -18,6 +18,12 @@ export interface ServerProfile {
   lastLongRunDuration: number | null;
   lastLongRunHeartRate: number | null;
   lastLongRunFeeling: string | null;
+  // --- Phase 3: health-condition screening (sensitive PII, read-only audit fields) ---
+  healthConditions: string[];
+  healthScreenedAt: string | null;
+  healthConsentAt: string | null;
+  clearedAt: string | null;
+  clearedBy: string | null;
 }
 
 /** Fetch user profile from server */
@@ -50,6 +56,14 @@ export async function updateProfile(profile: UserProfile): Promise<boolean> {
       lastLongRunDuration: profile.lastLongRunDuration,
       lastLongRunHeartRate: profile.lastLongRunHeartRate,
       lastLongRunFeeling: profile.lastLongRunFeeling,
+      // Phase 3 — full-replace PUT semantics (matches every other field above):
+      // absent/empty = "no conditions", NOT "leave existing untouched" (server
+      // mirrors this exactly, profile.service.ts). healthConsent/
+      // healthClearanceConfirmed are WRITE-intent booleans only — the server
+      // derives the audited healthConsentAt/clearedAt/clearedBy timestamps.
+      healthConditions: profile.healthConditions ?? [],
+      healthConsent: profile.healthConsentGiven ?? false,
+      healthClearanceConfirmed: profile.healthClearanceConfirmed ?? false,
     });
     return res.ok;
   } catch {

@@ -7,6 +7,7 @@
 import { describe, it, expect } from 'vitest';
 import type { ScheduleItem, ReadinessResult, ReasonCode, ReadinessTier } from '../../types';
 import { buildDailyRecommendation, type RecommendationInput } from '../daily-recommendation-engine';
+import type { HealthAdjustment } from '../health-condition-rules';
 
 function scheduleItem(overrides: Partial<ScheduleItem> = {}): ScheduleItem {
   return { day: 'Thứ 3', activity: 'Chạy MAF', duration: 45, type: 'RUN', ...overrides };
@@ -22,6 +23,21 @@ function input(overrides: Partial<RecommendationInput> = {}): RecommendationInpu
     mafHr: 145,
     readiness: readiness('GREEN'),
     profile: { age: 35, bmi: 22 },
+    ...overrides,
+  };
+}
+
+function jointHealth(overrides: Partial<HealthAdjustment> = {}): HealthAdjustment {
+  return {
+    forceHealthCommitment: false,
+    requiresClearanceGate: false,
+    tierFloor: 'AMBER',
+    mafDelta: 0,
+    durationCapMin: 60,
+    walkFirst: true,
+    extendWarmCool: true,
+    reasons: [],
+    needsSafetyCard: true,
     ...overrides,
   };
 }
@@ -163,5 +179,96 @@ describe('RED TEAM FIX #13 — RED is REST or gentle WALK only, NEVER a run', ()
       input({ readiness: readiness('RED', [{ code: 'sleep_warn', severity: 'warn', text: 'x' }, { code: 'soreness_warn', severity: 'warn', text: 'y' }]) }),
     );
     expect(rec.restCopy).toContain('Hôm nay nên NGHỈ');
+  });
+});
+
+describe('Phase 3 — healthAdjustment (JOINT_ISSUES) on GREEN', () => {
+  it('walkFirst swaps RUN => WALK and adds the joint adjustmentNote', () => {
+    const rec = buildDailyRecommendation(input({ healthAdjustment: jointHealth() }));
+    expect(rec.dayType).toBe('WALK');
+    expect(rec.adjustmentNote).toContain('bảo vệ khớp');
+  });
+
+  it('durationCapMin caps a longer GREEN session', () => {
+    const rec = buildDailyRecommendation(
+      input({
+        adjustedScheduleItem: scheduleItem({ duration: 90, type: 'RUN' }),
+        healthAdjustment: jointHealth({ walkFirst: false, extendWarmCool: false, durationCapMin: 60 }),
+      }),
+    );
+    expect(rec.totalMinutes).toBe(60);
+  });
+
+  it('extendWarmCool stretches warm/cool to >=15min on a GREEN session', () => {
+    const rec = buildDailyRecommendation(
+      input({ healthAdjustment: jointHealth({ walkFirst: false, durationCapMin: null }) }),
+    );
+    expect(rec.warmupMin).toBeGreaterThanOrEqual(15);
+    expect(rec.cooldownMin).toBeGreaterThanOrEqual(15);
+  });
+
+  it('no adjustmentNote when healthAdjustment has no active levers (e.g. cardiac-only, no JOINT_ISSUES)', () => {
+    const rec = buildDailyRecommendation(
+      input({
+        healthAdjustment: jointHealth({ walkFirst: false, extendWarmCool: false, durationCapMin: null }),
+      }),
+    );
+    expect(rec.adjustmentNote).toBeUndefined();
+  });
+
+  it('omitted healthAdjustment behaves exactly as before (no dayType swap, no note)', () => {
+    const rec = buildDailyRecommendation(input());
+    expect(rec.dayType).toBe('RUN');
+    expect(rec.adjustmentNote).toBeUndefined();
+  });
+
+  it('scheduled REST day stays REST even with healthAdjustment set', () => {
+    const rec = buildDailyRecommendation(
+      input({ adjustedScheduleItem: scheduleItem({ type: 'REST', duration: 0 }), healthAdjustment: jointHealth() }),
+    );
+    expect(rec.dayType).toBe('REST');
+  });
+});
+
+describe('Phase 3 — healthAdjustment (JOINT_ISSUES) on AMBER', () => {
+  it('walkFirst swaps to WALK on AMBER even without soreness_warn', () => {
+    const rec = buildDailyRecommendation(
+      input({ readiness: readiness('AMBER', [{ code: 'sleep_warn', severity: 'warn', text: 'ngủ ít' }]), healthAdjustment: jointHealth() }),
+    );
+    expect(rec.dayType).toBe('WALK');
+    expect(rec.adjustmentNote).toContain('chuyển sang đi bộ');
+  });
+
+  it('extendWarmCool appends the joint suffix to the AMBER adjustmentNote', () => {
+    const rec = buildDailyRecommendation(
+      input({
+        adjustedScheduleItem: scheduleItem({ duration: 90, type: 'LONG_RUN' }),
+        readiness: readiness('AMBER', [{ code: 'sleep_warn', severity: 'warn', text: 'x' }]),
+        healthAdjustment: jointHealth({ walkFirst: false, durationCapMin: null }),
+      }),
+    );
+    expect(rec.adjustmentNote).toContain('Khởi động & thả lỏng kéo dài hơn');
+  });
+
+  it('cardiac/hypertension reason codes feed the existing REASON_SHORT_VN "vì bạn..." sentence', () => {
+    const rec = buildDailyRecommendation(
+      input({
+        readiness: readiness('AMBER', [
+          { code: 'health_cardiac_caution', severity: 'warn', bookRef: 'CH6', text: 'x' },
+        ]),
+      }),
+    );
+    expect(rec.adjustmentNote).toContain('tim mạch/huyết áp');
+  });
+
+  it('RED still reachable — healthAdjustment never applies on RED (REST/WALK-only stays intact)', () => {
+    const rec = buildDailyRecommendation(
+      input({
+        readiness: readiness('RED', [{ code: 'rhr_bad', severity: 'bad', bookRef: 'CH7', text: 'x' }]),
+        healthAdjustment: jointHealth(),
+      }),
+    );
+    expect(rec.dayType).toBe('REST');
+    expect(rec.totalMinutes).toBe(0);
   });
 });
