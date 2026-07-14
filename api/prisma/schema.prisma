@@ -52,6 +52,7 @@ model User {
   stravaConnection     StravaConnection?
   stravaActivities     StravaActivity[]
   stravaActivityDetails StravaActivityDetail[]
+  dailyCheckins        DailyCheckin[]
 }
 
 model GarminConnection {
@@ -185,6 +186,28 @@ model StravaActivityDetail {
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+/// Optional daily morning check-in feeding the "Today" readiness engine (phase-01).
+/// `date` is the SERVER-derived Asia/Ho_Chi_Minh calendar date (RED TEAM FIX #7) —
+/// the client never sends the authoritative date for the unique key.
+/// `onDelete: Cascade` satisfies the PII-erasure requirement (RED TEAM FIX #11):
+/// deleting a User purges their check-in vitals (restingHr, fatigue, sleep, soreness).
+model DailyCheckin {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date         DateTime @db.Date
+  sleepQuality Int // 1-5
+  fatigue      Int // 1-5
+  soreness     String? // optional short tag e.g. "calf", "knee", "none"
+  note         String? // optional free note
+  restingHr    Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
 }
 
 model UserProfile {

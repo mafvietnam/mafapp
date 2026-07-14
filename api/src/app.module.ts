@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Injectable, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -11,8 +11,33 @@ import { UserModule } from './user/user.module.js';
 import { ProfileModule } from './profile/profile.module.js';
 import { AdminModule } from './admin/admin.module.js';
 import { StravaModule } from './strava/strava.module.js';
+import { CheckinModule } from './checkin/checkin.module.js';
 
 const isStravaEnabled = process.env.FEATURE_STRAVA === 'true';
+
+/**
+ * RED TEAM FIX #15: the app runs behind a Cloudflare Tunnel — every request's
+ * immediate peer is the same tunnel connector, so the default IP-based
+ * `getTracker` (req.ip) collapses ALL users onto one throttle bucket (a
+ * whole-app single-bucket DoS / no real per-user limiting). Cloudflare's edge
+ * stamps the real client IP on `CF-Connecting-IP` (unspoofable — only
+ * Cloudflare can reach the tunnel origin), so prefer that header; fall back to
+ * `req.ip` (works once `trust proxy` is set in main.ts) for local/dev traffic
+ * that bypasses Cloudflare.
+ */
+@Injectable()
+class CfConnectingIpThrottlerGuard extends ThrottlerGuard {
+  protected override getTracker(req: Record<string, unknown>): Promise<string> {
+    const headers = req.headers as Record<string, unknown> | undefined;
+    const cfIp = headers?.['cf-connecting-ip'];
+    if (typeof cfIp === 'string' && cfIp.length > 0) return Promise.resolve(cfIp);
+
+    const ip = typeof req.ip === 'string' ? req.ip : undefined;
+    const socket = req.socket as { remoteAddress?: unknown } | undefined;
+    const remoteAddress = typeof socket?.remoteAddress === 'string' ? socket.remoteAddress : undefined;
+    return Promise.resolve(ip ?? remoteAddress ?? 'unknown');
+  }
+}
 
 @Module({
   imports: [
@@ -37,11 +62,14 @@ const isStravaEnabled = process.env.FEATURE_STRAVA === 'true';
         STRAVA_CLIENT_SECRET: Joi.string().default(''),
         STRAVA_WEBHOOK_VERIFY_TOKEN: Joi.string().default(''),
         // Required when FEATURE_STRAVA=true for AES-256-GCM encryption of user tokens at rest
-        STRAVA_ENCRYPTION_KEY: Joi.alternatives().conditional('FEATURE_STRAVA', {
-          is: 'true',
-          then: Joi.string().hex().length(64).required(),
-          otherwise: Joi.string().default(''),
-        }),
+        STRAVA_ENCRYPTION_KEY: Joi.alternatives().conditional(
+          'FEATURE_STRAVA',
+          {
+            is: 'true',
+            then: Joi.string().hex().length(64).required(),
+            otherwise: Joi.string().default(''),
+          },
+        ),
       }),
     }),
     ThrottlerModule.forRoot([{ ttl: 60000, limit: 100 }]),
@@ -53,7 +81,8 @@ const isStravaEnabled = process.env.FEATURE_STRAVA === 'true';
     ProfileModule,
     AdminModule,
     ...(isStravaEnabled ? [StravaModule] : []),
+    CheckinModule,
   ],
-  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
+  providers: [{ provide: APP_GUARD, useClass: CfConnectingIpThrottlerGuard }],
 })
 export class AppModule {}

@@ -1,3 +1,6 @@
+import type { MafZone } from './utils/maf-activity-analysis';
+import type { BookRef } from './utils/maf-coaching-insights';
+
 export enum ExperienceLevel {
   NONE = 'NONE',
   INCONSISTENT = 'INCONSISTENT',
@@ -52,4 +55,56 @@ export interface ScheduleItem {
   activity: string;
   duration: number;
   type: 'RUN' | 'LONG_RUN' | 'REST' | 'WALK' | 'CROSS_TRAIN' | 'RECOVERY';
+}
+
+// ---------------------------------------------------------------------------
+// Daily Run Recommendation (phase-01) — shared cross-cutting types. Reused by
+// daily-readiness-score.ts, daily-recommendation-engine.ts, checkin-service.ts,
+// and the today/* UI components. Domain-specific types (ReadinessInput,
+// RecommendationInput, etc.) stay local to the util that owns them.
+// ---------------------------------------------------------------------------
+
+/** One user-submitted morning check-in (server-derived ICT `date` — see RED TEAM FIX #7). */
+export interface DailyCheckin {
+  id: string;
+  date: string; // YYYY-MM-DD, server-derived ICT date
+  sleepQuality: number; // 1-5
+  fatigue: number; // 1-5
+  soreness: string | null;
+  note: string | null;
+  restingHr: number | null;
+}
+
+export type ReasonSeverity = 'good' | 'warn' | 'bad';
+
+/** One book-grounded finding that fed a readiness tier or a recommendation adjustment. */
+export interface ReasonCode {
+  code: string;
+  severity: ReasonSeverity;
+  text: string; // VN
+  bookRef?: BookRef;
+}
+
+export type ReadinessTier = 'GREEN' | 'AMBER' | 'RED';
+
+export interface ReadinessResult {
+  tier: ReadinessTier;
+  score: number;
+  reasons: ReasonCode[];
+}
+
+export interface DailyRecommendation {
+  dayType: 'RUN' | 'LONG_RUN' | 'WALK' | 'RECOVERY' | 'REST';
+  title: string; // VN, e.g. "Chạy nhẹ nhàng 45 phút"
+  totalMinutes: number; // after tier adjustment (orchestrator-adjusted then readiness delta)
+  warmupMin: number; // proportional clamp(round(total*0.20),5,15); 0 when allEasy (RED TEAM FIX #13)
+  cooldownMin: number; // same as warmupMin
+  mainMinutes: number; // total - warmup - cooldown, floored >=5 (or =total when allEasy)
+  allEasy?: boolean; // true when total<35 -> whole session easy, warm/cool folded
+  hrZone: MafZone | null; // { lower: mafHr-10, upper: mafHr }; null if mafHr<=0 or isChild
+  tier: ReadinessTier;
+  reasons: ReasonCode[]; // from readiness, filtered to what changed the plan
+  citations: BookRef[]; // e.g. ['CH5','CH6','CH7']
+  restCopy?: string; // set only when dayType==='REST' (minimal VN in P1)
+  adjustmentNote?: string; // VN, e.g. "Đã giảm 40% thời lượng do tín hiệu hồi phục thấp"
 }

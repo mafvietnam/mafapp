@@ -4,7 +4,7 @@ import { useUserProfile } from '../hooks/use-user-profile';
 import { useMafCalculator } from '../hooks/use-maf-calculator';
 import { useStravaActivities } from '../hooks/use-strava-activities';
 import MafZoneCard from '../components/dashboard/maf-zone-card';
-import MafAssistantCard from '../components/dashboard/maf-assistant-card';
+import TodayCard from '../components/today/today-card';
 import EcosystemSection from '../components/dashboard/ecosystem-section';
 import DesktopStatsRow from '../components/dashboard/desktop-stats-row';
 import ChartPlaceholder from '../components/dashboard/chart-placeholder';
@@ -57,8 +57,8 @@ export default function DashboardPage() {
 
         {/* Mobile content */}
         <main className="relative z-10 px-6 pt-2 space-y-5 pb-32">
+          <TodayCard variant="prominent" />
           {mafHr > 0 && ageNum > 0 && <MafZoneCard mafHr={mafHr} age={ageNum} />}
-          <MafAssistantCard />
           <EcosystemSection />
           <TracklogUploadCard onImported={refetchActivities} />
           <ActivitySection
@@ -109,7 +109,7 @@ export default function DashboardPage() {
 
             {/* Right column 4/12 */}
             <div className="col-span-4 flex flex-col gap-8">
-              <MafAssistantCard />
+              <TodayCard variant="prominent" />
               <MafFormulaWidget />
               <EcosystemSection />
             </div>

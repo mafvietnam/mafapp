@@ -20,7 +20,10 @@ import {
 import type { StravaSplitMetric } from '../services/strava-service';
 
 export type InsightSeverity = 'good' | 'warn' | 'info';
-export type BookRef = 'CH3' | 'CH4' | 'CH5' | 'CH8' | 'CH9';
+// RED TEAM FIX #14: extended with CH6 (180-formula/MAF zone) + CH7 (Work+Rest / recovery
+// signals) so daily-readiness-score.ts + daily-recommendation-engine.ts (phase-01 "today"
+// engine) can cite them — exported so the union stays the single source of truth (DRY).
+export type BookRef = 'CH3' | 'CH4' | 'CH5' | 'CH6' | 'CH7' | 'CH8' | 'CH9';
 export type EffectivenessTier = 'aerobic-effective' | 'mixed' | 'above-zone';
 
 export interface CoachingFinding {

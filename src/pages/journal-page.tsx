@@ -4,6 +4,7 @@ import { useUserProfile } from '../hooks/use-user-profile';
 import { useMafCalculator } from '../hooks/use-maf-calculator';
 import { useJournalActivities } from '../hooks/use-journal-activities';
 import { groupByWeek, monthlySummary, mafTrendSeries } from '../utils/journal-analytics';
+import TodayCard from '../components/today/today-card';
 import JournalStatsHeader from '../components/journal/journal-stats-header';
 import MafTrendChart from '../components/journal/maf-trend-chart';
 import WeekGroup from '../components/journal/week-group';
@@ -49,6 +50,9 @@ export default function JournalPage() {
   const wrap = (children: React.ReactNode) => (
     <div className="max-w-[1024px] mx-auto px-4 lg:px-8 py-6 lg:py-8 pb-32 lg:pb-8">
       {heading}
+      <div className="mb-6">
+        <TodayCard variant="compact" />
+      </div>
       {children}
     </div>
   );
