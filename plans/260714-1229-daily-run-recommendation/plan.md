@@ -1,7 +1,7 @@
 ---
 title: "Daily Run Recommendation — Plan↔Journal Sync"
 description: "Deterministic daily 'hôm nay chạy gì?' engine syncing plan template + journal signals + check-in into a book-grounded TodayCard, with a thin AI narrative layer."
-status: in-progress
+status: completed
 priority: P1
 effort: ~14-15 days
 branch: dev
@@ -38,9 +38,13 @@ codes + citation ids), never client free text — closes the prompt-injection + 
 | # | Phase | Status | Effort | Depends on |
 |---|-------|--------|--------|-----------|
 | 1 | [Today Recommendation Core](phase-01-today-recommendation-core.md) — readiness score, recommendation engine, `daily_checkins`, TodayCard | completed | 5d | — |
-| 2 | [Content Library & Guidance](phase-02-content-library-guidance.md) — pre/post-run, bài bổ trợ, R.E.S.T cards, rule-based selection | pending | 2.5d | Phase 1 |
-| 3 | [Health Screening & Safety Advisor](phase-03-health-screening-safety.md) — `healthConditions`, questionnaire, gates, safety card | pending | 3d | Phase 1 |
-| 4 | [AI Narrative Layer](phase-04-ai-narrative-layer.md) — NestJS `coaching` module, `packages/maf-core` extraction, Claude (server key), cache, fallback | pending | 4d | Phases 1-3 |
+| 2 | [Content Library & Guidance](phase-02-content-library-guidance.md) — pre/post-run, bài bổ trợ, R.E.S.T cards, rule-based selection | completed | 2.5d | Phase 1 |
+| 3 | [Health Screening & Safety Advisor](phase-03-health-screening-safety.md) — `healthConditions`, questionnaire, gates, safety card | completed | 3d | Phase 1 |
+| 4 | [AI Narrative Layer](phase-04-ai-narrative-layer.md) — NestJS `coaching` module, server-local recompute port, Claude (server key), cache, fallback | completed | 4d | Phases 1-3 |
+
+**Shipped (all E2E-verified on prod app.maf.run):** P1 c96ba0e (migration 0005) · P2 7e2a3d8 · P3 9799f05 (migration 0006) · P4 338a5e4 (migration 0007, ships AI-OFF; enable with `ANTHROPIC_API_KEY` + `AI_COACHING_ENABLED=true`).
+**Arch change from plan:** P4 used a server-LOCAL recompute port under `api/src/coaching/recompute/` (NOT `packages/maf-core` workspace extraction — that would break the separate frontend/api Docker build contexts). DRY debt noted in ported files.
+**Follow-ups:** P4 recompute skips pace-test smart-long-run/volume-cap tuning (AI-narrated duration may differ slightly on those days; safety gating faithful); RHR baseline only from Garmin (dead on prod) — build from historical check-ins; garmin 404 console noise when Garmin off; 2 post-run nutrition content items are PDF-gap TODOs (need GEMINI_API_KEY); anti-stretching content pending owner sign-off.
 
 <!-- RED TEAM FIX #1,#6,#7: Phase 1 +1d (server-date authority, child gate, orchestrator reuse, stale-strava ack). -->
 <!-- RED TEAM FIX #3,#9,#10,#11: Phase 3 +0.5d (tier-floor, whitelist enum, clearance audit, consent/governance). -->
