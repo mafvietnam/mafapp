@@ -29,6 +29,9 @@ Transform MAF Running Coach from offline-first calculator (v1.0) into full-featu
 | Relationship | Plan | Status |
 |-------------|------|--------|
 | Blocked by | [Full Modernization Refactor](../260330-1924-full-modernization-refactor/plan.md) | pending |
+| Related (overlap) | [Daily Run Recommendation](../260714-1229-daily-run-recommendation/plan.md) | pending |
+
+> **2026-07-14 note:** Daily Run Recommendation plan implements the *daily AI narrative* slice (server-key + 1/day cache) that partially overlaps Phase 8 (SP7 AI Coaching, BYOK). Re-scope Phase 8 when reached: full plan-generation remains SP7; daily narrative + rule engine will already exist. No blocking either direction.
 
 > Refactor plan restructures codebase into `src/` with proper modules. SP2 builds on that clean structure.
 
