@@ -4,6 +4,22 @@ All notable changes to MAF Running Coach are documented here.
 
 ---
 
+## [1.9.1] — 2026-07-14 (Responsive typography on /plan)
+
+### Fixed: Oversized text/padding crowded the training plan on mobile
+
+**Scope:** The `/plan` results — especially the "LỊCH TRÌNH CHI TIẾT" schedule table — used fixed large sizes (`p-6`, `text-xl`/`text-2xl`, duration `text-3xl`) that overflowed and looked cramped on phones. Made typography and spacing responsive: compact on mobile, full size restored at the `md:` breakpoint. Commit a56372d, deployed to app.maf.run (frontend-only `maf-app` rebuild). Prod E2E all green.
+
+### Changed
+- **`result-schedule-table.tsx`** — cell padding `p-6`→`p-3 md:p-5`; header `text-2xl`→`text-lg md:text-2xl`; day `text-xl`→`text-sm md:text-lg`; badges `text-lg`→`text-sm md:text-base`; session-detail lines `text-lg`→`text-xs md:text-sm`; duration `text-3xl`→`text-base md:text-2xl` (whitespace-nowrap); footer/th scaled.
+- **Result cards** `result-heart-rate-card` (BPM `text-7xl`→`text-6xl md:text-8xl`), `result-mindset-card`, `volume-adjustment-card`, `result-alerts-section`, `result-children-display` — responsive text + padding + icon sizes.
+- **Vertical rhythm** tightened on mobile (`space-y`/`mt` gain `md:` variants) in `result-display.tsx` + `calculator-page.tsx`.
+
+### Quality gates
+- **Build + 284 web tests pass.** Prod E2E (logged-in, JWT cookie): `/plan` desktop + mobile 390px verified visually; `/dashboard`, `/journal`, `/profile`, `/guide`, `/activities/:id` (HR chart + coaching), MAF Lab, `/admin` all render clean. Only console noise: pre-existing `/api/garmin/status` 404 (gracefully handled `return null`; Garmin backend pending OAuth approval) — not a regression.
+
+---
+
 ## [1.9.0] — 2026-07-13 (Manual GPX/TCX tracklog upload)
 
 ### Major: Upload Strava-exported tracklogs to bypass the 10-athlete OAuth cap
