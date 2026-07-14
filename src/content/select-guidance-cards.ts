@@ -14,8 +14,10 @@
  * (PRE_RUN_LIMIT/POST_RUN_LIMIT/SUPPLEMENTARY_LIMIT below) rather than dumping
  * the whole library and slicing — dumping-then-slicing would let the 6-card
  * pre-run library crowd out post-run/education entirely. The library still
- * holds the extra pre/post-run cards (meal timing, caffeine, hydration, the
- * PDF-gap TODOs) for future surfacing; only the essentials render by default.
+ * holds the extra pre/post-run cards (meal timing, caffeine, hydration —
+ * post_meal_guidance/post_hydration are real PDF-sourced content as of 260714,
+ * just capped by design like pre-run's unused extras, not a review-gate) for
+ * future surfacing; only the essentials render by default.
  * The safety-disclaimer card is "Always include... (short)" per spec — treated
  * as outside the per-category limits (a persistent footer). REST days render
  * the FULL R.E.S.T set uncapped (Success Criteria: "shows full R.E.S.T card
@@ -33,8 +35,8 @@ import { READINESS_CARDS } from './readiness';
 import { SAFETY_DISCLAIMER } from './safety';
 
 const PRE_RUN_LIMIT = 2; // pre_warm_up_aerobic + avoid_static_stretching (array order)
-const POST_RUN_LIMIT = 1; // post_cool_down only — the 2 PDF-gap TODO cards stay unsurfaced until reviewed
-const SUPPLEMENTARY_LIMIT = 1; // "optional bài bổ trợ" (singular) — one standing suggestion, see supplementary.ts
+const POST_RUN_LIMIT = 1; // post_cool_down only — post_meal_guidance/post_hydration stay unsurfaced by design (cap, not a review-gate)
+const SUPPLEMENTARY_LIMIT = 2; // bumped 260714 to fit the flag-gated beginner/form cards alongside one strength suggestion — see supplementary.ts array-order note
 
 /** Maps the appliesTo.flags union (matches GuidanceCitation's data-shape naming)
  *  onto GuidanceFlagsInput's `is`-prefixed profile-flag naming (matches
@@ -47,9 +49,10 @@ const FLAG_KEY: Record<GuidanceFlag, keyof GuidanceFlagsInput> = {
 };
 
 /** True when `card` matches the day's dayType + tier + profile flags. Exported
- *  for direct unit testing (no production content currently sets `flags` — see
- *  supplementary.ts YAGNI note — so this needs its own synthetic-card tests to
- *  reach full branch coverage). */
+ *  for direct unit testing. `progression_beginner_maf` (supplementary.ts, added
+ *  260714) is the first production card to set `appliesTo.flags` — see its
+ *  array-order note for how the `beginner` flag prioritizes it over strength
+ *  suggestions within SUPPLEMENTARY_LIMIT. */
 export function cardMatches(
   card: GuidanceCard,
   recommendation: DailyRecommendation,

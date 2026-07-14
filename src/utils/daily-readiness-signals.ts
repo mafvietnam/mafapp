@@ -42,7 +42,16 @@ function todaySummary(ctx: SignalContext): GarminDailySummary | undefined {
   return ctx.dailySummaries.find((s) => isSameLocalDate(new Date(s.date), ctx.today));
 }
 
-/** RED TEAM FIX #5: baseline needs n>=7 available days (excluding today) or RHR is IGNORED. Check-in restingHr is PRIMARY for today's value; Garmin is bonus-only. */
+/**
+ * RED TEAM FIX #5: baseline needs n>=7 available days (excluding today) or RHR is IGNORED.
+ * Check-in restingHr is PRIMARY for today's value; Garmin is bonus-only for TODAY's reading —
+ * but the n>=7 BASELINE itself only ever comes from `dailySummaries` (Garmin), so whenever a
+ * reason fires here the baseline it's compared against is Garmin-sourced. This is also the
+ * built-in hide-when-absent guard: FEATURE_GARMIN off (prod default) => dailySummaries stays
+ * empty => history.length < 7 forever => this signal never fires and RHR reasons never render.
+ * Both fired-reason texts below therefore attribute the data source explicitly ("thiết bị
+ * Garmin") so the UI never implies a phone/manual reading drove the readiness tier.
+ */
 export function rhrSignal(ctx: SignalContext): ReasonCode[] {
   const history = ctx.dailySummaries
     .filter((s) => s.restingHeartRate != null && !isSameLocalDate(new Date(s.date), ctx.today))
@@ -56,10 +65,10 @@ export function rhrSignal(ctx: SignalContext): ReasonCode[] {
 
   const delta = Math.round(todayRhr - baseline);
   if (delta >= RHR_BAD_DELTA_BPM) {
-    return [{ code: 'rhr_bad', severity: 'bad', bookRef: 'CH7', text: `Nhịp tim nghỉ tăng +${delta} bpm — dấu hiệu cơ thể cần hồi phục (Chương 7).` }];
+    return [{ code: 'rhr_bad', severity: 'bad', bookRef: 'CH7', text: `Nhịp tim nghỉ tăng +${delta} bpm — dấu hiệu cơ thể cần hồi phục (Chương 7). (dữ liệu nhịp tim nghỉ từ thiết bị Garmin)` }];
   }
   if (delta >= RHR_WARN_DELTA_BPM) {
-    return [{ code: 'rhr_warn', severity: 'warn', bookRef: 'CH7', text: `Nhịp tim nghỉ tăng +${delta} bpm so với trung bình 14 ngày — theo dõi thêm.` }];
+    return [{ code: 'rhr_warn', severity: 'warn', bookRef: 'CH7', text: `Nhịp tim nghỉ tăng +${delta} bpm so với trung bình 14 ngày — theo dõi thêm. (dữ liệu nhịp tim nghỉ từ thiết bị Garmin)` }];
   }
   return [];
 }

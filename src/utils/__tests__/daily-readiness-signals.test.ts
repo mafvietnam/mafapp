@@ -8,12 +8,17 @@
 import { describe, it, expect } from 'vitest';
 import type { StravaActivity } from '../../services/strava-service';
 import type { GarminDailySummary } from '../../services/garmin-service';
+import type { DailyCheckin } from '../../types';
 import { rhrSignal, trendSignal, loadSignal, stressSignal, type SignalContext } from '../daily-readiness-signals';
 
 const TODAY = new Date(2026, 6, 14); // Tuesday
 
 function ctx(overrides: Partial<SignalContext> = {}): SignalContext {
   return { recentActivities: [], dailySummaries: [], checkin: null, today: TODAY, ...overrides };
+}
+
+function checkin(overrides: Partial<DailyCheckin> = {}): DailyCheckin {
+  return { id: 'c1', date: '2026-07-14', sleepQuality: 4, fatigue: 2, soreness: null, note: null, restingHr: null, ...overrides };
 }
 
 function run(dateStr: string, avgSpeed: number, avgHeartRate: number): StravaActivity {
@@ -99,6 +104,37 @@ describe('rhrSignal — n>=7 baseline but no today value at all', () => {
     const dailySummaries = Array.from({ length: 7 }, (_, i) => summary(i + 1, { restingHeartRate: 50 }));
     const result = rhrSignal(ctx({ dailySummaries, checkin: null }));
     expect(result).toEqual([]);
+  });
+});
+
+describe('rhrSignal — hide-when-absent (Garmin-only baseline)', () => {
+  it('n<7 baseline days => [] even with a huge today delta (FEATURE_GARMIN-off default: dailySummaries stays empty => always [])', () => {
+    const dailySummaries = Array.from({ length: 6 }, (_, i) => summary(i + 1, { restingHeartRate: 50 }));
+    const result = rhrSignal(ctx({ dailySummaries, checkin: checkin({ restingHr: 90 }) }));
+    expect(result).toEqual([]);
+  });
+
+  it('zero Garmin dailySummaries (prod default, Garmin off) => [] regardless of check-in data', () => {
+    const result = rhrSignal(ctx({ dailySummaries: [], checkin: checkin({ restingHr: 90 }) }));
+    expect(result).toEqual([]);
+  });
+});
+
+describe('rhrSignal — reason text labels the Garmin data source when it fires', () => {
+  it('+7bpm (bad) => text ends with the Garmin-device attribution note', () => {
+    const dailySummaries = Array.from({ length: 7 }, (_, i) => summary(i + 1, { restingHeartRate: 50 }));
+    const result = rhrSignal(ctx({ dailySummaries, checkin: checkin({ restingHr: 57 }) }));
+    expect(result).toHaveLength(1);
+    expect(result[0].code).toBe('rhr_bad');
+    expect(result[0].text).toContain('dữ liệu nhịp tim nghỉ từ thiết bị Garmin');
+  });
+
+  it('+5bpm (warn) => text ends with the Garmin-device attribution note', () => {
+    const dailySummaries = Array.from({ length: 10 }, (_, i) => summary(i + 1, { restingHeartRate: 50 }));
+    const result = rhrSignal(ctx({ dailySummaries, checkin: checkin({ restingHr: 55 }) }));
+    expect(result).toHaveLength(1);
+    expect(result[0].code).toBe('rhr_warn');
+    expect(result[0].text).toContain('dữ liệu nhịp tim nghỉ từ thiết bị Garmin');
   });
 });
 

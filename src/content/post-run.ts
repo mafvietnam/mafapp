@@ -1,13 +1,19 @@
 /**
  * Post-run guidance cards. `post_cool_down` is well-sourced (philmaffetone.com).
- * `post_meal_guidance` / `post_hydration` are RESEARCH GAPS (researcher-01 report,
- * Unresolved Questions #1) — PDF extraction was attempted (ai-multimodal/Gemini)
- * but blocked: no GEMINI_API_KEY reachable without an interactive privacy-approval
- * prompt this autonomous run couldn't issue (no AskUserQuestion tool available to
- * this subagent). Per phase-02 spec §4 fallback: bodies stay generic/non-specific
- * (restate an ALREADY-sourced principle only) and are marked `// REVIEW:` TODO —
- * no invented timing windows or macro ratios. Flagged for human review + a future
- * PDF pass.
+ * `post_meal_guidance` / `post_hydration` WERE research gaps (researcher-01 report,
+ * Unresolved Questions #1 — web sources didn't cover post-run timing/hydration
+ * protocol). Filled 260714 by extracting the actual PDF (docs/the-big-book-of-
+ * endurance-training-and-racing.pdf) via local pypdf (free, no paid API) — see
+ * CH18 "Eating and Drinking Your Way to Better Endurance" ("After Competition",
+ * p.457) for meal timing, CH17 "Water and Electrolytes" ("Rehydrating", p.433-434)
+ * for hydration. Both chapters fall outside the CH3-CH9 `BookRef` union (see
+ * maf-coaching-insights.ts) so citations name the chapter in `label` text instead
+ * of widening that shared type for two one-off references (YAGNI). Book caveat
+ * carried into the copy: Maffetone's explicit protocol numbers (15-30min window,
+ * carb+protein+fat) are written for LONG/hard sessions and competition recovery —
+ * the book itself notes fat-adapted athletes on ordinary 2-3h aerobic sessions
+ * typically need nothing but water, so the body text doesn't overclaim the
+ * protocol onto every easy MAF run.
  */
 
 import type { GuidanceCard } from './guidance-types';
@@ -24,32 +30,22 @@ export const POST_RUN_CARDS: GuidanceCard[] = [
     appliesTo: { dayTypes: ACTIVE_DAY_TYPES },
   },
   {
-    // REVIEW: pending owner sign-off / PDF confirmation — researcher-01 report flags
-    // this as a gap: "Post-run meal timing (e.g. eat within 30 min?) not found in
-    // published web sources; may be in The Big Book...". Body intentionally restates
-    // only the ALREADY-sourced real-food principle (see rest.ts eat_real_foods) and
-    // explicitly avoids inventing a timing window or macro ratio.
     id: 'post_meal_guidance',
     category: 'post-run',
-    title: 'Ăn gì sau khi chạy (TODO: cần xác nhận thêm)',
-    body: 'Ưu tiên thực phẩm thật — protein chất lượng, chất béo lành mạnh, rau củ — sau buổi chạy. Thời điểm ăn cụ thể và tỉ lệ dinh dưỡng chính xác chưa được xác nhận từ nguồn Maffetone đã khảo sát; hãy ăn theo cảm giác đói, tránh đồ ăn chế biến sẵn.',
+    title: 'Ăn sau khi chạy: cửa sổ 15–30 phút cho buổi dài/nặng',
+    body: 'Với buổi chạy dài hoặc nặng, ăn trong vòng 15–30 phút sau khi kết thúc — kết hợp cả tinh bột, protein và chất béo — giúp hồi phục glycogen và cơ tốt hơn. Với buổi chạy nhẹ trong vùng hiếu khí (dưới 2–3 giờ), Maffetone ghi nhận nhiều vận động viên đã thích nghi đốt mỡ không cần nạp gấp gì ngoài nước — cứ ăn bữa thật khi đói như bình thường. Sau cửa sổ 15–30 phút (buổi nặng), tiếp tục ăn uống bình thường và tránh rượu bia/caffeine vài giờ để không cản trở hồi phục.',
     citation: {
-      label: 'Cần xác nhận thêm (TODO — chưa có nguồn chính thức cho thời điểm ăn sau chạy)',
-      url: 'https://philmaffetone.com/six-tips-for-improving-strength/',
+      label: 'The Big Book of Endurance Training and Racing — Chương 18 "Eating and Drinking Your Way to Better Endurance" (mục "After Competition")',
     },
     appliesTo: { dayTypes: ACTIVE_DAY_TYPES },
   },
   {
-    // REVIEW: pending owner sign-off / PDF confirmation — researcher-01 report:
-    // "proper hydration needed" is sourced pre-workout, but no specific POST-run
-    // protocol (volume, electrolytes, timing) was found in web sources.
     id: 'post_hydration',
     category: 'post-run',
-    title: 'Bổ sung nước sau khi chạy (TODO: cần xác nhận thêm)',
-    body: 'Bổ sung nước sau khi chạy, đặc biệt nếu ra nhiều mồ hôi. Lượng nước và điện giải cụ thể cần bổ sung chưa được Maffetone công bố chi tiết trong nguồn đã khảo sát; ưu tiên uống theo cảm giác khát và quan sát màu nước tiểu.',
+    title: 'Bù nước sau khi chạy: từng ít một, đều đặn',
+    body: 'Sau buổi chạy dài hoặc nặng, uống khoảng 500ml nước mỗi 30 phút hiệu quả hơn uống dồn một lượng lớn ngay một lần — uống dồn dập dễ gây phản xạ lợi tiểu, khiến mất nước nhiều hơn. Tạo thói quen uống nước ngay trước và sau buổi tập. Theo dõi màu nước tiểu để đánh giá: vàng nhạt/trong là đủ nước, vàng đậm là dấu hiệu cần uống thêm (trừ nước tiểu đầu buổi sáng luôn đậm màu hơn bình thường). Buổi tập dài hoặc trời nóng có thể cần bổ sung thêm chút muối để giữ nước tốt hơn.',
     citation: {
-      label: 'Cần xác nhận thêm (TODO — chưa có nguồn chính thức cho protocol bù nước sau chạy)',
-      url: 'https://philmaffetone.com/aerobic-training-guidelines/',
+      label: 'The Big Book of Endurance Training and Racing — Chương 17 "Water and Electrolytes" (mục "Rehydrating")',
     },
     appliesTo: { dayTypes: ACTIVE_DAY_TYPES },
   },

@@ -183,4 +183,30 @@ describe('Active training day (RUN/LONG_RUN/WALK/RECOVERY)', () => {
       expect(cards[cards.length - 1].id).toBe('safety_general_disclaimer');
     }
   });
+
+  describe('bài bổ trợ (SUPPLEMENTARY_LIMIT=2) — beginner-progression + running-form PDF content (260714)', () => {
+    it('non-beginner GREEN sees running_form_brain_led + one strength card, never progression_beginner_maf', () => {
+      const cards = selectGuidanceCards(rec({ tier: 'GREEN' }), NO_FLAGS);
+      const ids = cards.map((c) => c.id);
+      expect(ids).toContain('running_form_brain_led');
+      expect(ids).toContain('strength_bodyweight');
+      expect(ids).not.toContain('progression_beginner_maf');
+    });
+
+    it('isBeginner GREEN prioritizes progression_beginner_maf + running_form_brain_led, no strength card', () => {
+      const cards = selectGuidanceCards(rec({ tier: 'GREEN' }), { ...NO_FLAGS, isBeginner: true });
+      const ids = cards.map((c) => c.id);
+      expect(ids).toContain('progression_beginner_maf');
+      expect(ids).toContain('running_form_brain_led');
+      expect(ids.some((id) => SUPPLEMENTARY_CARDS.some((c) => c.id === id && c.id.startsWith('strength_')))).toBe(false);
+    });
+
+    it('progression_beginner_maf never surfaces on AMBER (supplementary is GREEN-only)', () => {
+      const cards = selectGuidanceCards(
+        rec({ tier: 'AMBER', reasons: [reason('sleep_warn')] }),
+        { ...NO_FLAGS, isBeginner: true },
+      );
+      expect(cards.map((c) => c.id)).not.toContain('progression_beginner_maf');
+    });
+  });
 });
