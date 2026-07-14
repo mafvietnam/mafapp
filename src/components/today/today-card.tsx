@@ -7,6 +7,7 @@ import TodayCardReasons from './today-card-reasons';
 import TodayCardSyncBanner from './today-card-sync-banner';
 import CheckinMiniForm from './checkin-mini-form';
 import AdherenceStrip from './adherence-strip';
+import GuidanceCardList from './guidance-card-list';
 
 interface TodayCardProps {
   variant: 'prominent' | 'compact';
@@ -26,6 +27,7 @@ export default function TodayCard({ variant }: TodayCardProps) {
     isChild,
     hasProfile,
     recommendation,
+    guidanceCards,
     adherence,
     lastSyncAt,
     staleSync,
@@ -86,6 +88,7 @@ export default function TodayCard({ variant }: TodayCardProps) {
       <TodayCardWorkoutSummary rec={recommendation} compact={compact} />
       <TodayCardSyncBanner lastSyncAt={lastSyncAt} staleSync={staleSync} todayAck={todayAck} onAck={ackRanToday} />
       {!compact && <TodayCardReasons reasons={recommendation.reasons} />}
+      <GuidanceCardList cards={guidanceCards} compact={compact} />
       {!compact && (
         <CheckinMiniForm existing={checkin} submitting={checkinSubmitting} onSubmit={submitCheckin} />
       )}

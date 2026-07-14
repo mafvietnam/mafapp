@@ -11,17 +11,23 @@ import { getStravaActivities, getStravaStatus, type StravaActivity } from '../se
 import { getGarminDailySummary, type GarminDailySummary } from '../services/garmin-service';
 import type { UpsertCheckinPayload } from '../services/checkin-service';
 import type { DailyRecommendation, DailyCheckin } from '../types';
+import { selectGuidanceCards } from '../content/select-guidance-cards';
+import type { GuidanceCard } from '../content/guidance-types';
 
 const RECENT_ACTIVITIES_LIMIT = 50; // enough range for the 14-day RHR baseline / load-spike window
 const DAILY_SUMMARY_LOOKBACK_DAYS = 30;
 const STALE_SYNC_THRESHOLD_MS = 12 * 60 * 60 * 1000;
 const ACK_STORAGE_PREFIX = 'maf_today_ack_';
+const HIGH_BMI_THRESHOLD = 30; // matches the existing "Béo phì" (obese) cut-point in maf-calculator-orchestrator.ts
 
 export interface UseTodayRecommendationResult {
   loading: boolean;
   isChild: boolean;
   hasProfile: boolean;
   recommendation: DailyRecommendation | null;
+  /** Selected via select-guidance-cards.ts (pure) — pre/post-run, bài bổ trợ, R.E.S.T,
+   *  readiness-education, safety-disclaimer. Empty for children / missing recommendation. */
+  guidanceCards: GuidanceCard[];
   adherence: AdherenceDay[];
   lastSyncAt: string | null;
   /** RED TEAM FIX #12: true when today's Strava sync looks stale AND there's no matching activity/ack yet. */
@@ -157,11 +163,24 @@ export function useTodayRecommendation(): UseTodayRecommendationResult {
     return computeAdherence(mafResult.schedule, activities, mondayOf(today), today, todayAck);
   }, [mafResult, isChild, activities, today, todayAck]);
 
+  // RED TEAM FIX #6 (extended to Phase 2): children get no structured guidance
+  // content, same as no structured workout/HR zone.
+  const guidanceCards = useMemo<GuidanceCard[]>(() => {
+    if (!recommendation || isChild) return [];
+    return selectGuidanceCards(recommendation, {
+      isProbation: !!userProfile.isProbation,
+      isRecovering: userProfile.isRecovering,
+      isBeginner: isNewbie,
+      highBmi: bmi >= HIGH_BMI_THRESHOLD,
+    });
+  }, [recommendation, isChild, userProfile.isProbation, userProfile.isRecovering, isNewbie, bmi]);
+
   return {
     loading: profileLoading || checkinLoading || signalsLoading,
     isChild,
     hasProfile,
     recommendation,
+    guidanceCards,
     adherence,
     lastSyncAt,
     staleSync,
